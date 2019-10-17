@@ -4,7 +4,8 @@ class KNN:
         self.train_df = data_instance.train_data
         self.test_df = data_instance.test_data
 
-    def get_euclidean_distance(self, query_point, comparison_point):
+    @staticmethod
+    def get_euclidean_distance(query_point, comparison_point):
         """
         Performs the Euclidean distance function for a single data point against a query point
         :param data_name:
@@ -21,7 +22,8 @@ class KNN:
 
         return temp_add ** (1 / 2)  # square root ... return the specific distance
 
-    def get_euclidean_distance_dict(self, query_point, comparison_data):
+    @staticmethod
+    def get_euclidean_distance_dict(query_point, comparison_data):
         """
         Performs the Euclidean distance function for a all the data needed to compare against query
         :param comparison_data: all data to be compared to the query point
@@ -42,7 +44,8 @@ class KNN:
             distance_dict[temp_add] = (temp_add ** (1 / 2))  # square root ... return the specific distance
         return distance_dict
 
-    def get_k_closest(self, sort_this, k_val, data_frame, label_col):
+    @staticmethod
+    def get_k_closest(sort_this, k_val, data_frame, label_col):
         """
         determines the smallest distance to the query point
         :param k_val: number of values to grab
