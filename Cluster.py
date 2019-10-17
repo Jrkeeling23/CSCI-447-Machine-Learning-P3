@@ -3,9 +3,9 @@ class KNN:
         self.k = k_val
         self.train_df = train_df
 
-    def get_euclidean_distance(self, query_point, comparison_point, data_name):
+    def get_euclidean_distance(self, query_point, comparison_point):
         """
-        Performs the Euclidean distance function
+        Performs the Euclidean distance function for a single data point against a query point
         :param data_name:
         :param query_point: a data point
         :param comparison_point: a comparison point
@@ -22,7 +22,7 @@ class KNN:
 
     def get_euclidean_distance_dict(self, query_point, comparison_data):
         """
-        Performs the Euclidean distance function
+        Performs the Euclidean distance function for a all the data needed to compare against query
         :param comparison_data: all data to be compared to the query point
         :param query_point: a data point
         :return: a dict of all distances given all the data
