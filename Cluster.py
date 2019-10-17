@@ -1,7 +1,8 @@
 class KNN:
-    def __init__(self, k_val, train_df):
+    def __init__(self, k_val, data_instance):
         self.k = k_val
-        self.train_df = train_df
+        self.train_df = data_instance.train_data
+        self.test_df = data_instance.test_data
 
     def get_euclidean_distance(self, query_point, comparison_point):
         """
