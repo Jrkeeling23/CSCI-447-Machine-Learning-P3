@@ -89,7 +89,7 @@ class Medoids:
         """
         self.cost = cost
         self.index = index
-        self.row = row
+        self.medoid_row = row
 
 
 
