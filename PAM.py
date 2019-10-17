@@ -1,7 +1,15 @@
-class PAM:
-    def __init__(self):
-        pass
-    
+from Cluster import KNN
+
+
+class PAM(KNN):
+    """
+    Inheritance allows PAM to use functions in KNN, or override them, and use it class variables.
+    """
+    # TODO check that when an instance of PAM is made, an instance of KNN is also made.
+    def __init__(self, k_val, data_instance):
+        super().__init__(k_val, data_instance)
+
+
 class Medoids:
 
     def __init__(self, row, index):
@@ -11,15 +19,16 @@ class Medoids:
         :param index: index of the point
         """
         self.medoid_row = row
-        self.encompasses = {}
-        self.index = index
+        self.encompasses = {}  # dictionary to store data of tested "potential" medoids.
+        self.index = index  # index of data frame
         self.cost = 0  # individual medoid cost
         self.next_medoid = None
-        self.recently_used = []
+        self.recently_used = []  # list of test_medoids to potentially
 
-    def assign_to_medoid(self, index, distance, row):
+    def medoid_encompasses(self, index, distance, row):
         """
         Assigns data to the medoid
+        :param row:
         :param distance:
         :param index: index of data
         :return:
@@ -27,12 +36,26 @@ class Medoids:
         self.encompasses[index] = row
         self.cost += distance
 
+    def get_medoid_encompasses(self):
+        """
+        Getter function to use the encompassed list
+        :return: the data points the medoid encompasses
+        """
+        return self.encompasses
+
     def reset_cost(self):
         """
         reset the costs when recalculating the cost of medoids
         :return: None
         """
         self.cost = 0
+
+    def get_cost(self):
+        """
+        getter function for the cost of the medoid
+        :return: cost from THIS medoid to all other medoids it encompasses
+        """
+        return self.cost
 
     def reset_recently_used(self):
         """
@@ -56,29 +79,7 @@ class Medoids:
         """
         self.recently_used.append(index)
 
-    def set_next(self, next_medoid):
-        """
-        set a medoids next medoid for a circularly linked list
-        :param next_medoid: medoid to be next in linked list
-        :return: None
-        """
-        self.next_medoid = next_medoid
-
-    def get_next(self):
-        """
-        getter function for the next medoid in linked list
-        :return: next medoid in list
-        """
-        return self.next_medoid
-
-    def get_cost(self):
-        """
-        getter function for the cost of the medoid
-        :return: cost from THIS medoid to all other medoids it encompasses
-        """
-        return self.cost
-
-    def set_better_medoid(self, index, row, cost):
+    def better_test_medoid(self, index, row, cost):
         """
         change the values of the medoid to a better fitting one
         :param index: index to change to
@@ -91,30 +92,5 @@ class Medoids:
         self.row = row
 
 
-class MedoidsLinkList:
 
-    def __init__(self, max_size):
-        """
-        Create a medoid circularly linked list
-        :param max_size: number of medoids to use
-        """
-        self.head = None
-        self.current = None
-        self.size = 0
-        self.max_size = max_size
 
-    def insert(self, row, index):
-        """
-        insert a medoid into the list
-        :param row: row, used to instantiate a new medoid
-        :param index: index, used to instantiate a new medoid
-        :return: None
-        """
-        new_medoid = Medoids(row, index)  # new medoid of type medoids
-        if self.head is None:  # if list is empty
-            self.head = new_medoid
-            self.current = new_medoid
-        else:
-            self.current.set_next(new_medoid)
-            new_medoid.set_next(self.head)
-        self.size += 1  # increment size of list
