@@ -1,7 +1,14 @@
-class PAM:
-    def __init__(self):
-        pass
-    
+from Cluster import KNN
+
+
+class PAM(KNN):
+    """
+    Inheritance allows PAM to use functions in KNN, or override them, and use it class variables.
+    """
+    def __init__(self, k_val, train_df):
+        super().__init__(k_val, train_df)
+
+
 class Medoids:
 
     def __init__(self, row, index):
