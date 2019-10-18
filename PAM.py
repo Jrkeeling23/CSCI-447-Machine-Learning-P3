@@ -31,11 +31,14 @@ class PAM(KNN):
                 if index in Medoid.static_medoid_indexes:
                     continue
                 temp_distance_dict[medoid] = super().get_euclidean_distance(row, medoid.row)
-            med, dist = self.determine_closest_medoid(temp_distance_dict)
+            list_of_tuples = self.determine_closest_medoid(temp_distance_dict)
+            med = list_of_tuples[0][0]  # closest medoid
+            cost = list_of_tuples[0][1]  # distance from closest medoid
+            med.cost += cost  # append to medoid
             med.encompasses.append(index)  # append to the closest medoid point
 
-
-    def determine_closest_medoid(self, dictionary):
+    @staticmethod
+    def determine_closest_medoid(dictionary):
         return sorted(dictionary.items(), key=lambda item: item[1])
 
 
