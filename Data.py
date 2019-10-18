@@ -65,7 +65,7 @@ class Data:
         grouped_data_frames = []
         for g, k_df in df.groupby(np.arange(len(column_size)) // group):
             grouped_data_frames.append(k_df)
-        self.k_dfs = grouped_data_frames
+        return grouped_data_frames
 
     def quick_setup(self):
         self.split_data(train_percent=0.8)

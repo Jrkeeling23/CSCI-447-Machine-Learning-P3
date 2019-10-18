@@ -3,6 +3,7 @@ class KNN:
         self.k = k_val
         self.train_df = data_instance.train_data
         self.test_df = data_instance.test_data
+        self.data_instance = data_instance
 
     @staticmethod
     def get_euclidean_distance(query_point, comparison_point):
@@ -68,3 +69,18 @@ class KNN:
                 v_label_list.append(data_frame.loc[key, label_col])  # add label
                 count += 1
         return v_distance_list, v_label_list
+
+    def perform_KNN(self, k_val, query_point, train_data):
+        distances = self.get_euclidean_distance_dict(query_point, train_data)
+        nearest_neighbors_distances, nearest_neighbors = self.get_k_closest(distances, k_val, train_data, self.data_instance.label_col)
+        seen = []
+        for index in nearest_neighbors:
+            if index not in seen:
+                seen.append(index)
+        see_count = {}
+        for i in seen:
+            see_count[nearest_neighbors.count(i)]=0
+        for j in nearest_neighbors:
+            see_count[j]+=1
+        return max(see_count)
+
