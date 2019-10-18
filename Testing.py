@@ -10,7 +10,7 @@ class MyTestCase(unittest.TestCase):
         test_dict = {
             "1": 55, "2": 22, "3": 11, "4": 1
         }
-        result_list = PAM.determine_closest_medoid(test_dict)
+        result_list = PAM.order_by_dict_values(test_dict)
         result = result_list[0][1]
         self.assertEqual(result, 1, "Works")
 

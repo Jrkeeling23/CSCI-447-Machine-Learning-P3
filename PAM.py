@@ -25,20 +25,32 @@ class PAM(KNN):
         return medoid_list
 
     def assign_data_to_medoids(self, df, medoid_list):
-        for index, row in df.iterrows():
-            temp_distance_dict = {}
-            for medoid in medoid_list:
-                if index in Medoid.static_medoid_indexes:
-                    continue
-                temp_distance_dict[medoid] = super().get_euclidean_distance(row, medoid.row)
-            list_of_tuples = self.determine_closest_medoid(temp_distance_dict)
+        """
+        Assigns the remaining data points to medoids
+        :param df: data to add to medoids
+        :param medoid_list: list of medoids
+        :return: None
+        """
+        for index, row in df.iterrows():  # iterate through all the data
+            if index in Medoid.static_medoid_indexes:  # do not assign a medoid to a medoid
+                continue  # next index if a medoid
+            temp_distance_dict = {}  # contains the distances of a data point to all the medoids
+            for medoid in medoid_list:  # iterate through all the medoids (For one data point)
+                temp_distance_dict[medoid] = super().get_euclidean_distance(row, medoid.row)  # med : distance
+            list_of_tuples = self.order_by_dict_values(temp_distance_dict)  # sorts dictionary by value
             med = list_of_tuples[0][0]  # closest medoid
             cost = list_of_tuples[0][1]  # distance from closest medoid
             med.cost += cost  # append to medoid
             med.encompasses.append(index)  # append to the closest medoid point
 
     @staticmethod
-    def determine_closest_medoid(dictionary):
+    def order_by_dict_values(dictionary):
+        """
+        Orders least to greatest a given dictionary by value (not key) and returns a list of tuples [(key, val_min),
+        ..., (key, val_max)]
+        :param dictionary: dictionary to sort
+        :return: an ordered list of tuples by value
+        """
         return sorted(dictionary.items(), key=lambda item: item[1])
 
 
