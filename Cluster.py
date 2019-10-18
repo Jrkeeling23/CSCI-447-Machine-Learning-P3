@@ -45,7 +45,7 @@ class KNN:
         return distance_dict
 
     @staticmethod
-    def get_k_closest(sort_this, k_val, data_frame, label_col):
+    def get_k_closest(distance_dict, k_val, data_frame, label_col):
         """
         determines the smallest distance to the query point
         :param k_val: number of values to grab
@@ -55,7 +55,7 @@ class KNN:
         count = 0  # stops for loop
         v_label_list = []
         v_distance_list = []
-        for key, value in sorted(sort_this.items(), key=lambda item: item[1]):
+        for key, value in sorted(distance_dict.items(), key=lambda item: item[1]):
             # key is the index and value is the distance. Ordered least to greatest by sort().
             # if statement to grab the k number of distances and labels
             if count > k_val:
