@@ -47,7 +47,7 @@ class KNN:
     @staticmethod
     def get_k_closest(distance_dict, k_val, data_frame, label_col):
         """
-        determines the smallest distance to the query point
+        get the k closest distances and labels associated with it.
         :param k_val: number of values to grab
         :param sort_this: dictionary of distances from query point to medoids
         :return: k clostest distances and their associated labels
