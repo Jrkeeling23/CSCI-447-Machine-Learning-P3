@@ -5,12 +5,42 @@ class PAM(KNN):
     """
     Inheritance allows PAM to use functions in KNN, or override them, and use it class variables.
     """
+
     # TODO check that when an instance of PAM is made, an instance of KNN is also made.
     def __init__(self, k_val, data_instance):
         super().__init__(k_val, data_instance)
+        self.current_medoids = []
+
+    def assign_random_medoids(self, df, k):
+        """
+        randomly selects examples to represent the medoids
+        :param k: number of medoids to instantiate
+        :return: k number of medoids
+        """
+        medoid_list = []
+        rand_med = df.sample(n=k)
+        for index, row in rand_med.iterrows():
+            Medoid.static_medoid_indexes.append(index)  # add to static variable; eases checking if data in medoids
+            medoid_list.append(Medoid(row, index))
+        return medoid_list
+
+    def assign_data_to_medoids(self, df, medoid_list):
+        for index, row in df.iterrows():
+            temp_distance_dict = {}
+            for medoid in medoid_list:
+                if index in Medoid.static_medoid_indexes:
+                    continue
+                temp_distance_dict[medoid] = super().get_euclidean_distance(row, medoid.row)
+            med, dist = self.determine_closest_medoid(temp_distance_dict)
+            med.encompasses.append(index)  # append to the closest medoid point
 
 
-class Medoids:
+    def determine_closest_medoid(self, dictionary):
+        return sorted(dictionary.items(), key=lambda item: item[1])
+
+
+class Medoid:
+    static_medoid_indexes = []  # eases checking if data in medoids
 
     def __init__(self, row, index):
         """
@@ -18,8 +48,9 @@ class Medoids:
         :param row: the point representing the medoid
         :param index: index of the point
         """
-        self.medoid_row = row
-        self.encompasses = {}  # dictionary to store data of tested "potential" medoids.
+        self.row = row
+        # self.encompasses = {}  # dictionary to store data of medoid's encompassed data points.
+        self.encompasses = []
         self.index = index  # index of data frame
         self.cost = 0  # individual medoid cost
         self.next_medoid = None
@@ -89,8 +120,4 @@ class Medoids:
         """
         self.cost = cost
         self.index = index
-        self.medoid_row = row
-
-
-
-
+        self.row = row
