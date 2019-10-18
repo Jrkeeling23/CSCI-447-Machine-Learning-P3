@@ -25,14 +25,14 @@ class Data:
         """
         return df.shape[1]
 
-    def split_data(self, train_percent=.8):
+    def split_data(self, data_frame, train_percent=.8):
         """
         splits the data according to the train percent.
         :return:
         """
         # TODO:if dataframe or train_percent are empty, use if statement to split data in a universal way
         # use numpys split with pandas sample to randomly split the data
-        self.train_df, self.test_df = np.split(dataframe.sample(frac=1), [int(train_percent * len(dataframe))])
+        self.train_df, self.test_df = np.split(data_frame.sample(frac=1), [int(train_percent * len(data_frame))])
 
     def split_k_fold(self, k_val, dataset):
         """
