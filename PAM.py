@@ -98,7 +98,7 @@ class PAM(KNN):
             initial_list = Medoid.static_medoid_indexes.copy()  # printing purposes
             change_in_list = self.test_new_medoid(df, medoid_list.copy())  # used to compare
             if medoid_list != change_in_list:  # continue finding better fits iff a better medoid was found
-                print("\ninitial Medoid list: ", initial_list, "\nReturned Medoid List: ", Medoid.static_medoid_indexes)
+                print("\nInitial Medoid list: ", initial_list, "\nReturned Medoid List: ", Medoid.static_medoid_indexes)
                 print("\n---------- Continue Finding Better Medoids ----------")
                 medoid_list = change_in_list  # must update list
                 continue
