@@ -58,7 +58,7 @@ class MyTestCase(unittest.TestCase):
             size += len(medoid.encompasses)  # get number of data points assigned to a medoid
         self.assertEqual(size, pam.train_df.shape[0]-3)  # make sure all data_points are assigned to a medoid
         bool_type = pam.compare_medoid_costs(pam.current_medoids[0], pam.current_medoids[1])
-        pam.update_medoids(pam.train_df, pam.current_medoids)
+        pam.better_fit_medoids(pam.train_df, pam.current_medoids)
         self.assertIsInstance(bool_type, bool)  # shows whether it swapped or not
 
 

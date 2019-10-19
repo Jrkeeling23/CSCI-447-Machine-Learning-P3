@@ -65,7 +65,6 @@ class PAM(KNN):
         for med_index in range(len(medoid_list)):  # iterate through indexes of medoid list
             print("Current Medoid being updated: ", medoid_list[med_index].index)
             for index, row in df.iterrows():  # iterate through data
-                # TODO: Not sure why an infinite loop would be created last program, but if it is doing it again, use recently used
                 # if index in Medoid.static_medoid_indexes or index in medoid_list[med_index].recently_used:
                 if index in Medoid.static_medoid_indexes:
                     continue  # do not use a medoid
@@ -78,29 +77,39 @@ class PAM(KNN):
                 if swap_bool:
                     Medoid.static_medoid_indexes[med_index] = test_medoid.index
                     medoid_list = temp_medoid_list  # swap the lists
-                    # TODO: may try using medoid_list[med_index] = test_medoid too
                 else:
                     continue
         return medoid_list
 
-    def update_medoids(self, df, medoid_list):
-
+    def better_fit_medoids(self, df, medoid_list):
+        """
+        Updates the medoids to a better fit medoid if need be!
+        :param df: data frame to use
+        :param medoid_list: list of medoids to use
+        :return: None
+        """
         print("Initial Medoid Indexes: ", Medoid.static_medoid_indexes, "\n")
         while True:
-            initial_list = Medoid.static_medoid_indexes.copy()
-            change_in_list = self.test_new_medoid(df, medoid_list.copy())
-            if medoid_list != change_in_list:
+            initial_list = Medoid.static_medoid_indexes.copy()  # printing purposes
+            change_in_list = self.test_new_medoid(df, medoid_list.copy())  # used to compare
+            if medoid_list != change_in_list:  # continue finding better fits iff a better medoid was found
                 print("\nContinue updating Medoids")
                 print("initial Medoid list: ", initial_list, "\nReturned Medoid List: ", Medoid.static_medoid_indexes)
-                medoid_list = change_in_list
+                medoid_list = change_in_list  # must update list
                 continue
             else:
                 print("\nNo More Changes!\nFinal Medoid Indexes: ", Medoid.static_medoid_indexes)
-                break
+                break  # no more changes ands the loop
 
     @staticmethod
     def compare_medoid_costs(actual, test):
-        if actual.cost > test.cost and test.cost is not 0:
+        """
+        Compares two medoid costs
+        :param actual: actual medoid in list
+        :param test: testing medoid to potentially swap in
+        :return: boolean to determine if a swap occurred
+        """
+        if actual.cost > test.cost and test.cost is not 0:  # do not want 0; means that they are the same!
             print("Swap Justification\t\t-------->\t\tInitial Medoid", actual.index, " cost: ", actual.cost,
                   "\t\tcomparing to\t\t Test Medoid ", test.index,
                   " cost: ", test.cost)
