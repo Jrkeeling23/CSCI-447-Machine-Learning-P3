@@ -86,7 +86,7 @@ class PAM(KNN):
         Updates the medoids to a better fit medoid if need be!
         :param df: data frame to use
         :param medoid_list: list of medoids to use
-        :return: None
+        :return: Medoid list, so that PAM instance can update it for training.
         """
         print("Initial Medoid Indexes: ", Medoid.static_medoid_indexes, "\n")
         while True:
@@ -100,6 +100,7 @@ class PAM(KNN):
             else:
                 print("\nNo More Changes!\nFinal Medoid Indexes: ", Medoid.static_medoid_indexes)
                 break  # no more changes ands the loop
+        return medoid_list
 
     @staticmethod
     def compare_medoid_costs(actual, test):
@@ -193,15 +194,3 @@ class Medoid:
         :return: None
         """
         self.recently_used.append(index)
-
-    def better_test_medoid(self, index, row, cost):
-        """
-        change the values of the medoid to a better fitting one
-        :param index: index to change to
-        :param row: row to change to
-        :param cost: cost to change to
-        :return:
-        """
-        self.cost = cost
-        self.index = index
-        self.row = row
