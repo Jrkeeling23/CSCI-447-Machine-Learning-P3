@@ -32,7 +32,7 @@ class Data:
         """
         # TODO:if dataframe or train_percent are empty, use if statement to split data in a universal way
         # use numpys split with pandas sample to randomly split the data
-        self.train_df, self.test_df = np.split(data_frame.sample(frac=1), [int(train_percent * len(data_frame))])
+        self.train_df, self.test_df = np.split(data_frame.sample(frac=train_percent), [int(train_percent * len(data_frame))])
 
     def split_k_fold(self, k_val, dataset):
         """
