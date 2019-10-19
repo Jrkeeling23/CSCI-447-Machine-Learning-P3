@@ -82,5 +82,5 @@ class KNN:
             see_count[nearest_neighbors.count(i)]=0
         for j in nearest_neighbors:
             see_count[j]+=1
-        return max(see_count)
+        return max(see_count)[0]
 
