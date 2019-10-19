@@ -55,6 +55,59 @@ class PAM(KNN):
         """
         return sorted(dictionary.items(), key=lambda item: item[1])
 
+    def test_new_medoid(self, df, medoid_list):
+        """
+        Test ALL non-medoids as a replacement for a current medoid
+        :param df: data frame to use
+        :param medoid_list: medoids
+        :return:
+        """
+        for med_index in range(len(medoid_list)):  # iterate through indexes of medoid list
+            print("Current Medoid being updated: ", medoid_list[med_index].index)
+            for index, row in df.iterrows():  # iterate through data
+                # TODO: Not sure why an infinite loop would be created last program, but if it is doing it again, use recently used
+                # if index in Medoid.static_medoid_indexes or index in medoid_list[med_index].recently_used:
+                if index in Medoid.static_medoid_indexes:
+                    continue  # do not use a medoid
+                test_medoid = Medoid(row, index)  # testing_medoid
+                temp_medoid_list = medoid_list.copy()  # copy actual medoid_list
+                temp_medoid_list[med_index] = test_medoid  # replace actual medoid from temp list with testing medoid
+                Medoid.reset_lists_cost(temp_medoid_list)
+                self.assign_data_to_medoids(df, temp_medoid_list)
+                swap_bool = self.compare_medoid_costs(medoid_list[med_index], test_medoid)
+                if swap_bool:
+                    Medoid.static_medoid_indexes[med_index] = test_medoid.index
+                    medoid_list = temp_medoid_list  # swap the lists
+                    # TODO: may try using medoid_list[med_index] = test_medoid too
+                else:
+                    continue
+        return medoid_list
+
+    def update_medoids(self, df, medoid_list):
+
+        print("Initial Medoid Indexes: ", Medoid.static_medoid_indexes, "\n")
+        while True:
+            initial_list = Medoid.static_medoid_indexes.copy()
+            change_in_list = self.test_new_medoid(df, medoid_list.copy())
+            if medoid_list != change_in_list:
+                print("\nContinue updating Medoids")
+                print("initial Medoid list: ", initial_list, "\nReturned Medoid List: ", Medoid.static_medoid_indexes)
+                medoid_list = change_in_list
+                continue
+            else:
+                print("\nNo More Changes!\nFinal Medoid Indexes: ", Medoid.static_medoid_indexes)
+                break
+
+    @staticmethod
+    def compare_medoid_costs(actual, test):
+        if actual.cost > test.cost and test.cost is not 0:
+            print("Swap Justification\t\t-------->\t\tInitial Medoid", actual.index, " cost: ", actual.cost,
+                  "\t\tcomparing to\t\t Test Medoid ", test.index,
+                  " cost: ", test.cost)
+            return True
+        else:
+            return False
+
 
 class Medoid:
     static_medoid_indexes = []  # eases checking if data in medoids
@@ -70,7 +123,6 @@ class Medoid:
         self.encompasses = []
         self.index = index  # index of data frame
         self.cost = 0  # individual medoid cost
-        self.next_medoid = None
         self.recently_used = []  # list of test_medoids to potentially
 
     def medoid_encompasses(self, index, distance, row):
@@ -91,11 +143,17 @@ class Medoid:
         """
         return self.encompasses
 
-    def reset_cost(self):
+    @staticmethod
+    def reset_lists_cost(medoid_list):
+        # TODO Make sure cost is actually being changed for medoids (since static) Use function below if need be
         """
         reset the costs when recalculating the cost of medoids
         :return: None
         """
+        for medoid in medoid_list:
+            medoid.cost = 0
+
+    def reset_cost(self):
         self.cost = 0
 
     def get_cost(self):

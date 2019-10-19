@@ -4,7 +4,7 @@ from Data import Data
 import pandas as pd
 import numpy as np
 from Cluster import KNN
-
+from PAM import Medoid
 
 class MyTestCase(unittest.TestCase):
     def test_something(self):
@@ -46,7 +46,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_assigning_to_medoids(self):
         data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
-        df = data.df.sample(n=50)  # minimal data frame
+        df = data.df.sample(n=200)  # minimal data frame
         data.split_data(data_frame=df)  # sets test and train data
         pam = PAM(k_val=3, data_instance=data)  # create PAM instance to check super
         pam.current_medoids = pam.assign_random_medoids(pam.train_df, pam.k)
@@ -57,6 +57,10 @@ class MyTestCase(unittest.TestCase):
         for medoid in pam.current_medoids:
             size += len(medoid.encompasses)  # get number of data points assigned to a medoid
         self.assertEqual(size, pam.train_df.shape[0]-3)  # make sure all data_points are assigned to a medoid
+        bool_type = pam.compare_medoid_costs(pam.current_medoids[0], pam.current_medoids[1])
+        pam.update_medoids(pam.train_df, pam.current_medoids)
+        self.assertIsInstance(bool_type, bool)  # shows whether it swapped or not
+
 
     def test_KNN(self):
         """
