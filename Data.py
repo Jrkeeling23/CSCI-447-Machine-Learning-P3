@@ -9,7 +9,7 @@ class Data:
         self.test_df = None
         self.train_df = None
         self.label_col = label_col
-        self.kdfs = None
+        self.k_dfs = None
 
     @staticmethod
     def get_row_size(df):
@@ -25,13 +25,14 @@ class Data:
         """
         return df.shape[1]
 
-    def split_data(self, dataframe='df', train_percent='train_percent'):
+    def split_data(self, data_frame, train_percent=.8):
         """
         splits the data according to the train percent.
         :return:
         """
+        # TODO:if dataframe or train_percent are empty, use if statement to split data in a universal way
         # use numpys split with pandas sample to randomly split the data
-        self.train_df, self.test_df = np.split(dataframe.sample(frac=1), [int(train_percent * len(data_set))])
+        self.train_df, self.test_df = np.split(data_frame.sample(frac=train_percent), [int(train_percent * len(data_frame))])
 
     def split_k_fold(self, k_val, dataset):
         """
@@ -62,9 +63,9 @@ class Data:
         column_size = self.get_col_size(df)  # get column size
         group = int(column_size / k_val)  # get number of data points per group
         grouped_data_frames = []
-        for g, k_df in df.groupby(np.arange(len(test)) // group):
+        for g, k_df in df.groupby(np.arange(len(column_size)) // group):
             grouped_data_frames.append(k_df)
-        self.kdfs = grouped_data_frames
+        self.k_dfs = grouped_data_frames
 
     def quick_setup(self):
         self.split_data(train_percent=0.8)

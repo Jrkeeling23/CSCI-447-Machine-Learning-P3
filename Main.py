@@ -1,5 +1,5 @@
 from Data import Data
-
+import pandas as pd
 
 def load_data():
     """

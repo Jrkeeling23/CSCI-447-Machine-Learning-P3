@@ -1,8 +1,8 @@
 class KNN:
     def __init__(self, k_val, data_instance):
         self.k = k_val
-        self.train_df = data_instance.train_data
-        self.test_df = data_instance.test_data
+        self.train_df = data_instance.train_df
+        self.test_df = data_instance.test_df
 
     @staticmethod
     def get_euclidean_distance(query_point, comparison_point):
@@ -45,9 +45,9 @@ class KNN:
         return distance_dict
 
     @staticmethod
-    def get_k_closest(sort_this, k_val, data_frame, label_col):
+    def get_k_closest(distance_dict, k_val, data_frame, label_col):
         """
-        determines the smallest distance to the query point
+        get the k closest distances and labels associated with it.
         :param k_val: number of values to grab
         :param sort_this: dictionary of distances from query point to medoids
         :return: k clostest distances and their associated labels
@@ -55,7 +55,7 @@ class KNN:
         count = 0  # stops for loop
         v_label_list = []
         v_distance_list = []
-        for key, value in sorted(sort_this.items(), key=lambda item: item[1]):
+        for key, value in sorted(distance_dict.items(), key=lambda item: item[1]):
             # key is the index and value is the distance. Ordered least to greatest by sort().
             # if statement to grab the k number of distances and labels
             if count > k_val:
