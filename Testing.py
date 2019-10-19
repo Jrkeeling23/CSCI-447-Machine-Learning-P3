@@ -46,7 +46,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_assigning_to_medoids(self):
         data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
-        df = data.df.sample(n=200)  # minimal data frame
+        df = data.df.sample(n=125)  # minimal data frame
         data.split_data(data_frame=df)  # sets test and train data
         pam = PAM(k_val=3, data_instance=data)  # create PAM instance to check super
         pam.current_medoids = pam.assign_random_medoids(pam.train_df, pam.k)

@@ -63,7 +63,7 @@ class PAM(KNN):
         :return:
         """
         for med_index in range(len(medoid_list)):  # iterate through indexes of medoid list
-            print("Current Medoid being updated: ", medoid_list[med_index].index)
+            print("\nCurrent Medoid being updated: ", medoid_list[med_index].index)
             for index, row in df.iterrows():  # iterate through data
                 # if index in Medoid.static_medoid_indexes or index in medoid_list[med_index].recently_used:
                 if index in Medoid.static_medoid_indexes:
@@ -88,17 +88,23 @@ class PAM(KNN):
         :param medoid_list: list of medoids to use
         :return: Medoid list, so that PAM instance can update it for training.
         """
-        print("Initial Medoid Indexes: ", Medoid.static_medoid_indexes, "\n")
+        first_indexes = Medoid.static_medoid_indexes.copy()
+        print(
+            "__________________________________________________\n__________ Begin Finding Better Medoids "
+            "__________\n__________________________________________________\n")
+        print("Initial Medoid Indexes: ", Medoid.static_medoid_indexes)
+
         while True:
             initial_list = Medoid.static_medoid_indexes.copy()  # printing purposes
             change_in_list = self.test_new_medoid(df, medoid_list.copy())  # used to compare
             if medoid_list != change_in_list:  # continue finding better fits iff a better medoid was found
-                print("\nContinue updating Medoids")
-                print("initial Medoid list: ", initial_list, "\nReturned Medoid List: ", Medoid.static_medoid_indexes)
+                print("\ninitial Medoid list: ", initial_list, "\nReturned Medoid List: ", Medoid.static_medoid_indexes)
+                print("\n---------- Continue Finding Better Medoids ----------")
                 medoid_list = change_in_list  # must update list
                 continue
             else:
-                print("\nNo More Changes!\nFinal Medoid Indexes: ", Medoid.static_medoid_indexes)
+                print("\nNo More Changes!\nFinal Medoid Indexes: ", Medoid.static_medoid_indexes, " Compared to ",
+                      first_indexes)
                 break  # no more changes ands the loop
         return medoid_list
 
