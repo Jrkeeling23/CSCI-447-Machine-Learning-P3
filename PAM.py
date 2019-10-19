@@ -11,9 +11,11 @@ class PAM(KNN):
         super().__init__(k_val, data_instance)
         self.current_medoids = []
 
-    def assign_random_medoids(self, df, k):
+    @staticmethod
+    def assign_random_medoids(df, k):
         """
         randomly selects examples to represent the medoids
+        :param df: data frame to get random points from
         :param k: number of medoids to instantiate
         :return: k number of medoids
         """

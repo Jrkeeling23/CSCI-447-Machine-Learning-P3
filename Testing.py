@@ -44,6 +44,20 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(isinstance(single_distance, float))  # check the it returns a float
         self.assertTrue(isinstance(dict_dist, dict))  # check if it is a dictionary
 
+    def test_assigning_to_medoids(self):
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
+        df = data.df.sample(n=50)  # minimal data frame
+        data.split_data(data_frame=df)  # sets test and train data
+        pam = PAM(k_val=3, data_instance=data)  # create PAM instance to check super
+        pam.current_medoids = pam.assign_random_medoids(pam.train_df, pam.k)
+        size = len(pam.current_medoids)
+        self.assertEqual(size, 3)
+        pam.assign_data_to_medoids(pam.train_df, pam.current_medoids)  # set medoids list equal to return value
+        size = 0  # reset size variable
+        for medoid in pam.current_medoids:
+            size += len(medoid.encompasses)  # get number of data points assigned to a medoid
+        self.assertEqual(size, pam.train_df.shape[0]-3)  # make sure all data_points are assigned to a medoid
+
     def test_KNN(self):
         """
         Test if KNN is returning a class
