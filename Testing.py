@@ -3,6 +3,7 @@ from PAM import PAM
 from Data import Data
 import pandas as pd
 import numpy as np
+from Cluster import KNN
 
 
 class MyTestCase(unittest.TestCase):
@@ -42,6 +43,31 @@ class MyTestCase(unittest.TestCase):
         single_distance = pam.get_euclidean_distance(row_query, row_comp)  # get distance
         self.assertTrue(isinstance(single_distance, float))  # check the it returns a float
         self.assertTrue(isinstance(dict_dist, dict))  # check if it is a dictionary
+
+    def test_KNN(self):
+        """
+        Test if KNN is returning a class
+        :return:
+        """
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
+        df = data.df.sample(n=10)  # minimal data frame
+        data.split_data(data_frame=df)  # sets test and train data
+        k_val = 5
+        knn = KNN(k_val, data)
+        nearest = knn.perform_KNN(k_val, df.iloc[1], data.train_df)
+        print(nearest)
+
+    def test_euclidean(self):
+        """
+        Test if euclidean distance is working
+        :return:
+        """
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
+        df = data.df.sample(n=10)  # minimal data frame
+        data.split_data(data_frame=df)  # sets test and train data
+        knn = KNN(5, data)
+        print(knn.get_euclidean_distance(df.iloc[1], df.iloc[2]))
+
 
 
 if __name__ == '__main__':

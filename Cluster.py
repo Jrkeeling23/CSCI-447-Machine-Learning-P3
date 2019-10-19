@@ -1,8 +1,10 @@
+import operator
+
 class KNN:
     def __init__(self, k_val, data_instance):
         self.k = k_val
-        self.train_df = data_instance.train_data
-        self.test_df = data_instance.test_data
+        self.train_df = data_instance.train_df
+        self.test_df = data_instance.test_df
         self.data_instance = data_instance
 
     @staticmethod
@@ -17,7 +19,11 @@ class KNN:
         """
         temp_add = 0  # (x2-x1)^2 + (y2 - y1)^2 ; addition part
         for feature_col in range(len(query_point)):
-            if type(query_point[feature_col]) is float or type(query_point[feature_col]) is int:
+            # print(isinstance(query_point[feature_col], float))
+            if isinstance(query_point[feature_col], float) or isinstance(query_point[feature_col], int):
+                # print(query_point[feature_col])
+                # print(comparison_point[feature_col])
+                # print("\n")
                 temp_sub = (query_point[feature_col] - comparison_point[feature_col]) ** 2  # x2 -x1 and square
                 temp_add += temp_sub  # continuously add until square root
 
@@ -71,16 +77,22 @@ class KNN:
         return v_distance_list, v_label_list
 
     def perform_KNN(self, k_val, query_point, train_data):
-        distances = self.get_euclidean_distance_dict(query_point, train_data)
+        distances = {}
+        for index, row in train_data.iterrows():
+            # print(row)
+            distances[index] = self.get_euclidean_distance(query_point, row)
         nearest_neighbors_distances, nearest_neighbors = self.get_k_closest(distances, k_val, train_data, self.data_instance.label_col)
         seen = []
         for index in nearest_neighbors:
+            # print (index)
             if index not in seen:
                 seen.append(index)
         see_count = {}
-        for i in seen:
-            see_count[nearest_neighbors.count(i)]=0
+        for i in range(len(seen)):
+            see_count[seen[i]] = 0
         for j in nearest_neighbors:
-            see_count[j]+=1
-        return max(see_count)[0]
+            temp = see_count[j]
+            temp += 1
+            see_count[j] = temp
+        return max(see_count, key=lambda k: see_count[k])
 
