@@ -4,7 +4,7 @@
     <list default="true" id="a2995b01-283e-4567-a52a-d7c0ba855b5b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Cluster.py" beforeDir="false" afterPath="$PROJECT_DIR$/Cluster.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Testing.py" beforeDir="false" afterPath="$PROJECT_DIR$/Testing.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -18,8 +18,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Cluster.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="72" column="17" selection-start-line="72" selection-start-column="17" selection-end-line="72" selection-end-column="17" />
+            <state relative-caret-position="248">
+              <caret line="119" column="24" lean-forward="true" selection-start-line="119" selection-start-column="24" selection-end-line="119" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -27,8 +27,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Testing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="367">
-              <caret line="68" column="63" selection-start-line="68" selection-start-column="63" selection-end-line="68" selection-end-column="63" />
+            <state relative-caret-position="316">
+              <caret line="72" column="32" selection-start-line="72" selection-start-column="32" selection-end-line="72" selection-end-column="32" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -39,8 +39,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1122">
-              <caret line="67" column="14" selection-start-line="67" selection-start-column="14" selection-end-line="67" selection-end-column="14" />
+            <state relative-caret-position="646">
+              <caret line="39" selection-start-line="39" selection-end-line="39" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -51,8 +51,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
+            <state relative-caret-position="374">
+              <caret line="22" selection-start-line="22" selection-end-line="22" />
               <folding>
                 <element signature="e#0#21#0" expanded="true" />
               </folding>
@@ -63,7 +63,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PAM.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2312">
+            <state relative-caret-position="841">
               <caret line="136" column="12" selection-start-line="136" selection-start-column="12" selection-end-line="136" selection-end-column="12" />
             </state>
           </provider>
@@ -81,6 +81,7 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
+      <find>in_data</find>
       <find>label_col</find>
     </findStrings>
   </component>
@@ -91,6 +92,7 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/Main.py" />
+        <option value="$PROJECT_DIR$/Data.py" />
         <option value="$PROJECT_DIR$/Testing.py" />
         <option value="$PROJECT_DIR$/Cluster.py" />
       </list>
@@ -149,7 +151,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.Unittests for Testing.MyTestCase.test_KNN">
+  <component name="RunManager" selected="Python tests.Unittests for Testing.MyTestCase.test_edit">
     <configuration name="Unittests for Testing.MyTestCase.test_KNN" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="CSCI-447-Machine-Learning-P3" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -192,6 +194,20 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
+    <configuration name="Unittests for Testing.MyTestCase.test_edit" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <module name="CSCI-447-Machine-Learning-P3" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;Testing.MyTestCase.test_edit&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
     <configuration name="Unittests for Testing.MyTestCase.test_euclidean" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="CSCI-447-Machine-Learning-P3" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -208,6 +224,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_edit" />
         <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_KNN" />
         <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_euclidean" />
         <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_PAM_super" />
@@ -229,35 +246,35 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Unittests_for_Testing_MyTestCase_test_KNN - 2019.10.18 at 20h 19m 39s.xml">
-      <configuration name="Unittests for Testing.MyTestCase.test_KNN" configurationId="tests" />
+    <history-entry file="Unittests_for_Testing_MyTestCase_test_edit - 2019.10.20 at 13h 06m 41s.xml">
+      <configuration name="Unittests for Testing.MyTestCase.test_edit" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_Testing_MyTestCase_test_KNN - 2019.10.18 at 20h 20m 10s.xml">
-      <configuration name="Unittests for Testing.MyTestCase.test_KNN" configurationId="tests" />
+    <history-entry file="Unittests_for_Testing_MyTestCase_test_edit - 2019.10.20 at 13h 07m 35s.xml">
+      <configuration name="Unittests for Testing.MyTestCase.test_edit" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_Testing_MyTestCase_test_KNN - 2019.10.18 at 20h 20m 54s.xml">
-      <configuration name="Unittests for Testing.MyTestCase.test_KNN" configurationId="tests" />
+    <history-entry file="Unittests_for_Testing_MyTestCase_test_edit - 2019.10.20 at 13h 08m 21s.xml">
+      <configuration name="Unittests for Testing.MyTestCase.test_edit" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_Testing_MyTestCase_test_KNN - 2019.10.18 at 20h 21m 53s.xml">
-      <configuration name="Unittests for Testing.MyTestCase.test_KNN" configurationId="tests" />
+    <history-entry file="Unittests_for_Testing_MyTestCase_test_edit - 2019.10.20 at 13h 12m 09s.xml">
+      <configuration name="Unittests for Testing.MyTestCase.test_edit" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_Testing_MyTestCase_test_KNN - 2019.10.18 at 20h 21m 59s.xml">
-      <configuration name="Unittests for Testing.MyTestCase.test_KNN" configurationId="tests" />
+    <history-entry file="Unittests_for_Testing_MyTestCase_test_edit - 2019.10.20 at 13h 15m 55s.xml">
+      <configuration name="Unittests for Testing.MyTestCase.test_edit" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_Testing_MyTestCase_test_KNN - 2019.10.18 at 20h 22m 04s.xml">
-      <configuration name="Unittests for Testing.MyTestCase.test_KNN" configurationId="tests" />
+    <history-entry file="Unittests_for_Testing_MyTestCase_test_edit - 2019.10.20 at 13h 16m 10s.xml">
+      <configuration name="Unittests for Testing.MyTestCase.test_edit" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_Testing_MyTestCase_test_KNN - 2019.10.18 at 20h 22m 09s.xml">
-      <configuration name="Unittests for Testing.MyTestCase.test_KNN" configurationId="tests" />
+    <history-entry file="Unittests_for_Testing_MyTestCase_test_edit - 2019.10.20 at 13h 16m 35s.xml">
+      <configuration name="Unittests for Testing.MyTestCase.test_edit" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_Testing_MyTestCase_test_KNN - 2019.10.18 at 20h 22m 44s.xml">
-      <configuration name="Unittests for Testing.MyTestCase.test_KNN" configurationId="tests" />
+    <history-entry file="Unittests_for_Testing_MyTestCase_test_edit - 2019.10.20 at 13h 16m 44s.xml">
+      <configuration name="Unittests for Testing.MyTestCase.test_edit" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_Testing_MyTestCase_test_KNN - 2019.10.18 at 20h 23m 04s.xml">
-      <configuration name="Unittests for Testing.MyTestCase.test_KNN" configurationId="tests" />
+    <history-entry file="Unittests_for_Testing_MyTestCase_test_edit - 2019.10.20 at 13h 16m 53s.xml">
+      <configuration name="Unittests for Testing.MyTestCase.test_edit" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_Testing_MyTestCase_test_KNN - 2019.10.18 at 20h 23m 47s.xml">
-      <configuration name="Unittests for Testing.MyTestCase.test_KNN" configurationId="tests" />
+    <history-entry file="Unittests_for_Testing_MyTestCase_test_edit - 2019.10.20 at 13h 17m 00s.xml">
+      <configuration name="Unittests for Testing.MyTestCase.test_edit" configurationId="tests" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
@@ -317,19 +334,11 @@
     </option>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../CSCI-447-Machine-Learning-P2/KNN.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../CSCI-447-Machine-Learning-P2/KNN.py" />
     <entry file="file://$PROJECT_DIR$/Data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1122">
-          <caret line="67" column="14" selection-start-line="67" selection-start-column="14" selection-end-line="67" selection-end-column="14" />
+        <state relative-caret-position="646">
+          <caret line="39" selection-start-line="39" selection-end-line="39" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
@@ -338,8 +347,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
+        <state relative-caret-position="374">
+          <caret line="22" selection-start-line="22" selection-end-line="22" />
           <folding>
             <element signature="e#0#21#0" expanded="true" />
           </folding>
@@ -348,15 +357,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/PAM.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2312">
+        <state relative-caret-position="841">
           <caret line="136" column="12" selection-start-line="136" selection-start-column="12" selection-end-line="136" selection-end-column="12" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Testing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="367">
-          <caret line="68" column="63" selection-start-line="68" selection-start-column="63" selection-end-line="68" selection-end-column="63" />
+        <state relative-caret-position="316">
+          <caret line="72" column="32" selection-start-line="72" selection-start-column="32" selection-end-line="72" selection-end-column="32" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
@@ -365,8 +374,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Cluster.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="72" column="17" selection-start-line="72" selection-start-column="17" selection-end-line="72" selection-end-column="17" />
+        <state relative-caret-position="248">
+          <caret line="119" column="24" lean-forward="true" selection-start-line="119" selection-start-column="24" selection-end-line="119" selection-end-column="24" />
         </state>
       </provider>
     </entry>

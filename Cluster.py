@@ -96,3 +96,56 @@ class KNN:
             see_count[j] = temp
         return max(see_count, key=lambda k: see_count[k])
 
+    def edit_data(self, data_set, k_value, validation, label_col):
+        """
+        Edit values for edit_knn by classifying x_initial; if wrong, remove x_initial. (option1)
+        OR... if correct remove (option 2)
+        :param data_set: the training data that will be edited
+        :param k_value: the number of neighbors being checked against
+        :param name: name of the data_set
+        :param validation: the test data, so that there is a measurement of performance to know when to stop
+        :return: Edited data_set back to KNN
+        """
+        # TODO: edit data according to pseudo code from class on 9/23
+        # prev_set = data_set
+        data_set_perform = 0  # for getting an initial measure on performance
+        print(data_set.shape)
+        print(validation.shape)
+        print(data_set)
+        print(validation)
+        for index, row in validation.iterrows():  # loops through the validation set and if it matches, then it adds one to the score
+            knn = self.perform_KNN(k_value, row, data_set)
+            # print(knn)
+            # print(row[label_col])
+            if knn == row[label_col]:
+                data_set_perform += 1
+                # print(data_set_perform)
+        # data_set_perform = 20
+        prev_set_perform = data_set_perform  # for allowing the loop to occur
+        reduce_data = data_set
+        while data_set_perform <= prev_set_perform:  # doesn't break until the performance drops below the previous set
+            # print(data_set.shape)
+            print(prev_set_perform)
+            print(str(data_set_perform) + "\n\n")
+
+            prev_set_perform = data_set_perform  # sets the previous set and previous set performance
+            prev_set = reduce_data
+            list_to_remove = []  # initializes the list of items that will be removed
+            for index, row in reduce_data.iterrows():  # does knn on itself
+                knn_value = self.perform_KNN(k_value, row, reduce_data)
+                actual_value = row[label_col]
+                if knn_value != actual_value:  # comparing the knn done on itself to it's actual value.  If it doesn't match, it will be removed
+                    list_to_remove.append(index)
+            reduce_data = reduce_data.drop(list_to_remove)  # removes the data points that don't match
+            data_set_perform = 0  # resets the performance measure
+            print(list_to_remove)
+            for index, row in validation.iterrows():  # gets the performance measure
+                knn = self.perform_KNN(k_value, row, reduce_data)
+                if knn == row[label_col]:
+                    data_set_perform += 1
+            if len(list_to_remove) is 0:
+                break
+        print(data_set.shape)
+        print(prev_set.shape)
+        return prev_set  # returns the set with the best performance
+
