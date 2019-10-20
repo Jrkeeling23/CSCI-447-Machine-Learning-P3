@@ -95,4 +95,3 @@ class KNN:
             temp += 1
             see_count[j] = temp
         return max(see_count, key=lambda k: see_count[k])
-

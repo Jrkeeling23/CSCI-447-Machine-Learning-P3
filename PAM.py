@@ -44,6 +44,7 @@ class PAM(KNN):
             cost = list_of_tuples[0][1]  # distance from closest medoid
             med.cost += cost  # append to medoid
             med.encompasses.append(index)  # append to the closest medoid point
+            Medoid.static_cost += cost
 
     @staticmethod
     def order_by_dict_values(dictionary):
@@ -66,7 +67,7 @@ class PAM(KNN):
             print("\nCurrent Medoid being updated: ", medoid_list[med_index].index)
             for index, row in df.iterrows():  # iterate through data
                 # if index in Medoid.static_medoid_indexes or index in medoid_list[med_index].recently_used:
-                if index in Medoid.static_medoid_indexes:
+                if index in Medoid.static_medoid_indexes or index in index in med_index:
                     continue  # do not use a medoid
                 test_medoid = Medoid(row, index)  # testing_medoid
                 temp_medoid_list = medoid_list.copy()  # copy actual medoid_list
@@ -124,9 +125,19 @@ class PAM(KNN):
         else:
             return False
 
+    def calcualte_distortions(self, medoid_list):
+        # TODO: above, change the static indexes to test indexes (be sure to save the state of the initial indexes).
+        #  Assign initial_medoid to a cluster. Then, iterate through each encompassed list element and get the cost
+        #  excluding the indexes in test indexes to get distortion'. Finally compare the distortions. Choose
+        #  accordingly. If swapped... use variable to keep tab on which medoid it belonged to, and remove it. Assign
+        #  the swapped out medoid to a medoid. And repeat.
+        for medoid in medoid_list:
+            pass
+
 
 class Medoid:
     static_medoid_indexes = []  # eases checking if data in medoids
+    static_cost = 0
 
     def __init__(self, row, index):
         """
