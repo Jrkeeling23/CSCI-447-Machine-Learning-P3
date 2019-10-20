@@ -123,10 +123,8 @@ class KNN:
         # data_set_perform = 20
         prev_set_perform = data_set_perform  # for allowing the loop to occur
         reduce_data = data_set
-        while data_set_perform <= prev_set_perform:  # doesn't break until the performance drops below the previous set
+        while data_set_perform >= prev_set_perform:  # doesn't break until the performance drops below the previous set
             # print(data_set.shape)
-            print(prev_set_perform)
-            print(str(data_set_perform) + "\n\n")
 
             prev_set_perform = data_set_perform  # sets the previous set and previous set performance
             prev_set = reduce_data
@@ -145,6 +143,8 @@ class KNN:
                     data_set_perform += 1
             if len(list_to_remove) is 0:
                 break
+        print(prev_set_perform)
+        print(str(data_set_perform) + "\n\n")
         print(data_set.shape)
         print(prev_set.shape)
         return prev_set  # returns the set with the best performance
