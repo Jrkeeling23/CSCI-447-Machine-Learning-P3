@@ -46,8 +46,10 @@ class MyTestCase(unittest.TestCase):
 
     def test_assigning_to_medoids(self):
         data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
-        df = data.df.sample(n=125)  # minimal data frame
+        df = data.df.sample(n=100)  # minimal data frame
+        self.assertEqual(df.shape[0], 100)
         data.split_data(data_frame=df)  # sets test and train data
+        self.assertEqual((data.train_df.shape[0]+data.test_df.shape[0]), 100)
         pam = PAM(k_val=3, data_instance=data)  # create PAM instance to check super
         pam.current_medoids = pam.assign_random_medoids(pam.train_df, pam.k)
         size = len(pam.current_medoids)
@@ -55,7 +57,7 @@ class MyTestCase(unittest.TestCase):
         pam.assign_data_to_medoids(pam.train_df, pam.current_medoids)  # set medoids list equal to return value
         size = 0  # reset size variable
         for medoid in pam.current_medoids:
-            size += len(medoid.encompasses)  # get number of data points assigned to a medoid
+            size += medoid.encompasses.shape[0]  # get number of data points assigned to a medoid
         self.assertEqual(size, pam.train_df.shape[0]-3)  # make sure all data_points are assigned to a medoid
         bool_type = pam.compare_medoid_costs(pam.current_medoids[0], pam.current_medoids[1])
         new_med_list = pam.better_fit_medoids(pam.train_df, pam.current_medoids)
@@ -65,7 +67,8 @@ class MyTestCase(unittest.TestCase):
     def test_add_row_to_df(self):
         data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
         df = data.df.sample(n=10)  # minimal data frame
-        df_copy = pd.DataFrame().reindex_like(df)
+        df_copy = pd.DataFrame(columns=df.columns, index=None)
+        self.assertNotEqual(df.shape[0], df_copy.shape[0])
         for index, row in df.iterrows():
             df_copy.loc[index] = row
         self.assertEqual(df.shape[0], df_copy.shape[0])
