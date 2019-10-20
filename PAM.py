@@ -1,5 +1,5 @@
 from Cluster import KNN
-
+import pandas as pd
 
 class PAM(KNN):
     """
@@ -43,7 +43,7 @@ class PAM(KNN):
             med = list_of_tuples[0][0]  # closest medoid
             cost = list_of_tuples[0][1]  # distance from closest medoid
             med.cost += cost  # append to medoid
-            med.encompasses.append(index)  # append to the closest medoid point
+            med.encompasses.append(row)  # append to the closest medoid point
             Medoid.static_cost += cost
 
     @staticmethod
@@ -125,12 +125,13 @@ class PAM(KNN):
         else:
             return False
 
-    def calcualte_distortions(self, medoid_list):
+    def calcualte_distortions(self, medoid_list, initial_medoid, test_medoid):
         # TODO: above, change the static indexes to test indexes (be sure to save the state of the initial indexes).
         #  Assign initial_medoid to a cluster. Then, iterate through each encompassed list element and get the cost
         #  excluding the indexes in test indexes to get distortion'. Finally compare the distortions. Choose
         #  accordingly. If swapped... use variable to keep tab on which medoid it belonged to, and remove it. Assign
         #  the swapped out medoid to a medoid. And repeat.
+        pd.concat([initial_medoid.row, test_medoid.row], axis=1)
         for medoid in medoid_list:
             pass
 
@@ -147,7 +148,7 @@ class Medoid:
         """
         self.row = row
         # self.encompasses = {}  # dictionary to store data of medoid's encompassed data points.
-        self.encompasses = []
+        self.encompasses = pd.DataFrame()
         self.index = index  # index of data frame
         self.cost = 0  # individual medoid cost
         self.recently_used = []  # list of test_medoids to potentially

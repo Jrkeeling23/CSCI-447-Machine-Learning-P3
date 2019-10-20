@@ -62,6 +62,13 @@ class MyTestCase(unittest.TestCase):
         self.assertIsInstance(bool_type, bool)  # shows whether it swapped or not
         self.assertNotEqual(new_med_list, pam.current_medoids)
 
+    def test_add_row_to_df(self):
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
+        df = data.df.sample(n=10)  # minimal data frame
+        df_copy = pd.DataFrame().reindex_like(df)
+        for index, row in df.iterrows():
+            df_copy.loc[index] = row
+        self.assertEqual(df.shape[0], df_copy.shape[0])
 
     def test_KNN(self):
         """
