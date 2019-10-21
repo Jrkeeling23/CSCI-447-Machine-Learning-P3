@@ -46,7 +46,6 @@ class PAM(KNN):
             med.cost += cost  # append to medoid
             med.encompasses.loc[index] = row  # append to the closest medoid point
             Medoid.static_cost += cost
-        print(med.encompasses.shape[0] for med in medoid_list)
 
     @staticmethod
     def order_by_dict_values(dictionary):
@@ -76,7 +75,7 @@ class PAM(KNN):
                 test_medoid = Medoid(row, index, test_encompass)  # testing_medoid
                 temp_medoid_list = medoid_list.copy()  # copy actual medoid_list
                 temp_medoid_list[med_index] = test_medoid  # replace actual medoid from temp list with testing medoid
-                Medoid.resets(temp_medoid_list)
+                Medoid.resets(temp_medoid_list, df)
                 self.assign_data_to_medoids(df, temp_medoid_list)
                 swap_bool = self.compare_medoid_costs(medoid_list[med_index], test_medoid)
                 if swap_bool:
@@ -113,6 +112,58 @@ class PAM(KNN):
                 break  # no more changes ands the loop
         return medoid_list
 
+    def perform_pam(self, df, medoid_list):
+        """
+        Updates the medoids to a better fit medoid if need be!
+        :param df: data frame to use
+        :param medoid_list: list of medoids to use
+        :return: Medoid list, so that PAM instance can update it for training.
+        """
+        first_indexes = Medoid.static_medoid_indexes.copy()
+        print(
+            "__________________________________________________\n__________ Begin Finding Better Medoids "
+            "__________\n__________________________________________________\n")
+        print("Initial Medoid Indexes: ", Medoid.static_medoid_indexes)
+
+        while True:
+            initial_list = Medoid.static_medoid_indexes
+            changed_list, changed_static_list = self.compare_medoids(medoid_list.copy(), df)
+            if changed_list != medoid_list:
+                medoid_list = changed_list
+                initial_list = changed_static_list
+                print("\nInitial Medoid list: ", initial_list, "\nReturned Medoid List: ", Medoid.static_medoid_indexes)
+                print("\n---------- Continue Finding Better Medoids ----------")
+                self.assign_data_to_medoids(df, medoid_list)
+                continue
+            else:
+                break
+            pass
+
+    def compare_medoids(self, medoid_list, df):
+        temp = Medoid.static_medoid_indexes.copy()
+        temp_medoid_list = medoid_list
+        for med_index in range(len(temp_medoid_list)):
+
+            initial_medoid = medoid_list[med_index]
+            for index, row in df.iterrows():
+                test_medoid = Medoid(row, index, initial_medoid.encompasses)
+                test_medoid_list = medoid_list.copy()  # copy actual medoid_list
+                test_medoid_list[med_index] = test_medoid  # replace actual medoid from temp list with testing medoid
+                test_medoid.cost += self.distortion_from_encompassed(test_medoid)
+                swap_bool = self.compare_medoid_costs(initial_medoid, test_medoid)
+                if not swap_bool:
+                    continue
+                initial_medoid = test_medoid
+                temp_medoid_list = test_medoid_list
+                temp[med_index] = test_medoid.index
+        return temp_medoid_list, temp
+
+    def distortion_from_encompassed(self, test_medoid):
+        distortion = 0
+        for index, query in test_medoid.encompasses.iterrows():
+            distortion += self.get_euclidean_distance(query, test_medoid.row)
+        return distortion
+
     @staticmethod
     def compare_medoid_costs(actual, test):
         """
@@ -129,15 +180,13 @@ class PAM(KNN):
         else:
             return False
 
-    def calcualte_distortions(self, medoid_list, initial_medoid, test_medoid):
+    def calcualte_distortions(self, medoid, medoid_list):
         # TODO: above, change the static indexes to test indexes (be sure to save the state of the initial indexes).
         #  Assign initial_medoid to a cluster. Then, iterate through each encompassed list element and get the cost
         #  excluding the indexes in test indexes to get distortion'. Finally compare the distortions. Choose
         #  accordingly. If swapped... use variable to keep tab on which medoid it belonged to, and remove it. Assign
         #  the swapped out medoid to a medoid. And repeat.
-        pd.concat([initial_medoid.row, test_medoid.row], axis=1)
-        for medoid in medoid_list:
-            pass
+        pass
 
 
 class Medoid:
@@ -165,7 +214,7 @@ class Medoid:
         return self.encompasses
 
     @staticmethod
-    def resets(medoid_list):
+    def resets(medoid_list, df):
         # TODO Make sure cost is actually being changed for medoids (since static) Use function below if need be
         """
         reset the costs when recalculating the cost of medoids
@@ -173,7 +222,7 @@ class Medoid:
         """
         for medoid in medoid_list:
             medoid.cost = 0
-            medoid.encompasses = pd.DataFrame(columns=medoid.encompasses.columns, index=None)
+            medoid.encompasses = pd.DataFrame(columns=df.columns, index=None)
 
     def reset_cost(self):
         self.cost = 0

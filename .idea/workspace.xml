@@ -47,7 +47,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.Unittests for Testing.MyTestCase.test_assigning_to_medoids">
+  <component name="RunManager" selected="Python tests.Unittests for Testing.MyTestCase.test_add_row_to_df">
     <configuration name="Unittests for Testing.MyTestCase.test_KNN" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="CSCI-447-Machine-Learning-P3" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -59,20 +59,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;Testing.MyTestCase.test_KNN&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Unittests for Testing.MyTestCase.test_PAM_super" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
-      <module name="CSCI-447-Machine-Learning-P3" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;Testing.MyTestCase.test_PAM_super&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -118,13 +104,27 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
+    <configuration name="Unittests for Testing.MyTestCase.test_yield" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <module name="CSCI-447-Machine-Learning-P3" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;Testing.MyTestCase.test_yield&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_assigning_to_medoids" />
         <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_add_row_to_df" />
+        <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_assigning_to_medoids" />
+        <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_yield" />
         <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_KNN" />
         <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_euclidean" />
-        <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_PAM_super" />
       </list>
     </recent_temporary>
   </component>
