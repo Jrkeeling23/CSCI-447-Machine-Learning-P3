@@ -18,3 +18,6 @@ def load_data():
 class Main:
     def __init__(self):
         self.data_list = load_data()
+
+    # def perform_KNN(self, k_val, query_point, train_data):
+
