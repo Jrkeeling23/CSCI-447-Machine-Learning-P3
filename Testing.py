@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 from Cluster import KNN
 from PAM import Medoid
+import queue
 
 
 class MyTestCase(unittest.TestCase):
@@ -61,9 +62,9 @@ class MyTestCase(unittest.TestCase):
             size += medoid.encompasses.shape[0]  # get number of data points assigned to a medoid
         self.assertEqual(size, pam.train_df.shape[0] - 3)  # make sure all data_points are assigned to a medoid
         bool_type = pam.compare_medoid_costs(pam.current_medoids[0], pam.current_medoids[1])
-        new_med_list = pam.perform_pam(pam.train_df, pam.current_medoids)
+        # new_med_list = pam.perform_pam(pam.train_df, pam.current_medoids)
         self.assertIsInstance(bool_type, bool)  # shows whether it swapped or not
-        self.assertNotEqual(new_med_list, pam.current_medoids)
+        # self.assertNotEqual(new_med_list, pam.current_medoids)
 
     def test_medoid_swapping(self):
         data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
@@ -77,19 +78,25 @@ class MyTestCase(unittest.TestCase):
             "__________\n__________________________________________________\n")
         print("Initial Medoid Indexes: ", pam.current_medoid_indexes)
 
+        checker = False
+        cache = []
         while True:
+            if checker:
+                cache[1] = pam.current_medoid_indexes
+            else:
+                cache[0] = pam.current_medoid_indexes
+
             pam.assign_data_to_medoids(pam.train_df, pam.current_medoids)  # do this every time.
             changed_list, indexes = pam.compare_medoids(pam.current_medoids.copy(), pam.train_df)
-            if changed_list != pam.current_medoids:
+            if changed_list != pam.current_medoids or popped_item != pam.current_medoid_indexes or popped_item != indexes:
                 print("\nInitial Medoid list: ", pam.current_medoid_indexes, "\nReturned Medoid List: ",
-                      indexes)
+                      indexes, " popped item: ", popped_item)
                 pam.current_medoids = changed_list
                 pam.current_medoid_indexes = indexes
                 print("\n---------- Continue Finding Better Medoids ----------")
                 continue
             else:
                 break
-
 
     def test_KNN(self):
         """
