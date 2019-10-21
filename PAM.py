@@ -11,6 +11,7 @@ class PAM(KNN):
     def __init__(self, k_val, data_instance):
         super().__init__(k_val, data_instance)
         self.current_medoids = pd.DataFrame().reindex_like(data_instance.train_df)
+        self.current_medoid_indexes =[]
 
     @staticmethod
     def assign_random_medoids(df, k):
@@ -21,11 +22,12 @@ class PAM(KNN):
         :return: k number of medoids
         """
         medoid_list = []
+        medoid_index = []
         rand_med = df.sample(n=k)
         for index, row in rand_med.iterrows():
-            Medoid.static_medoid_indexes.append(index)  # add to static variable; eases checking if data in medoids
+            medoid_index.append(index)  # add to static variable; eases checking if data in medoids
             medoid_list.append(Medoid(row, index, pd.DataFrame(columns=df.columns, index=None)))
-        return medoid_list
+        return medoid_list, medoid_index
 
     def assign_data_to_medoids(self, df, medoid_list):
         """
@@ -34,8 +36,9 @@ class PAM(KNN):
         :param medoid_list: list of medoids
         :return: None
         """
+        Medoid.resets(medoid_list, df)
         for index, row in df.iterrows():  # iterate through all the data
-            if index in Medoid.static_medoid_indexes:  # do not assign a medoid to a medoid
+            if index in self.current_medoid_indexes:  # do not assign a medoid to a medoid
                 continue  # next index if a medoid
             temp_distance_dict = {}  # contains the distances of a data point to all the medoids
             for medoid in medoid_list:  # iterate through all the medoids (For one data point)
@@ -45,7 +48,6 @@ class PAM(KNN):
             cost = list_of_tuples[0][1]  # distance from closest medoid
             med.cost += cost  # append to medoid
             med.encompasses.loc[index] = row  # append to the closest medoid point
-            Medoid.static_cost += cost
 
     @staticmethod
     def order_by_dict_values(dictionary):
@@ -57,94 +59,69 @@ class PAM(KNN):
         """
         return sorted(dictionary.items(), key=lambda item: item[1])
 
-    def test_new_medoid(self, df, medoid_list):
-        """
-        Test ALL non-medoids as a replacement for a current medoid
-        :param df: data frame to use
-        :param medoid_list: medoids
-        :return:
-        """
-        for med_index in range(len(medoid_list)):  # iterate through indexes of medoid list
-            print("\nCurrent Medoid being updated: ", medoid_list[med_index].index)
-            initial_medoid = medoid_list[med_index]
-            test_encompass = initial_medoid.encompasses.copy
-            for index, row in df.iterrows():  # iterate through data
-                # if index in Medoid.static_medoid_indexes or index in medoid_list[med_index].recently_used:
-                if index in Medoid.static_medoid_indexes:
-                    continue  # do not use a medoid
-                test_medoid = Medoid(row, index, test_encompass)  # testing_medoid
-                temp_medoid_list = medoid_list.copy()  # copy actual medoid_list
-                temp_medoid_list[med_index] = test_medoid  # replace actual medoid from temp list with testing medoid
-                Medoid.resets(temp_medoid_list, df)
-                self.assign_data_to_medoids(df, temp_medoid_list)
-                swap_bool = self.compare_medoid_costs(medoid_list[med_index], test_medoid)
-                if swap_bool:
-                    Medoid.static_medoid_indexes[med_index] = test_medoid.index
-                    medoid_list = temp_medoid_list  # swap the lists
-                else:
-                    continue
-        return medoid_list
+    # def test_new_medoid(self, df, medoid_list):
+    #     """
+    #     Test ALL non-medoids as a replacement for a current medoid
+    #     :param df: data frame to use
+    #     :param medoid_list: medoids
+    #     :return:
+    #     """
+    #     for med_index in range(len(medoid_list)):  # iterate through indexes of medoid list
+    #         print("\nCurrent Medoid being updated: ", medoid_list[med_index].index)
+    #         initial_medoid = medoid_list[med_index]
+    #         test_encompass = initial_medoid.encompasses.copy
+    #         for index, row in df.iterrows():  # iterate through data
+    #             # if index in Medoid.static_medoid_indexes or index in medoid_list[med_index].recently_used:
+    #             if index in Medoid.static_medoid_indexes:
+    #                 continue  # do not use a medoid
+    #             test_medoid = Medoid(row, index, test_encompass)  # testing_medoid
+    #             temp_medoid_list = medoid_list.copy()  # copy actual medoid_list
+    #             temp_medoid_list[med_index] = test_medoid  # replace actual medoid from temp list with testing medoid
+    #             Medoid.resets(temp_medoid_list, df)
+    #             self.assign_data_to_medoids(df, temp_medoid_list)
+    #             swap_bool = self.compare_medoid_costs(medoid_list[med_index], test_medoid)
+    #             if swap_bool:
+    #                 Medoid.static_medoid_indexes[med_index] = test_medoid.index
+    #                 medoid_list = temp_medoid_list  # swap the lists
+    #             else:
+    #                 continue
+    #     return medoid_list
 
-    def better_fit_medoids(self, df, medoid_list):
-        """
-        Updates the medoids to a better fit medoid if need be!
-        :param df: data frame to use
-        :param medoid_list: list of medoids to use
-        :return: Medoid list, so that PAM instance can update it for training.
-        """
-        first_indexes = Medoid.static_medoid_indexes.copy()
-        print(
-            "__________________________________________________\n__________ Begin Finding Better Medoids "
-            "__________\n__________________________________________________\n")
-        print("Initial Medoid Indexes: ", Medoid.static_medoid_indexes)
+    # def better_fit_medoids(self, df, medoid_list):
+    #     """
+    #     Updates the medoids to a better fit medoid if need be!
+    #     :param df: data frame to use
+    #     :param medoid_list: list of medoids to use
+    #     :return: Medoid list, so that PAM instance can update it for training.
+    #     """
+    #     first_indexes = Medoid.static_medoid_indexes.copy()
+    #     print(
+    #         "__________________________________________________\n__________ Begin Finding Better Medoids "
+    #         "__________\n__________________________________________________\n")
+    #     print("Initial Medoid Indexes: ", Medoid.static_medoid_indexes)
+    #
+    #     while True:
+    #         initial_list = Medoid.static_medoid_indexes.copy()  # printing purposes
+    #         change_in_list = self.test_new_medoid(df, medoid_list.copy())  # used to compare
+    #         if medoid_list != change_in_list:  # continue finding better fits iff a better medoid was found
+    #             print("\nInitial Medoid list: ", initial_list, "\nReturned Medoid List: ", Medoid.static_medoid_indexes)
+    #             print("\n---------- Continue Finding Better Medoids ----------")
+    #             medoid_list = change_in_list  # must update list
+    #             continue
+    #         else:
+    #             print("\nNo More Changes!\nFinal Medoid Indexes: ", Medoid.static_medoid_indexes, " Compared to ",
+    #                   first_indexes)
+    #             break  # no more changes ands the loop
+    #     return medoid_list
 
-        while True:
-            initial_list = Medoid.static_medoid_indexes.copy()  # printing purposes
-            change_in_list = self.test_new_medoid(df, medoid_list.copy())  # used to compare
-            if medoid_list != change_in_list:  # continue finding better fits iff a better medoid was found
-                print("\nInitial Medoid list: ", initial_list, "\nReturned Medoid List: ", Medoid.static_medoid_indexes)
-                print("\n---------- Continue Finding Better Medoids ----------")
-                medoid_list = change_in_list  # must update list
-                continue
-            else:
-                print("\nNo More Changes!\nFinal Medoid Indexes: ", Medoid.static_medoid_indexes, " Compared to ",
-                      first_indexes)
-                break  # no more changes ands the loop
-        return medoid_list
-
-    def perform_pam(self, df, medoid_list):
-        """
-        Updates the medoids to a better fit medoid if need be!
-        :param df: data frame to use
-        :param medoid_list: list of medoids to use
-        :return: Medoid list, so that PAM instance can update it for training.
-        """
-        first_indexes = Medoid.static_medoid_indexes.copy()
-        print(
-            "__________________________________________________\n__________ Begin Finding Better Medoids "
-            "__________\n__________________________________________________\n")
-        print("Initial Medoid Indexes: ", Medoid.static_medoid_indexes)
-
-        while True:
-            initial_list = Medoid.static_medoid_indexes
-            changed_list, changed_static_list = self.compare_medoids(medoid_list.copy(), df)
-            if changed_list != medoid_list:
-                medoid_list = changed_list
-                initial_list = changed_static_list
-                print("\nInitial Medoid list: ", initial_list, "\nReturned Medoid List: ", Medoid.static_medoid_indexes)
-                print("\n---------- Continue Finding Better Medoids ----------")
-                self.assign_data_to_medoids(df, medoid_list)
-                continue
-            else:
-                break
-            pass
 
     def compare_medoids(self, medoid_list, df):
-        temp = Medoid.static_medoid_indexes.copy()
         temp_medoid_list = medoid_list
+        temp_indexes = self.current_medoid_indexes.copy()
         for med_index in range(len(temp_medoid_list)):
 
             initial_medoid = medoid_list[med_index]
+            print("Current Medoid being Swapped Out: " , initial_medoid.index)
             for index, row in df.iterrows():
                 test_medoid = Medoid(row, index, initial_medoid.encompasses)
                 test_medoid_list = medoid_list.copy()  # copy actual medoid_list
@@ -155,8 +132,9 @@ class PAM(KNN):
                     continue
                 initial_medoid = test_medoid
                 temp_medoid_list = test_medoid_list
-                temp[med_index] = test_medoid.index
-        return temp_medoid_list, temp
+                temp_indexes[med_index] = initial_medoid.index
+
+        return temp_medoid_list, temp_indexes
 
     def distortion_from_encompassed(self, test_medoid):
         distortion = 0
@@ -190,8 +168,6 @@ class PAM(KNN):
 
 
 class Medoid:
-    static_medoid_indexes = []  # eases checking if data in medoids
-    static_cost = 0
 
     def __init__(self, row, index, encompasses):
         """

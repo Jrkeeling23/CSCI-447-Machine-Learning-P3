@@ -65,32 +65,31 @@ class MyTestCase(unittest.TestCase):
         self.assertIsInstance(bool_type, bool)  # shows whether it swapped or not
         self.assertNotEqual(new_med_list, pam.current_medoids)
 
-    def test_add_row_to_df(self):
+    def test_medoid_swapping(self):
         data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
         df = data.df.sample(n=100)  # minimal data frame
         data.split_data(data_frame=df)  # sets test and train data
         pam = PAM(k_val=3, data_instance=data)  # create PAM instance to check super
-        pam.current_medoids = pam.assign_random_medoids(pam.train_df, pam.k)
-        initial_list = Medoid.static_medoid_indexes.copy()
+        pam.current_medoids, pam.current_medoid_indexes = pam.assign_random_medoids(pam.train_df, pam.k)
+
         print(
             "__________________________________________________\n__________ Begin Finding Better Medoids "
             "__________\n__________________________________________________\n")
-        print("Initial Medoid Indexes: ", initial_list)
+        print("Initial Medoid Indexes: ", pam.current_medoid_indexes)
 
         while True:
-            pam.assign_data_to_medoids(pam.train_df,pam.current_medoids)
-
-            changed_list, changed_static_list = pam.compare_medoids(pam.current_medoids.copy(), pam.train_df)
+            pam.assign_data_to_medoids(pam.train_df, pam.current_medoids)  # do this every time.
+            changed_list, indexes = pam.compare_medoids(pam.current_medoids.copy(), pam.train_df)
             if changed_list != pam.current_medoids:
-
-                print("\nInitial Medoid list: ", Medoid.static_medoid_indexes, "\nReturned Medoid List: ", changed_static_list)
+                print("\nInitial Medoid list: ", pam.current_medoid_indexes, "\nReturned Medoid List: ",
+                      indexes)
                 pam.current_medoids = changed_list
-                initial_list = changed_static_list
+                pam.current_medoid_indexes = indexes
                 print("\n---------- Continue Finding Better Medoids ----------")
                 continue
             else:
                 break
-            pass
+
 
     def test_KNN(self):
         """
