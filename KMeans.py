@@ -4,21 +4,21 @@ import numpy as np
 import pandas as pd
 
 from Cluster import KNN
+from Data import CATEGORICAL_DICTIONARY, DataConverter
 
 
 class Kmeans(KNN):
 
 
-    def __init__(self, k_val, data_instance, random_len):
+    def __init__(self, k_val, data_instance):
         super().__init__(k_val, data_instance)
-        self.k_means_random_len = float(random_len)
-
+        self.converter = DataConverter()
     def k_means(self, data_set, k_val):  # Method for K-Means
         print("\n-----------------Starting K-Means Function-----------------")
         # centroid_points = self.create_initial_clusters(self.k_random_rows(data_set,
         #                                                                   k_val))  # Get random rows for centroid points then create the initial centroid point pd.DataFrames
         centroid_points = self.k_random_point(data_set, k_val)
-
+        # print(data.convert_data_to_original(data_set))
         while True:
             current_points = []  # A list of the current data points for a cluster
             previous_points = centroid_points  # Sets a previous value to check if K-means has converged
@@ -49,7 +49,6 @@ class Kmeans(KNN):
             print(pd.DataFrame(previous_points))
             print("\nUpdated Clusters:")
             print(pd.DataFrame(centroid_points))
-
             if centroid_points == previous_points:
                 print("\n----------------- K-Means has converged! -----------------")
                 break
@@ -66,7 +65,7 @@ class Kmeans(KNN):
                 current_point = []  # List for current random point in loop
 
                 for item in row:  # Loop through each item in the row
-                    current_point.append(random.uniform(0, self.k_means_random_len)) # radom uniform source: https://pynative.com/python-get-random-float-numbers/
+                    current_point.append(random.uniform(0, float(len(CATEGORICAL_DICTIONARY)))) # radom uniform source: https://pynative.com/python-get-random-float-numbers/
                 centroid_points.append(current_point)  # Appends the point to a list to be returned
 
         return centroid_points  # Returns a Series of centroid points
@@ -131,7 +130,7 @@ class Kmeans(KNN):
     def predict_centroids(self, centroids, data_set):  # Method to return closest cluster to test data
         print("\n----------------- Predicting Closes Cluster on Test Data -----------------\n")
 
-        for _, data in data_set[self.current_data_set].iterrows():  # Loops through the rows of the data set
+        for _, data in data_set[data_set].iterrows():  # Loops through the rows of the data set
             distance = None  # Initializes distance
             closest_centroid = None  # Keeps track of the current closes centroid cluster
             closest_centroid_euclidian_distance = None  # Keeps track of the closest euclidian distance.
