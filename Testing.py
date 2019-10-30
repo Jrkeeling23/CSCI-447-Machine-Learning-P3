@@ -75,7 +75,22 @@ class MyTestCase(unittest.TestCase):
         knn = KNN(5, data)
         knn.edit_data(data.train_df, 5, data.test_df, data.label_col)
 
+    def test_data_conversion(self):
+        data = Data('wine', pd.read_csv(r'data/wine.data', header=None), 8)
+        df = data.df.sample(n=50)
+        data.split_data(data_frame=df)
+        print(data.train_df)
+        df = data.convert_to_numerical(df)
+        data.convert_data_to_original(df)
 
+    def test_data_conversion_to_original(self):
+        data = Data('segmentation', pd.read_csv(r'data/segmentation.data', header=None), 8)
+        df = data.df.sample(n=50)
+        data.split_data(data_frame=df)
+        data.convert_data_to_original(df)
+
+    def test_data_coversion_type_match(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()
