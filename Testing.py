@@ -1,10 +1,11 @@
 import unittest
+
+from KMeans import Kmeans
 from PAM import PAM
 from Data import Data
 import pandas as pd
 import numpy as np
 from Cluster import KNN
-
 
 class MyTestCase(unittest.TestCase):
     def test_something(self):
@@ -88,6 +89,15 @@ class MyTestCase(unittest.TestCase):
         print(data.train_df)
         print(data.convert_data_to_original(data.train_df))
 
+    def test_k_means(self):
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
+        df = data.df.sample(n=10)  # minimal data frame
+        data.split_data(data_frame=df)  # sets test and train data
+        k_val = 5
+        knn = KNN(k_val, data)
+        nearest = knn.perform_KNN(k_val, df.iloc[1], data.train_df)
+        kmeans = Kmeans(k_val, data,len(data.categorical_dict))
+        kmeans.k_means(data.train_df, 5)
 
 if __name__ == '__main__':
     unittest.main()
