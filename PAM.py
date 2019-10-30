@@ -1,3 +1,5 @@
+import collections
+
 from Cluster import KNN
 import pandas as pd
 
@@ -11,7 +13,7 @@ class PAM(KNN):
     def __init__(self, k_val, data_instance):
         super().__init__(k_val, data_instance)
         self.current_medoids = pd.DataFrame().reindex_like(data_instance.train_df)
-        self.current_medoid_indexes =[]
+        self.current_medoid_indexes = []
 
     @staticmethod
     def assign_random_medoids(df, k):
@@ -40,14 +42,22 @@ class PAM(KNN):
         for index, row in df.iterrows():  # iterate through all the data
             if index in self.current_medoid_indexes:  # do not assign a medoid to a medoid
                 continue  # next index if a medoid
-            temp_distance_dict = {}  # contains the distances of a data point to all the medoids
-            for medoid in medoid_list:  # iterate through all the medoids (For one data point)
-                temp_distance_dict[medoid] = super().get_euclidean_distance(row, medoid.row)  # med : distance
-            list_of_tuples = self.order_by_dict_values(temp_distance_dict)  # sorts dictionary by value
-            med = list_of_tuples[0][0]  # closest medoid
-            cost = list_of_tuples[0][1]  # distance from closest medoid
-            med.cost += cost  # append to medoid
+            list_of_tuples = self.find_closest_medoid(row, medoid_list)  # determines closest medoid and returns tuples
+            med = list_of_tuples[0][0]  # closest medoid since ordered closest to furthest
+            med.cost += list_of_tuples[0][1]  # distance from closest medoid
             med.encompasses.loc[index] = row  # append to the closest medoid point
+
+    def find_closest_medoid(self, query, medoid_list):
+        """
+        Return the closest medoid to a given query point
+        :param query: point to find closest medoid
+        :param medoid_list: medoids to compare to
+        :return: medoid and distance
+        """
+        distances = {}
+        for med in medoid_list:
+            distances[med] = super().get_euclidean_distance(query, med.row)
+        return self.order_by_dict_values(distances)
 
     @staticmethod
     def order_by_dict_values(dictionary):
@@ -59,84 +69,105 @@ class PAM(KNN):
         """
         return sorted(dictionary.items(), key=lambda item: item[1])
 
-    # def test_new_medoid(self, df, medoid_list):
-    #     """
-    #     Test ALL non-medoids as a replacement for a current medoid
-    #     :param df: data frame to use
-    #     :param medoid_list: medoids
-    #     :return:
-    #     """
-    #     for med_index in range(len(medoid_list)):  # iterate through indexes of medoid list
-    #         print("\nCurrent Medoid being updated: ", medoid_list[med_index].index)
-    #         initial_medoid = medoid_list[med_index]
-    #         test_encompass = initial_medoid.encompasses.copy
-    #         for index, row in df.iterrows():  # iterate through data
-    #             # if index in Medoid.static_medoid_indexes or index in medoid_list[med_index].recently_used:
-    #             if index in Medoid.static_medoid_indexes:
-    #                 continue  # do not use a medoid
-    #             test_medoid = Medoid(row, index, test_encompass)  # testing_medoid
-    #             temp_medoid_list = medoid_list.copy()  # copy actual medoid_list
-    #             temp_medoid_list[med_index] = test_medoid  # replace actual medoid from temp list with testing medoid
-    #             Medoid.resets(temp_medoid_list, df)
-    #             self.assign_data_to_medoids(df, temp_medoid_list)
-    #             swap_bool = self.compare_medoid_costs(medoid_list[med_index], test_medoid)
-    #             if swap_bool:
-    #                 Medoid.static_medoid_indexes[med_index] = test_medoid.index
-    #                 medoid_list = temp_medoid_list  # swap the lists
-    #             else:
-    #                 continue
-    #     return medoid_list
+    def perform_pam(self):
+        """
+        Performs partition around medoids. Nothing else needs to be called by the user.
+        1) Assign random medoids.
+        2) REPEAT THE FOLLOWING UNTIL NO MORE SWAPS
+            3) Assign Data to Medoids
+            4) Iterate through all medoids
+                5) Iterate through all non-medoids
+                    6) Determine non-medoid is a better fit for initial medoids current encompasses data points
 
-    # def better_fit_medoids(self, df, medoid_list):
-    #     """
-    #     Updates the medoids to a better fit medoid if need be!
-    #     :param df: data frame to use
-    #     :param medoid_list: list of medoids to use
-    #     :return: Medoid list, so that PAM instance can update it for training.
-    #     """
-    #     first_indexes = Medoid.static_medoid_indexes.copy()
-    #     print(
-    #         "__________________________________________________\n__________ Begin Finding Better Medoids "
-    #         "__________\n__________________________________________________\n")
-    #     print("Initial Medoid Indexes: ", Medoid.static_medoid_indexes)
-    #
-    #     while True:
-    #         initial_list = Medoid.static_medoid_indexes.copy()  # printing purposes
-    #         change_in_list = self.test_new_medoid(df, medoid_list.copy())  # used to compare
-    #         if medoid_list != change_in_list:  # continue finding better fits iff a better medoid was found
-    #             print("\nInitial Medoid list: ", initial_list, "\nReturned Medoid List: ", Medoid.static_medoid_indexes)
-    #             print("\n---------- Continue Finding Better Medoids ----------")
-    #             medoid_list = change_in_list  # must update list
-    #             continue
-    #         else:
-    #             print("\nNo More Changes!\nFinal Medoid Indexes: ", Medoid.static_medoid_indexes, " Compared to ",
-    #                   first_indexes)
-    #             break  # no more changes ands the loop
-    #     return medoid_list
+        :return: TODO: determine what needs to be returned: medoids?
+        """
+        self.current_medoids, self.current_medoid_indexes = self.assign_random_medoids(self.train_df, self.k)
+        starting_medoids_index = self.current_medoid_indexes.copy()  # first iteration: for printing
+        starting_medoids = self.current_medoids.copy()  # first iteration medoids
+        start_distort = 0  # keep first iteration distortion for printing purposes
+        print("_______________ Begin Finding Better Medoids _______________")
+        print("Initial Medoid Indexes: ", self.current_medoid_indexes)  # prompt user of initial medoids
+        compare = lambda x, y: collections.Counter(x) == collections.Counter(y)  # lambda expr to compare a collection
+        checker = False  # used as a switch to catch oscillation
+        temp1 = self.current_medoid_indexes  # list to check for oscillation
+        temp2 = self.current_medoid_indexes  # list to check for oscillation
+        temp_med1 = None  # temp medoids for oscillation purposes
+        temp_med2 = None  # temp medoids for oscillation purposes
+        first_iter = True
+        while True:  # continue until oscillation or no more changes
+            if checker:  # cache system
+                temp1 = self.current_medoid_indexes
+                temp_med1 = self.current_medoids.copy()
+                checker = False
+            else:  # cache system
+                temp2 = self.current_medoid_indexes
+                temp_med2 = self.current_medoids.copy()
+                checker = True
+            self.assign_data_to_medoids(self.train_df,
+                                        self.current_medoids)  # at the beginning of every iteration, assign non medoids to medoids.
+            if first_iter:  # first iteration
+                for med in self.current_medoids:  # iterate through first medoids
+                    start_distort += med.cost  # get all costs for distortion
+                first_iter = False  # do not overwrite
+            changed_list, indexes = self.medoid_swap(self.current_medoids.copy(),
+                                                     self.train_df)  # for all medoids; test all data points to find better fit medoid
+            if compare(temp1, indexes) or compare(temp2, indexes):  # check if oscillating or complete
+                print("\n_______________ Found Best Fitting Medoids _______________\n")
+                # BELOW: Returns best fit indexes, distortion, and the actual medoids
+                return self.print_final(starting_medoids_index, start_distort, temp_med1, temp_med2, temp1, temp2)
 
+            else:
+                print("\nInitial Medoid list: ", self.current_medoid_indexes, "\nReturned Medoid List: ", indexes,
+                      " Cache[0]: ", temp1, " Cache[1]: ", temp2)
+                self.current_medoids = changed_list  # swaps to change medoids
+                self.current_medoid_indexes = indexes  # swaps to change medoid indexes
+                print("\n\n---------- Continue Finding Better Medoids ----------\n")
 
-    def compare_medoids(self, medoid_list, df):
-        temp_medoid_list = medoid_list
-        temp_indexes = self.current_medoid_indexes.copy()
-        for med_index in range(len(temp_medoid_list)):
+    def medoid_swap(self, medoid_list, df):
+        """
+        Swap out a medoid with a non medoid and compare
+        :param medoid_list: current medoid list
+        :param df: data set to use as medoids
+        :return:
+        """
+        temp_medoid_list = medoid_list  # needs a reference to overwrite
+        temp_indexes = self.current_medoid_indexes.copy()  # needs a reference to overwrite
 
-            initial_medoid = medoid_list[med_index]
-            print("Current Medoid being Swapped Out: " , initial_medoid.index)
-            for index, row in df.iterrows():
-                test_medoid = Medoid(row, index, initial_medoid.encompasses)
-                test_medoid_list = medoid_list.copy()  # copy actual medoid_list
-                test_medoid_list[med_index] = test_medoid  # replace actual medoid from temp list with testing medoid
-                test_medoid.cost += self.distortion_from_encompassed(test_medoid)
-                swap_bool = self.compare_medoid_costs(initial_medoid, test_medoid)
-                if not swap_bool:
-                    continue
-                initial_medoid = test_medoid
-                temp_medoid_list = test_medoid_list
-                temp_indexes[med_index] = initial_medoid.index
+        for med_index in range(len(temp_medoid_list)):  # iterate through all the medoids
+            initial_medoid = medoid_list[med_index]  # reference for printing
+            temporary_medoid = initial_medoid  # references the medoid being replaced (to potentially overwrite)
+            print("\nCurrent Medoid being Swapped Out: ", initial_medoid.index)
+            for index, row in df.iterrows():  # for each medoid: test a non medoid
+                if index not in temp_indexes:  # ensure that it is not medoid
+                    test_medoid = Medoid(row, index, temporary_medoid.encompasses)  # instantiate a new medoid
+                    test_medoid_list = temp_medoid_list.copy()  # copy actual medoid_list
+                    test_medoid_list[
+                        med_index] = test_medoid  # replace actual medoid from temp list with testing medoid
+                    test_medoid.cost += self.test_medoid_distortion(
+                        test_medoid)  # get cost of medoid to all of its encompassed
+                    test_distort, init_distort = self.calculate_distortions(test_medoid, temporary_medoid,
+                                                                            # need initial and test medoid to remove or add its cost for more accurate distortion values
+                                                                            test_medoid_list,
+                                                                            # need to add initial medoid to cost
+                                                                            temp_medoid_list)  # need to get remove test medoid cost
+                    if init_distort > test_distort and test_distort is not 0:  # if initial cost is greater than (ensure it is not considering itself... 0)
+                        print(
+                            "SWAPPING: Initial Medoid %s Distortion is: %s\t\twith\t\ttest medoid %s distortion: %s" % (
+                                temp_indexes[med_index], init_distort, test_medoid.index, test_distort))
+                        # Below: swap the values for the next "test" medoid so that it is compared to current test medoid
+                        temporary_medoid = test_medoid
+                        temp_medoid_list = test_medoid_list
+                        temp_indexes[med_index] = test_medoid.index
+                    else:
+                        continue  # next potential "better fit" medoid
+            return temp_medoid_list, temp_indexes
 
-        return temp_medoid_list, temp_indexes
-
-    def distortion_from_encompassed(self, test_medoid):
+    def test_medoid_distortion(self, test_medoid):
+        """
+        Calculate a single medoids distortion from its encompassed
+        :param test_medoid: test medoid to calculate
+        :return: float, distortion
+        """
         distortion = 0
         for index, query in test_medoid.encompasses.iterrows():
             distortion += self.get_euclidean_distance(query, test_medoid.row)
@@ -158,13 +189,60 @@ class PAM(KNN):
         else:
             return False
 
-    def calcualte_distortions(self, medoid, medoid_list):
-        # TODO: above, change the static indexes to test indexes (be sure to save the state of the initial indexes).
-        #  Assign initial_medoid to a cluster. Then, iterate through each encompassed list element and get the cost
-        #  excluding the indexes in test indexes to get distortion'. Finally compare the distortions. Choose
-        #  accordingly. If swapped... use variable to keep tab on which medoid it belonged to, and remove it. Assign
-        #  the swapped out medoid to a medoid. And repeat.
-        pass
+    def calculate_distortions(self, test_medoid, init_medoid, test_medoid_list, init_medoid_list):
+        """
+        Created the distortions by addind the initial medoids cost and removing the test_medoid cost from the original.
+        :param test_medoid: potential new medoid
+        :param init_medoid: medoid possibly to be swapped out
+        :param test_medoid_list: medoid list with test med and no initial med
+        :param init_medoid_list: medoid list  with init med and not test med
+        :return: test and initial distortions.
+        """
+        initial_distortion = 0
+        for med in init_medoid_list:  # calculate initial distortion
+            initial_distortion += med.cost
+        test_medoid.cost = self.test_medoid_distortion(test_medoid)  # assign cost to test medoid
+        test_medoid_distortion = 0  # instantiate partial distortion
+        for med in test_medoid_list:
+            test_medoid_distortion += med.cost  # obtain partial test distortion
+        init_medoid_assigned_to = self.find_closest_medoid(init_medoid.row, test_medoid_list)  # obtain medoid and cost
+        init_cost = init_medoid_assigned_to[0][1]  # additional cost to consider
+        test_medoid_assigned_to = self.find_closest_medoid(test_medoid.row,
+                                                           init_medoid_list)  # obtain test cost to redact
+        test_cost = test_medoid_assigned_to[0][1]  # subtract cost for new distortion
+        tested_distortion = test_medoid_distortion - test_cost + init_cost
+        return tested_distortion, initial_distortion
+
+    def print_final(self, start_indexes, start_distortion, temp_med1, temp_med2, temp1, temp2):
+        """
+        Determines better value for oscillation indexes as well as prints the results
+        :param temp2: oscillating indexes
+        :param temp1: oscillating indexes
+        :param start_indexes: first iteration indexes
+        :param start_distortion: first iteration distortion
+        :param temp_med1: oscillating medoids
+        :param temp_med2: oscillating medoids
+        :return: best fitting data
+        """
+        dis1 = 0
+        dis2 = 0
+        # below for loops and if-else choose best out of the oscillation points
+        for med in temp_med1:
+            dis1 += self.test_medoid_distortion(med)  # get distortion of oscillating medoid
+        for med in temp_med2:
+            dis2 += self.test_medoid_distortion(med)  # get distortion of oscillating medoid
+        if dis1 > dis2:  # compare costs and assign the one to be best choice
+            best_distortion = dis2
+            best_indexes = temp2
+            best_medoids = temp_med2
+        else:
+            best_distortion = dis1
+            best_indexes = temp1
+            best_medoids = temp_med1
+        # prints the change in the medoids
+        print("First Iteration Medoid Indexes: ", start_indexes, "\t\tDistortion: %s" % start_distortion)
+        print("Final Iteration Medoid Indexes: ", best_indexes, "\t\tDistortion: %s" % best_distortion)
+        return best_indexes, best_distortion, best_medoids
 
 
 class Medoid:
@@ -176,7 +254,6 @@ class Medoid:
         :param index: index of the point
         """
         self.row = row
-        # self.encompasses = {}  # dictionary to store data of medoid's encompassed data points.
         self.encompasses = encompasses  # Dataframe of its medoids
         self.index = index  # index of data frame
         self.cost = 0  # individual medoid cost
@@ -191,7 +268,6 @@ class Medoid:
 
     @staticmethod
     def resets(medoid_list, df):
-        # TODO Make sure cost is actually being changed for medoids (since static) Use function below if need be
         """
         reset the costs when recalculating the cost of medoids
         :return: None
@@ -199,13 +275,3 @@ class Medoid:
         for medoid in medoid_list:
             medoid.cost = 0
             medoid.encompasses = pd.DataFrame(columns=df.columns, index=None)
-
-    def reset_cost(self):
-        self.cost = 0
-
-    def get_cost(self):
-        """
-        getter function for the cost of the medoid
-        :return: cost from THIS medoid to all other medoids it encompasses
-        """
-        return self.cost

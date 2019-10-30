@@ -35,8 +35,6 @@ class Data:
         # self.train_df = temp_df.sample(frac=0.75, random_state=0)
         # self.test_df= temp_df.split(self.train_df)
         self.train_df, self.test_df = np.split(data_frame.sample(frac=1), [int(.8 * len(data_frame))])
-        print("Train ", self.train_df.shape)
-        print("Test ", self.test_df.shape)
 
     def split_k_fold(self, k_val, dataset):
         """

@@ -67,37 +67,10 @@ class MyTestCase(unittest.TestCase):
 
     def test_medoid_swapping(self):
         data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
-        df = data.df.sample(n=500)  # minimal data frame
+        df = data.df.sample(n=1000)  # minimal data frame
         data.split_data(data_frame=df)  # sets test and train data
         pam = PAM(k_val=3, data_instance=data)  # create PAM instance to check super
-        pam.current_medoids, pam.current_medoid_indexes = pam.assign_random_medoids(pam.train_df, pam.k)
-
-        print(
-            "__________________________________________________\n__________ Begin Finding Better Medoids "
-            "__________\n__________________________________________________\n")
-        print("Initial Medoid Indexes: ", pam.current_medoid_indexes)
-        compare = lambda x, y: collections.Counter(x) == collections.Counter(y)
-        checker = False
-        temp1 = pam.current_medoid_indexes
-        temp2 = pam.current_medoid_indexes
-        while True:
-            if checker:
-                temp1 = pam.current_medoid_indexes
-                checker = False
-            else:
-                temp2 = pam.current_medoid_indexes
-                checker = True
-
-            pam.assign_data_to_medoids(pam.train_df, pam.current_medoids)  # do this every time.
-            changed_list, indexes = pam.compare_medoids(pam.current_medoids.copy(), pam.train_df)
-            if compare(temp1, indexes) or compare(temp2, indexes):
-                break
-            else:
-                print("\nInitial Medoid list: ", pam.current_medoid_indexes, "\nReturned Medoid List: ", indexes,
-                      " Cache[0]: ", temp1, " Cache[1]: ", temp2)
-                pam.current_medoids = changed_list
-                pam.current_medoid_indexes = indexes
-                print("\n---------- Continue Finding Better Medoids ----------")
+        pam.perform_pam()
 
     def test_KNN(self):
         """
