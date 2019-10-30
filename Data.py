@@ -92,7 +92,6 @@ class Data:
 
                 temp_row_list.append(self.categorical_dict[item][1])  # Append to a tem list
             temp_data_frame_list.append(temp_row_list)  # Append the list to the temp_data_frame list
-        print(pd.DataFrame(temp_data_frame_list))
         return pd.DataFrame(temp_data_frame_list)  # Return dataframe
 
     def convert_data_to_original(self, data):  # Convert data back to categorical
