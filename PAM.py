@@ -8,8 +8,6 @@ class PAM(KNN):
     """
     Inheritance allows PAM to use functions in KNN, or override them, and use it class variables.
     """
-
-    # TODO check that when an instance of PAM is made, an instance of KNN is also made.
     def __init__(self, k_val, data_instance):
         super().__init__(k_val, data_instance)
         self.current_medoids = pd.DataFrame().reindex_like(data_instance.train_df)
@@ -85,7 +83,7 @@ class PAM(KNN):
         starting_medoids_index = self.current_medoid_indexes.copy()  # first iteration: for printing
         starting_medoids = self.current_medoids.copy()  # first iteration medoids
         start_distort = 0  # keep first iteration distortion for printing purposes
-        print("_______________ Begin Finding Better Medoids _______________")
+        print("\n\n_______________ Begin Finding Better Medoids _______________\n")
         print("Initial Medoid Indexes: ", self.current_medoid_indexes)  # prompt user of initial medoids
         compare = lambda x, y: collections.Counter(x) == collections.Counter(y)  # lambda expr to compare a collection
         checker = False  # used as a switch to catch oscillation
@@ -152,15 +150,15 @@ class PAM(KNN):
                                                                             temp_medoid_list)  # need to get remove test medoid cost
                     if init_distort > test_distort and test_distort is not 0:  # if initial cost is greater than (ensure it is not considering itself... 0)
                         print(
-                            "SWAPPING: Initial Medoid %s Distortion is: %s\t\twith\t\ttest medoid %s distortion: %s" % (
-                                temp_indexes[med_index], init_distort, test_medoid.index, test_distort))
+                            "SWAPPING JUSTIFICATION: Initial Distortion = %s  Test Distortion: %s" % (init_distort, test_distort))
+                        print("\t\tSwap Initial Medoid %s with Test Medoid %s" % (temporary_medoid.index, test_medoid.index))
                         # Below: swap the values for the next "test" medoid so that it is compared to current test medoid
                         temporary_medoid = test_medoid
                         temp_medoid_list = test_medoid_list
                         temp_indexes[med_index] = test_medoid.index
                     else:
                         continue  # next potential "better fit" medoid
-            return temp_medoid_list, temp_indexes
+        return temp_medoid_list, temp_indexes
 
     def test_medoid_distortion(self, test_medoid):
         """
@@ -257,7 +255,7 @@ class Medoid:
         self.encompasses = encompasses  # Dataframe of its medoids
         self.index = index  # index of data frame
         self.cost = 0  # individual medoid cost
-        self.recently_used = []  # list of test_medoids to potentially
+        self.best_medoid = None  # list of test_medoids to potentially
 
     def get_medoid_encompasses(self):
         """
