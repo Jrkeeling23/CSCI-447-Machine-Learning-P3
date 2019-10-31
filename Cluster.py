@@ -94,6 +94,7 @@ class KNN:
             temp = see_count[j]
             temp += 1
             see_count[j] = temp
+
         return max(see_count, key=lambda k: see_count[k])
 
     def edit_data(self, data_set, k_value, validation, label_col):
@@ -123,6 +124,7 @@ class KNN:
         # data_set_perform = 20
         prev_set_perform = data_set_perform  # for allowing the loop to occur
         reduce_data = data_set
+        prev_set = None
         while data_set_perform >= prev_set_perform:  # doesn't break until the performance drops below the previous set
             # print(data_set.shape)
 

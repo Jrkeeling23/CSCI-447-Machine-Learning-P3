@@ -6,6 +6,7 @@ from Data import Data, DataConverter
 import pandas as pd
 import numpy as np
 from Cluster import KNN
+import collections
 
 
 class MyTestCase(unittest.TestCase):
@@ -45,6 +46,17 @@ class MyTestCase(unittest.TestCase):
         single_distance = pam.get_euclidean_distance(row_query, row_comp)  # get distance
         self.assertTrue(isinstance(single_distance, float))  # check the it returns a float
         self.assertTrue(isinstance(dict_dist, dict))  # check if it is a dictionary
+
+    def test_medoid_swapping(self):
+        """
+        Just run to see values being swapped
+        :return:
+        """
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
+        df = data.df.sample(n=300)  # minimal data frame
+        data.split_data(data_frame=df)  # sets test and train data
+        pam = PAM(k_val=3, data_instance=data)  # create PAM instance to check super
+        index, distort, medoids = pam.perform_pam()
 
     def test_KNN(self):
         """

@@ -44,6 +44,7 @@ class Data:
         # print("Train ", self.train_df.shape)
         # print("Test ", self.test_df.shape)
 
+
     def split_k_fold(self, k_val, dataset):
         """
         Split data into list of K different parts
@@ -143,3 +144,4 @@ class DataConverter:
 
             temp_data_frame_list.append(temp_row_list) # Append the row to the new dataset list
         return pd.DataFrame(temp_data_frame_list) # Returns a dataframe
+
