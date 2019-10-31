@@ -5,7 +5,8 @@ import numpy as np
 class Data:
     def __init__(self, name, df, label_col):
         self.name = name
-        self.df = df
+        self.categorical_dict = {}
+        self.df = self.convert_to_numerical(df)
         self.test_df = None
         self.train_df = None
         self.label_col = label_col
@@ -35,6 +36,9 @@ class Data:
         # self.train_df = temp_df.sample(frac=0.75, random_state=0)
         # self.test_df= temp_df.split(self.train_df)
         self.train_df, self.test_df = np.split(data_frame.sample(frac=1), [int(.8 * len(data_frame))])
+        # print("Train ", self.train_df.shape)
+        # print("Test ", self.test_df.shape)
+
 
     def split_k_fold(self, k_val, dataset):
         """
@@ -71,3 +75,48 @@ class Data:
 
     def quick_setup(self):
         self.split_data(train_percent=0.8)
+
+    def convert_to_numerical(self, data):  # Convert data to all numerical data frame
+        counter = 1
+        temp_data_frame_list = []  # Temp list to be returned converted as a dataframe
+        for row in data.iterrows():  # Loop through the rows of the dataframe
+            temp_row_list = []
+            for item in row[1]:  # Loop through each item in the row
+                if item not in self.categorical_dict.keys():  # Checks if item is in dictionary
+                    if type(item) is str:
+                        self.categorical_dict[item] = [type(item),
+                                                       counter]  # Add item in the dictionary and assign a value
+                        counter += 1
+                    else:
+                        self.categorical_dict[item] = [type(item),
+                                                       item]  # Add item in the dictionary and assign a value
+
+                temp_row_list.append(self.categorical_dict[item][1])  # Append to a tem list
+            temp_data_frame_list.append(temp_row_list)  # Append the list to the temp_data_frame list
+        return pd.DataFrame(temp_data_frame_list)  # Return dataframe
+
+    def convert_data_to_original(self, data):  # Convert data back to categorical
+        temp_data_frame_list = []  # Temp list to return as a dataframe later
+        for row in data.iterrows():  # Iterate the rows of the data set
+            temp_row_list = []  # Temp list for row to be placed in dataframe
+            for item in row[1]:  # Loop through each item in the list
+                closest_point = [None, float(
+                    'inf')]  # Maximum float value initializer. Source: https://stackoverflow.com/questions/10576548/python-usable-max-and-min-values, user: user648852
+                for key, val in self.categorical_dict.items():  # Loop through the keys in the list and find the closest distance to a point.
+                    min_found = False
+                    value = val[1]  # Gets the numerical value of the dictionary
+                    difference = item - value # Gets the difference between the values
+                    if difference < 0.0: # Converts to a positive number if needed
+                        difference *= -1
+                    if difference < closest_point[1]: # Checks if the point is closer than the previous closest data point
+                        closest_point = [key, difference]
+                        if difference == 0.0: # Breaks if the difference is zero, as no point will be closer.
+                            temp_row_list.append(closest_point[0]) # Append to the row list
+                            min_found = True
+                            break
+                if not min_found:
+                    temp_row_list.append(closest_point[0]) # Append to the row list
+
+            temp_data_frame_list.append(temp_row_list) # Append the row to the new dataset list
+        return pd.DataFrame(temp_data_frame_list) # Returns a dataframe
+
