@@ -9,11 +9,9 @@ class Data:
         self.name = name
         CATEGORICAL_DICTIONARY = {}
         ALLOWED_DICTIONARY = {}
-
         data_converter = DataConverter()
-        self.df = df
-        self.set_allowed_dictionary(self.df.copy())
-        self.df = data_converter.convert_to_numerical(self.df)
+        self.set_allowed_dictionary(df.copy())
+        self.df = data_converter.convert_to_numerical(df)
         self.test_df = None
         self.train_df = None
         self.label_col = label_col
@@ -117,6 +115,7 @@ class DataConverter:
         return pd.DataFrame(temp_data_frame_list)  # Return dataframe
 
     def convert_data_to_original(self, data):  # Convert data back to categorical
+        min_found = False
         temp_data_frame_list = []  # Temp list to return as a dataframe later
         for row in data.iterrows():  # Iterate the rows of the data set
             temp_row_list = []  # Temp list for row to be placed in dataframe

@@ -4,6 +4,7 @@
     <list default="true" id="a2995b01-283e-4567-a52a-d7c0ba855b5b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KMeans.py" beforeDir="false" afterPath="$PROJECT_DIR$/KMeans.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Testing.py" beforeDir="false" afterPath="$PROJECT_DIR$/Testing.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -47,7 +48,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.Unittests for Testing.MyTestCase.test_data_conversion_to_numerical">
+  <component name="RunManager" selected="Python tests.Unittests for Testing.MyTestCase.test_data_conversion_to_original">
     <configuration name="Unittests for Testing.MyTestCase.test_KNN" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="CSCI-447-Machine-Learning-P3" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -120,10 +121,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_data_conversion_to_original" />
+        <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_k_means" />
         <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_data_conversion_to_numerical" />
         <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_data_conversion" />
-        <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_k_means" />
-        <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_data_conversion_to_original" />
         <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_KNN" />
       </list>
     </recent_temporary>
@@ -173,18 +174,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/KMeans.py</url>
-          <line>104</line>
+          <line>107</line>
           <option name="timeStamp" value="133" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Data.py</url>
-          <line>120</line>
-          <option name="timeStamp" value="139" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Data.py</url>
-          <line>86</line>
-          <option name="timeStamp" value="140" />
+          <url>file://$PROJECT_DIR$/Testing.py</url>
+          <line>100</line>
+          <option name="timeStamp" value="143" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

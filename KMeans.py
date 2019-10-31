@@ -16,7 +16,7 @@ class Kmeans(KNN):
     def k_means(self, data_set, k_val):  # Method for K-Means
         data_space = self.get_data_space(data_set)
         clusters = self.set_clusters_to_dict(data_set, k_val, data_space)
-        clusters = self.cluster_data(clusters, data_set)
+        return self.cluster_data(clusters, data_set)
 
     def k_random_point(self, data_set, k_val, data_space):  # Method to grab k_random rows for centroid method
         data_set = data_set
@@ -102,9 +102,11 @@ class Kmeans(KNN):
             #     print(self.converter.convert_data_to_original(pd.DataFrame(j)))
             if previous_clusters == current_clusters:
                 print('--------------------------K-Means has converged------------------')
-                return clusters
+                cluster_list = []
+                for cluster in clusters.values():# Convert the k-means points to a list
+                    cluster_list.append(cluster)
+                return self.converter.convert_data_to_original(pd.DataFrame(cluster_list))
             previous_clusters = current_clusters
-
     def mean_clusters(self, updated_clusters, data_set): # Get the new mean clusters
         updated_centroids = {}
         for centroid_key in range(len(updated_clusters)): # creates an empty dictionary to return back

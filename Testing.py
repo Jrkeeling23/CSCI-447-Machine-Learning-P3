@@ -95,10 +95,9 @@ class MyTestCase(unittest.TestCase):
         converted = converter.convert_data_to_original(data.train_df)
         print(converted)
         mismatch = False
-        for convert in converted:
-            if convert not in data.train_df:
+        for convert in converted.values:
+            if convert not in data.train_df.values:
                 mismatch = True
-        print(mismatch)
         self.assertFalse(mismatch)
 
     def test_k_means(self):
@@ -108,10 +107,14 @@ class MyTestCase(unittest.TestCase):
         data.split_data(data_frame=df)  # sets test and train data
         k_val = 2
         knn = KNN(k_val, data)
-        # nearest = knn.perform_KNN(k_val, df.iloc[1], data.train_df)
         kmeans = Kmeans(k_val, data)
-        kmeans.k_means(data.train_df, 5)
+        clusters = kmeans.k_means(data.train_df, 5)
 
+        mismatch = False
+        for cluster in clusters.values:
+            if cluster not in data.train_df.values:
+                mismatch = True
+        self.assertFalse(mismatch)
 
 if __name__ == '__main__':
     unittest.main()
