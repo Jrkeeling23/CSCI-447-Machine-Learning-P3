@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a2995b01-283e-4567-a52a-d7c0ba855b5b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Testing.py" beforeDir="false" afterPath="$PROJECT_DIR$/Testing.py" afterDir="false" />
-    </list>
+    <list default="true" id="a2995b01-283e-4567-a52a-d7c0ba855b5b" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +43,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.Unittests for Testing.MyTestCase.test_k_means">
+  <component name="RunManager" selected="Python tests.Unittests in Testing.py">
     <configuration name="Unittests for Testing.MyTestCase.test_data_conversion_to_original" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="CSCI-447-Machine-Learning-P3" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -119,13 +116,23 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_k_means" />
         <item itemvalue="Python tests.Unittests in Testing.py" />
+        <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_k_means" />
         <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_data_conversion_to_original" />
         <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_edit" />
         <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_euclidean" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="allServicesViewState">
+      <serviceView>
+        <treeState>
+          <expand />
+          <select />
+        </treeState>
+      </serviceView>
+    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration />
