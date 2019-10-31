@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 from Cluster import KNN
 
+
 class MyTestCase(unittest.TestCase):
     def test_something(self):
         self.assertEqual(True, False)
@@ -85,7 +86,6 @@ class MyTestCase(unittest.TestCase):
         # converter.convert_to_numerical(data.train_df)
         # converter.convert_to_numerical(data.test_df)
 
-
     def test_data_conversion_to_original(self):
         data = Data('machine', pd.read_csv(r'data/machine.data', header=None), 8)
         df = data.df.sample(n=209)
@@ -93,12 +93,14 @@ class MyTestCase(unittest.TestCase):
         print(data.train_df)
         converter = DataConverter()
         converted = converter.convert_data_to_original(data.train_df)
+        print(converted)
         mismatch = False
         for convert in converted:
             if convert not in data.train_df:
                 mismatch = True
         print(mismatch)
         self.assertFalse(mismatch)
+
     def test_k_means(self):
         data = Data('machine', pd.read_csv(r'data/machine.data', header=None), 8)  # load data
         data_copy = data
@@ -108,7 +110,8 @@ class MyTestCase(unittest.TestCase):
         knn = KNN(k_val, data)
         # nearest = knn.perform_KNN(k_val, df.iloc[1], data.train_df)
         kmeans = Kmeans(k_val, data)
-        kmeans.k_means(data.train_df, 10)
+        kmeans.k_means(data.train_df, 5)
+
 
 if __name__ == '__main__':
     unittest.main()

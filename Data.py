@@ -86,18 +86,12 @@ class Data:
         for allowed_keys in range(df.shape[1]):
             unique_values = df[allowed_keys].unique() # Unique values in dataframe source: https://chrisalbon.com/python/data_wrangling/pandas_list_unique_values_in_column/, : Chris Albon, Bob Haffner
             for item in unique_values:
-                # if type(item) is str: # Check if string and append to the dictionary
-                if allowed_keys not in ALLOWED_DICTIONARY.keys():
+                if allowed_keys not in ALLOWED_DICTIONARY.keys(): # Append all items allowed in a column to a dictionary for later converting
 
                     ALLOWED_DICTIONARY[allowed_keys] = [item]
                 else:
                     ALLOWED_DICTIONARY[allowed_keys].append(item)
-                # else: # Check if string and append to the dictionary
-                #     if allowed_keys not in ALLOWED_DICTIONARY.keys(): # Label that there is numerical data in this data set
-                #         ALLOWED_DICTIONARY[allowed_keys] = [['mix']]
-                #     else:
-                #         ALLOWED_DICTIONARY[allowed_keys].append(['mix'])
-        print(ALLOWED_DICTIONARY)
+
 
 class DataConverter:
 
@@ -143,12 +137,7 @@ class DataConverter:
                                 temp_row_list.append(closest_point[0])  # Append to the row list
                                 min_found = True
                                 break
-                        # else:
-                        #     closest_point = [key, difference]
-                        #     if difference == 0.0: # Breaks if the difference is zero, as no point will be closer.
-                        #         temp_row_list.append(closest_point[0]) # Append to the row list
-                        #         min_found = True
-                        #         break
+
                 allowed_key += 1
                 if not min_found:
                     temp_row_list.append(closest_point[0]) # Append to the row list

@@ -90,16 +90,16 @@ class Kmeans(KNN):
                 current_clusters[closest_point[0]].append(value) # Appends the closest point to a the corresponding cluster
 
             clusters = self.mean_clusters(current_clusters, data_set) # Gets the updated k-mean clusters
-            print_iter = 1
-            for i in previous_clusters:
-                print("Previous Cluster: ", print_iter)
-                print_iter += 1
-                print(self.converter.convert_data_to_original(pd.DataFrame(i)))
-            print_iter = 1
-            for j in current_clusters:
-                print("Current Cluster: ", print_iter)
-                print_iter += 1
-                print(self.converter.convert_data_to_original(pd.DataFrame(j)))
+            # print_iter = 1
+            # for i in previous_clusters:
+            #     print("Previous Cluster: ", print_iter)
+            #     print_iter += 1
+            #     print(self.converter.convert_data_to_original(pd.DataFrame(i)))
+            # print_iter = 1
+            # for j in current_clusters:
+            #     print("Current Cluster: ", print_iter)
+            #     print_iter += 1
+            #     print(self.converter.convert_data_to_original(pd.DataFrame(j)))
             if previous_clusters == current_clusters:
                 print('--------------------------K-Means has converged------------------')
                 return clusters
