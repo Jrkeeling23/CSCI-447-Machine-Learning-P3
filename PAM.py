@@ -8,6 +8,7 @@ class PAM(KNN):
     """
     Inheritance allows PAM to use functions in KNN, or override them, and use it class variables.
     """
+
     def __init__(self, k_val, data_instance):
         super().__init__(k_val, data_instance)
         self.current_medoids = pd.DataFrame().reindex_like(data_instance.train_df)
@@ -150,8 +151,10 @@ class PAM(KNN):
                                                                             temp_medoid_list)  # need to get remove test medoid cost
                     if init_distort > test_distort and test_distort is not 0:  # if initial cost is greater than (ensure it is not considering itself... 0)
                         print(
-                            "SWAPPING JUSTIFICATION: Initial Distortion = %s  Test Distortion: %s" % (init_distort, test_distort))
-                        print("\t\tSwap Initial Medoid %s with Test Medoid %s" % (temporary_medoid.index, test_medoid.index))
+                            "SWAPPING JUSTIFICATION: Initial Distortion = %s  Test Distortion: %s" % (
+                            init_distort, test_distort))
+                        print("\t\tSwap Initial Medoid %s with Test Medoid %s" % (
+                        temporary_medoid.index, test_medoid.index))
                         # Below: swap the values for the next "test" medoid so that it is compared to current test medoid
                         temporary_medoid = test_medoid
                         temp_medoid_list = test_medoid_list
@@ -170,22 +173,6 @@ class PAM(KNN):
         for index, query in test_medoid.encompasses.iterrows():
             distortion += self.get_euclidean_distance(query, test_medoid.row)
         return distortion
-
-    @staticmethod
-    def compare_medoid_costs(actual, test):
-        """
-        Compares two medoid costs
-        :param actual: actual medoid in list
-        :param test: testing medoid to potentially swap in
-        :return: boolean to determine if a swap occurred
-        """
-        if actual.cost > test.cost and test.cost is not 0:  # do not want 0; means that they are the same!
-            print("Swap Justification\t\t-------->\t\tInitial Medoid", actual.index, " cost: ", actual.cost,
-                  "\t\tcomparing to\t\t Test Medoid ", test.index,
-                  " cost: ", test.cost)
-            return True
-        else:
-            return False
 
     def calculate_distortions(self, test_medoid, init_medoid, test_medoid_list, init_medoid_list):
         """

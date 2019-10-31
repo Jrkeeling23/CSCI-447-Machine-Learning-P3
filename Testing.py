@@ -45,32 +45,16 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(isinstance(single_distance, float))  # check the it returns a float
         self.assertTrue(isinstance(dict_dist, dict))  # check if it is a dictionary
 
-    def test_assigning_to_medoids(self):
-        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
-        df = data.df.sample(n=100)  # minimal data frame
-        self.assertEqual(df.shape[0], 100)
-        data.split_data(data_frame=df)  # sets test and train data
-        self.assertEqual((data.train_df.shape[0] + data.test_df.shape[0]), 100)
-        pam = PAM(k_val=3, data_instance=data)  # create PAM instance to check super
-        pam.current_medoids = pam.assign_random_medoids(pam.train_df, pam.k)
-        size = len(pam.current_medoids)
-        self.assertEqual(size, 3)
-        pam.assign_data_to_medoids(pam.train_df, pam.current_medoids)  # set medoids list equal to return value
-        size = 0  # reset size variable
-        for medoid in pam.current_medoids:
-            size += medoid.encompasses.shape[0]  # get number of data points assigned to a medoid
-        self.assertEqual(size, pam.train_df.shape[0] - 3)  # make sure all data_points are assigned to a medoid
-        bool_type = pam.compare_medoid_costs(pam.current_medoids[0], pam.current_medoids[1])
-        # new_med_list = pam.perform_pam(pam.train_df, pam.current_medoids)
-        self.assertIsInstance(bool_type, bool)  # shows whether it swapped or not
-        # self.assertNotEqual(new_med_list, pam.current_medoids)
-
     def test_medoid_swapping(self):
+        """
+        Just run to see values being swapped
+        :return:
+        """
         data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
         df = data.df.sample(n=300)  # minimal data frame
         data.split_data(data_frame=df)  # sets test and train data
         pam = PAM(k_val=3, data_instance=data)  # create PAM instance to check super
-        pam.perform_pam()
+        index, distort, medoids = pam.perform_pam()
 
     def test_KNN(self):
         """
