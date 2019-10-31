@@ -87,7 +87,7 @@ class MyTestCase(unittest.TestCase):
         # converter.convert_to_numerical(data.test_df)
 
     def test_data_conversion_to_original(self):
-        data = Data('machine', pd.read_csv(r'data/machine.data', header=None), 8)
+        data = Data('forestfires', pd.read_csv(r'data/forestfires.data', header=None), 8)
         df = data.df.sample(n=209)
         data.split_data(data_frame=df)
         print(data.train_df)
@@ -102,14 +102,13 @@ class MyTestCase(unittest.TestCase):
         self.assertFalse(mismatch)
 
     def test_k_means(self):
-        data = Data('forestfires', pd.read_csv(r'data/forestfires.data', header=None), 8)  # load data
-        data_copy = data
-        df = data.df.sample(n=518)  # minimal data frame
+        data = Data('machine', pd.read_csv(r'data/machine.data', header=None), 8)  # load data
+        df = data.df.sample(n=209)  # minimal data frame
         data.split_data(data_frame=df)  # sets test and train data
         k_val = 2
         knn = KNN(k_val, data)
         kmeans = Kmeans(k_val, data)
-        clusters = kmeans.k_means(data.train_df, 5)
+        clusters = kmeans.k_means(data.train_df, 10)
         converter = DataConverter()
         dt = converter.convert_data_to_original(data.train_df.copy())
         mismatch = False
