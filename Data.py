@@ -109,7 +109,7 @@ class DataConverter:
                 for key, val in CATEGORICAL_DICTIONARY.items():  # Loop through the keys in the list and find the closest distance to a point.
                     min_found = False
                     value = val[1]  # Gets the numerical value of the dictionary
-                    difference = item - value # Gets the difference between the values
+                    difference = float(item) - float(value) # Gets the difference between the values
                     if difference < 0.0: # Converts to a positive number if needed
                         difference *= -1
                     if difference < closest_point[1]: # Checks if the point is closer than the previous closest data point

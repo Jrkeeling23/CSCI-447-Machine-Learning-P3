@@ -77,10 +77,12 @@ class MyTestCase(unittest.TestCase):
         knn.edit_data(data.train_df, 5, data.test_df, data.label_col)
 
     def test_data_conversion(self):
-        data = Data('car', pd.read_csv(r'data/car.data', header=None), 8)
+        data = Data('segmentation', pd.read_csv(r'data/segmentation.data', header=None), 8)
         df = data.df.sample(n=50)
         data.split_data(data_frame=df)
         print(data.train_df)
+        converter = DataConverter()
+        print(converter.convert_data_to_original(data.train_df))
 
     def test_data_conversion_to_original(self):
         data = Data('car', pd.read_csv(r'data/car.data', header=None), 8)
@@ -93,13 +95,13 @@ class MyTestCase(unittest.TestCase):
     def test_k_means(self):
         data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
         data_copy = data
-        df = data.df.sample(n=10)  # minimal data frame
+        df = data.df.sample(n=4177)  # minimal data frame
         data.split_data(data_frame=df)  # sets test and train data
         k_val = 5
         knn = KNN(k_val, data)
-        nearest = knn.perform_KNN(k_val, df.iloc[1], data.train_df)
+        # nearest = knn.perform_KNN(k_val, df.iloc[1], data.train_df)
         kmeans = Kmeans(k_val, data)
-        kmeans.k_means(data.train_df, 5)
+        kmeans.k_means(data.test_df, 5)
 
 if __name__ == '__main__':
     unittest.main()
