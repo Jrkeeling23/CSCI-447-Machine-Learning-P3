@@ -9,7 +9,8 @@ class Data:
         self.name = name
         CATEGORICAL_DICTIONARY = {}
         data_converter = DataConverter()
-        self.df = data_converter.convert_to_numerical(df)
+        self.df = df
+        self.df = data_converter.convert_to_numerical(self.df)
         self.test_df = None
         self.train_df = None
         self.label_col = label_col

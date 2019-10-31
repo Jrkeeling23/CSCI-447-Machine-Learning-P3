@@ -93,15 +93,15 @@ class MyTestCase(unittest.TestCase):
         print(converter.convert_data_to_original(data.train_df))
 
     def test_k_means(self):
-        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
+        data = Data('forestfires', pd.read_csv(r'data/forestfires.data', header=None), 8)  # load data
         data_copy = data
-        df = data.df.sample(n=4177)  # minimal data frame
+        df = data.df.sample(n=178)  # minimal data frame
         data.split_data(data_frame=df)  # sets test and train data
-        k_val = 5
+        k_val = 2
         knn = KNN(k_val, data)
         # nearest = knn.perform_KNN(k_val, df.iloc[1], data.train_df)
         kmeans = Kmeans(k_val, data)
-        kmeans.k_means(data.test_df, 5)
+        kmeans.k_means(data.train_df, 10)
 
 if __name__ == '__main__':
     unittest.main()

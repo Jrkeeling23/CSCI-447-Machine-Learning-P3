@@ -48,7 +48,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.Unittests for Testing.MyTestCase.test_k_means">
+  <component name="RunManager" selected="Python tests.Unittests for Testing.MyTestCase.test_data_conversion">
     <configuration name="Unittests for Testing.MyTestCase.test_KNN" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="CSCI-447-Machine-Learning-P3" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -121,9 +121,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_data_conversion" />
         <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_k_means" />
         <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_data_conversion_to_original" />
-        <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_data_conversion" />
         <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_KNN" />
         <item itemvalue="Python tests.Unittests for Testing.MyTestCase.test_determine_closest_in_dictionary" />
       </list>
@@ -174,13 +174,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Data.py</url>
-          <line>105</line>
+          <line>106</line>
           <option name="timeStamp" value="123" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Testing.py</url>
-          <line>99</line>
-          <option name="timeStamp" value="125" />
+          <url>file://$PROJECT_DIR$/KMeans.py</url>
+          <line>104</line>
+          <option name="timeStamp" value="133" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
