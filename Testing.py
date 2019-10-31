@@ -95,24 +95,26 @@ class MyTestCase(unittest.TestCase):
         converted = converter.convert_data_to_original(data.train_df)
         print(converted)
         mismatch = False
+        dt = converter.convert_data_to_original(data.train_df.copy())
         for convert in converted.values:
-            if convert not in data.train_df.values:
+            if convert not in dt.values:
                 mismatch = True
         self.assertFalse(mismatch)
 
     def test_k_means(self):
-        data = Data('machine', pd.read_csv(r'data/machine.data', header=None), 8)  # load data
+        data = Data('forestfires', pd.read_csv(r'data/forestfires.data', header=None), 8)  # load data
         data_copy = data
-        df = data.df.sample(n=178)  # minimal data frame
+        df = data.df.sample(n=518)  # minimal data frame
         data.split_data(data_frame=df)  # sets test and train data
         k_val = 2
         knn = KNN(k_val, data)
         kmeans = Kmeans(k_val, data)
         clusters = kmeans.k_means(data.train_df, 5)
-
+        converter = DataConverter()
+        dt = converter.convert_data_to_original(data.train_df.copy())
         mismatch = False
         for cluster in clusters.values:
-            if cluster not in data.train_df.values:
+            if cluster not in dt.values:
                 mismatch = True
         self.assertFalse(mismatch)
 

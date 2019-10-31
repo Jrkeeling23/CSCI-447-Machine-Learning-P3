@@ -102,6 +102,12 @@ class Kmeans(KNN):
             #     print(self.converter.convert_data_to_original(pd.DataFrame(j)))
             if previous_clusters == current_clusters:
                 print('--------------------------K-Means has converged------------------')
+
+                print_iter = 1
+                for j in current_clusters:
+                    print("Current Cluster: ", print_iter)
+                    print_iter += 1
+                    print(self.converter.convert_data_to_original(pd.DataFrame(j)))
                 cluster_list = []
                 for cluster in clusters.values():# Convert the k-means points to a list
                     cluster_list.append(cluster)
