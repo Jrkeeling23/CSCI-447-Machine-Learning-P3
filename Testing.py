@@ -76,24 +76,31 @@ class MyTestCase(unittest.TestCase):
         knn = KNN(5, data)
         knn.edit_data(data.train_df, 5, data.test_df, data.label_col)
 
-    def test_data_conversion(self):
-        data = Data('segmentation', pd.read_csv(r'data/segmentation.data', header=None), 8)
-        df = data.df.sample(n=50)
+    def test_data_conversion_to_numerical(self):
+        data = Data('machine', pd.read_csv(r'data/machine.data', header=None), 8)
+        df = data.df.sample(n=209)
         data.split_data(data_frame=df)
-        print(data.train_df)
-        converter = DataConverter()
-        print(converter.convert_data_to_original(data.train_df))
+        print(data.test_df)
+        # converter = DataConverter()
+        # converter.convert_to_numerical(data.train_df)
+        # converter.convert_to_numerical(data.test_df)
+
 
     def test_data_conversion_to_original(self):
-        data = Data('car', pd.read_csv(r'data/car.data', header=None), 8)
-        df = data.df.sample(n=50)
+        data = Data('machine', pd.read_csv(r'data/machine.data', header=None), 8)
+        df = data.df.sample(n=209)
         data.split_data(data_frame=df)
         print(data.train_df)
         converter = DataConverter()
-        print(converter.convert_data_to_original(data.train_df))
-
+        converted = converter.convert_data_to_original(data.train_df)
+        mismatch = False
+        for convert in converted:
+            if convert not in data.train_df:
+                mismatch = True
+        print(mismatch)
+        self.assertFalse(mismatch)
     def test_k_means(self):
-        data = Data('forestfires', pd.read_csv(r'data/forestfires.data', header=None), 8)  # load data
+        data = Data('machine', pd.read_csv(r'data/machine.data', header=None), 8)  # load data
         data_copy = data
         df = data.df.sample(n=178)  # minimal data frame
         data.split_data(data_frame=df)  # sets test and train data

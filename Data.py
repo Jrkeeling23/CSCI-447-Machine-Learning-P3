@@ -2,14 +2,17 @@ import pandas as pd
 import numpy as np
 
 CATEGORICAL_DICTIONARY = {}
-
+ALLOWED_DICTIONARY = {}
 
 class Data:
     def __init__(self, name, df, label_col):
         self.name = name
         CATEGORICAL_DICTIONARY = {}
+        ALLOWED_DICTIONARY = {}
+
         data_converter = DataConverter()
         self.df = df
+        self.set_allowed_dictionary(self.df.copy())
         self.df = data_converter.convert_to_numerical(self.df)
         self.test_df = None
         self.train_df = None
@@ -79,13 +82,32 @@ class Data:
     def quick_setup(self):
         self.split_data(train_percent=0.8)
 
+    def set_allowed_dictionary(self, df): # Get the unique values of strings per column.  This is for conversion in DataConverter
+        for allowed_keys in range(df.shape[1]):
+            unique_values = df[allowed_keys].unique() # Unique values in dataframe source: https://chrisalbon.com/python/data_wrangling/pandas_list_unique_values_in_column/, : Chris Albon, Bob Haffner
+            for item in unique_values:
+                # if type(item) is str: # Check if string and append to the dictionary
+                if allowed_keys not in ALLOWED_DICTIONARY.keys():
+
+                    ALLOWED_DICTIONARY[allowed_keys] = [item]
+                else:
+                    ALLOWED_DICTIONARY[allowed_keys].append(item)
+                # else: # Check if string and append to the dictionary
+                #     if allowed_keys not in ALLOWED_DICTIONARY.keys(): # Label that there is numerical data in this data set
+                #         ALLOWED_DICTIONARY[allowed_keys] = [['mix']]
+                #     else:
+                #         ALLOWED_DICTIONARY[allowed_keys].append(['mix'])
+        print(ALLOWED_DICTIONARY)
+
 class DataConverter:
+
     def convert_to_numerical(self, data):  # Convert data to all numerical data frame
 
         counter = 1
         temp_data_frame_list = []  # Temp list to be returned converted as a dataframe
         for row in data.iterrows():  # Loop through the rows of the dataframe
             temp_row_list = []
+            allowed_keys = 0
             for item in row[1]:  # Loop through each item in the row
                 if item not in CATEGORICAL_DICTIONARY.keys():  # Checks if item is in dictionary
                     if type(item) is str:
@@ -95,7 +117,7 @@ class DataConverter:
                     else:
                         CATEGORICAL_DICTIONARY[item] = [type(item),
                                                        item]  # Add item in the dictionary and assign a value
-
+                    allowed_keys += 1
                 temp_row_list.append(CATEGORICAL_DICTIONARY[item][1])  # Append to a tem list
             temp_data_frame_list.append(temp_row_list)  # Append the list to the temp_data_frame list
         return pd.DataFrame(temp_data_frame_list)  # Return dataframe
@@ -104,6 +126,7 @@ class DataConverter:
         temp_data_frame_list = []  # Temp list to return as a dataframe later
         for row in data.iterrows():  # Iterate the rows of the data set
             temp_row_list = []  # Temp list for row to be placed in dataframe
+            allowed_key = 0
             for item in row[1]:  # Loop through each item in the list
                 closest_point = [None, float(
                     'inf')]  # Maximum float value initializer. Source: https://stackoverflow.com/questions/10576548/python-usable-max-and-min-values, user: user648852
@@ -114,11 +137,19 @@ class DataConverter:
                     if difference < 0.0: # Converts to a positive number if needed
                         difference *= -1
                     if difference < closest_point[1]: # Checks if the point is closer than the previous closest data point
-                        closest_point = [key, difference]
-                        if difference == 0.0: # Breaks if the difference is zero, as no point will be closer.
-                            temp_row_list.append(closest_point[0]) # Append to the row list
-                            min_found = True
-                            break
+                        if key in ALLOWED_DICTIONARY[allowed_key]:
+                            closest_point = [key, difference]
+                            if difference == 0.0:  # Breaks if the difference is zero, as no point will be closer.
+                                temp_row_list.append(closest_point[0])  # Append to the row list
+                                min_found = True
+                                break
+                        # else:
+                        #     closest_point = [key, difference]
+                        #     if difference == 0.0: # Breaks if the difference is zero, as no point will be closer.
+                        #         temp_row_list.append(closest_point[0]) # Append to the row list
+                        #         min_found = True
+                        #         break
+                allowed_key += 1
                 if not min_found:
                     temp_row_list.append(closest_point[0]) # Append to the row list
 
