@@ -11,7 +11,7 @@ class Data:
         ALLOWED_DICTIONARY = {}
         data_converter = DataConverter()
         self.set_allowed_dictionary(df.copy())
-        self.df = data_converter.convert_to_numerical(df)
+        self.df = data_converter.convert_to_numerical(df.copy())
         self.test_df = None
         self.train_df = None
         self.label_col = label_col
