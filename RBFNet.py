@@ -37,6 +37,11 @@ class RBF:
             """ gausian"""
             return np.exp(-1 / (2 * s ** 2) * (x - c) ** 2)
 
+        def calcHiddenOutputs(self, input, center, std):
+            knn = KNN
+            dist_between = knn.get_euclidean_distance(input, center)
+
+            return np.exp(-1 / (2 * std ** 2) * dist_between)
 
         ":param medoids_list,  a list of medoids in a cluster"
         # function to get max dist
@@ -56,9 +61,10 @@ class RBF:
 
         """ Training function  to train our RBF
             :param data_instance, instance of data object
-            :param data_set set of data to train on
+            :param data_set. set of training data
+            :param actual_set,  set of actual outputs to compare training data too
         """
-        def train(self, data_instace, data_set):
+        def train(self, data_instace, data_set, actual_set):
             # getting the clusters (medoids)
             pam = PAM(k_val=self.clusters, data_instance=data_instace)
             medoids_list = pam.assign_random_medoids(data_set, 5)
@@ -72,7 +78,30 @@ class RBF:
             iterations = 0
             while not converged:
                 # start training the model here
+                # go through each of the output "nodes" (values for weights are stored as vectors in the weights matrix
+                # this way I can avoid having to create a large number of classes
+                for row in self.weights:  # row represents the weights of a given end node
+                    for i in range(len(data_set.index)):
+                        # calculate the activation functions for each of the examples for each hidden node (cluster)
+                        a = np.array([self.calcHiddenOutputs(data_set[i], medoid.row, self.std) for medoid in medoids_list])
+                        # add in the bias term to current row
+                        F = a.T.dot(row) + self.bias
 
+
+                        # TODO:  Impelemt the gradient descent rules using the activation values a as input
+                        # backward pass
+                        # if we are in regression do reg error, using expected value of the function
+                       # if self.isReg:
+                       #    error = 0
+                           # error = -(y[i] - F).flatten()
+                        # otherwise set 0 / 1 depending on class values
+                       # else:
+                        #    error = 0
+
+
+
+                       # row = row - self.learning_rate * a * error
+                        #self.bias = self.bias - self.learning_rate * error
 
                 if iterations > self.maxruns:
                     # break out if we hit the maximum runs
