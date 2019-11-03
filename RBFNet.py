@@ -15,7 +15,7 @@ class RBF:
 
 
           """
-        def __init__(self, out_nodes, clusters, isReg, maxruns, learning_rate=.01, ):
+        def __init__(self, out_nodes, clusters, isReg, maxruns=1000, learning_rate=.01, ):
             self.out_nodes = out_nodes
             self.clusters = clusters
             self.isReg = isReg
@@ -23,7 +23,7 @@ class RBF:
             # weight array,  use out_nodes size 1  for reg
             self.weights = np.random.uniform(-self.learning_rate, self.learning_rate, size=(self.out_nodes, self.clusters))
             # bias term, vector of size out_nodes (so size 1 for reg as 1 output node)
-            self.bias = np.random.randn(out_nodes)
+            self.bias = np.random.randn(clusters)
             self.maxruns = maxruns
             self.std = None
 
@@ -67,7 +67,7 @@ class RBF:
         def train(self, data_instace, data_set, actual_set):
             # getting the clusters (medoids)
             pam = PAM(k_val=self.clusters, data_instance=data_instace)
-            medoids_list = pam.assign_random_medoids(data_set, 5)
+            medoids_list = pam.assign_random_medoids(data_set, self.clusters)
             pam.assign_data_to_medoids(data_set, medoids_list)
             # set the STD of the clusters  (doing once for now)
             self.std = self.getMaxDist(medoids_list) / np.sqrt(2*self.clusters)
@@ -80,13 +80,24 @@ class RBF:
                 # start training the model here
                 # go through each of the output "nodes" (values for weights are stored as vectors in the weights matrix
                 # this way I can avoid having to create a large number of classes
-                for row in self.weights:  # row represents the weights of a given end node
-                    for i in range(len(data_set.index)):
-                        # calculate the activation functions for each of the examples for each hidden node (cluster)
-                        a = np.array([self.calcHiddenOutputs(data_set[i], medoid.row, self.std) for medoid in medoids_list])
-                        # add in the bias term to current row
-                        F = a.T.dot(row) + self.bias
+                for output in self.weights:  # row represents the weights of a given end node
 
+                    for index, row in data_set.iterrows():
+                        # calculate the activation functions for each of the examples for each hidden node (cluster)
+                        a = []
+                        for medoid in medoids_list:
+                            medoidAct = self.calcHiddenOutputs(row, medoid.row, self.std)
+                            a.append(medoidAct)
+
+                        # convert a to a numpy array
+                        a = np.array(a)
+                        a = np.add(a, self.bias)
+                        # add in the bias term to current row
+                        F = a.T.dot(output)
+
+
+
+                       
 
                         # TODO:  Impelemt the gradient descent rules using the activation values a as input
                         # backward pass
@@ -107,7 +118,7 @@ class RBF:
                     # break out if we hit the maximum runs
                     converged = True
 
-
+                iterations += 1
 
 
 
