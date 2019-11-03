@@ -1,6 +1,7 @@
 import numpy as np;
 from PAM import PAM
 from Cluster import KNN
+import math
 
 class RBFReg:
     """
@@ -131,8 +132,14 @@ class RBFReg:
         # divide by n
         sum = sum/n
         return sum # done, return sum
+# output node class for RBF classification
+class output:
+        def __init__(self, weights, classval,):
+            self.weights = weights
+            self.classval = classval
+            self.bias = np.random.randn(1) # bias term for this node
 
-class RBF:
+class RBFClass:
         """
          Class to function as an RBF netwwork
          :param out_nodes, # of nodes in output layer
@@ -143,13 +150,12 @@ class RBF:
 
 
           """
-        def __init__(self, out_nodes, clusters, isReg, maxruns=1000, learning_rate=.01, ):
+        def __init__(self, out_nodes, clusters,  maxruns=1000, learning_rate=.01, ):
             self.out_nodes = out_nodes
             self.clusters = clusters
-            self.isReg = isReg
             self.learning_rate = learning_rate
             # weight array,  use out_nodes size 1  for reg
-            self.weights = np.random.uniform(-self.learning_rate, self.learning_rate, size=(self.out_nodes, self.clusters))
+            self.outputnodes = []
             # bias term, vector of size out_nodes (so size 1 for reg as 1 output node)
             self.bias = np.random.randn(clusters)
             self.maxruns = maxruns
@@ -184,23 +190,30 @@ class RBF:
                         maxDist = curDist
             return maxDist
 
-
-
+        #function to create list of outputs
+        # param:  class_values,  the list of class values
+        def createOutputs(self, class_values):
+            outputs = []
+            for outclass in class_values:
+                node = output(classval=outclass, weights=np.random.uniform(-self.learning_rate, self.learning_rate, size=self.clusters))
+                outputs.append(node)
+            return outputs
 
         """ Training function  to train our RBF
             :param data_instance, instance of data object
             :param data_set. set of training data
             :param actual_set,  set of actual outputs to compare training data too
+            :param class_values, the values for all classes in the dataset
         """
-        def train(self, data_instace, data_set, actual_set):
+        def train(self, data_instace, data_set, class_values):
             # getting the clusters (medoids)
             pam = PAM(k_val=self.clusters, data_instance=data_instace)
             medoids_list = pam.assign_random_medoids(data_set, self.clusters)
             pam.assign_data_to_medoids(data_set, medoids_list)
             # set the STD of the clusters  (doing once for now)
             self.std = self.getMaxDist(medoids_list) / np.sqrt(2*self.clusters)
-
-
+            # create output nodes
+            self.outputnodes = self.createOutputs(class_values)
             # var to represent convergence
             converged = False
             iterations = 0
@@ -208,7 +221,7 @@ class RBF:
                 # start training the model here
                 # go through each of the output "nodes" (values for weights are stored as vectors in the weights matrix
                 # this way I can avoid having to create a large number of classes
-                for output in self.weights:  # row represents the weights of a given end node
+                for node in self.outputnodes:  # row represents the weights of a given end node
 
                     for index, row in data_set.iterrows():
                         # calculate the activation functions for each of the examples for each hidden node (cluster)
@@ -218,24 +231,16 @@ class RBF:
                             a.append(medoidAct)
 
                         # convert a to a numpy array
+
+
                         a = np.array(a)
-                        a = np.add(a, self.bias)
                         # add in the bias term to current row
-                        F = a.T.dot(output)
-
-
-
-
-
+                        a = np.add(a, self.bias)
+                        # get the value of F(x) using the weights
+                        temp = a.T.dot(node.weights)
+                        # calcuate sigmoid for each output, then use sigmoidal values to perform gradient descent
+                        F = 1 / (1 + math.exp((-temp)))
                         # TODO:  Impelemt the gradient descent rules using the activation values a as input
-                        # backward pass
-                        # if we are in regression do reg error, using expected value of the function
-                       # if self.isReg:
-                       #    error = 0
-                           # error = -(y[i] - F).flatten()
-                        # otherwise set 0 / 1 depending on class values
-                       # else:
-                        #    error = 0
 
 
 
