@@ -90,7 +90,7 @@ class MyTestCase(unittest.TestCase):
         knn.edit_data(data.train_df, 5, data.test_df, data.label_col)
 
     def test_data_conversion_to_numerical(self):
-        data = Data('machine', pd.read_csv(r'data/machine.data', header=None), 8)
+        data = Data('segmentation', pd.read_csv(r'data/segmentation.data', header=None, skiprows=4), 8)
         df = data.df.sample(n=209)
         data.split_data(data_frame=df)
         print(data.test_df)

@@ -5,7 +5,7 @@ CATEGORICAL_DICTIONARY = {}
 ALLOWED_DICTIONARY = {}
 
 class Data:
-    def __init__(self, name, df, label_col):
+    def __init__(self, name, df, label_col, regression):
         self.name = name
         CATEGORICAL_DICTIONARY = {}
         ALLOWED_DICTIONARY = {}
@@ -16,6 +16,8 @@ class Data:
         self.train_df = None
         self.label_col = label_col
         self.k_dfs = None
+        self.regression = regression
+
 
     @staticmethod
     def get_row_size(df):

@@ -103,8 +103,8 @@ class KNN:
         OR... if correct remove (option 2)
         :param data_set: the training data that will be edited
         :param k_value: the number of neighbors being checked against
-        :param name: name of the data_set
         :param validation: the test data, so that there is a measurement of performance to know when to stop
+        :param the column of the data that has the classifier
         :return: Edited data_set back to KNN
         """
         # TODO: edit data according to pseudo code from class on 9/23
