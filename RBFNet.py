@@ -199,6 +199,12 @@ class RBFClass:
                 outputs.append(node)
             return outputs
 
+        # get class of some point
+        def getClass(self, point, data):
+            this_class = point[data.label_col]
+            print(this_class)
+            return this_class
+
         """ Training function  to train our RBF
             :param data_instance, instance of data object
             :param data_set. set of training data
@@ -218,9 +224,10 @@ class RBFClass:
             converged = False
             iterations = 0
             while not converged:
-                # start training the model here
-                # go through each of the output "nodes" (values for weights are stored as vectors in the weights matrix
-                # this way I can avoid having to create a large number of classes
+                if iterations % 100 is 0:
+                    print("Iteration: ")
+                    print(iterations)
+
                 for node in self.outputnodes:  # row represents the weights of a given end node
 
                     for index, row in data_set.iterrows():
@@ -231,21 +238,23 @@ class RBFClass:
                             a.append(medoidAct)
 
                         # convert a to a numpy array
-
-
                         a = np.array(a)
                         # add in the bias term to current row
-                        a = np.add(a, self.bias)
+                        a = np.add(a, node.bias)
+                        # change all values where class of
                         # get the value of F(x) using the weights
                         temp = a.T.dot(node.weights)
+                        # temp = temp.add(temp, node.bias)
+
                         # calcuate sigmoid for each output, then use sigmoidal values to perform gradient descent
                         F = 1 / (1 + math.exp((-temp)))
-                        # TODO:  Impelemt the gradient descent rules using the activation values a as input
+
+                        # TODO:  Calculate weights for this output
 
 
 
-                       # row = row - self.learning_rate * a * error
-                        #self.bias = self.bias - self.learning_rate * error
+                        # row = row - self.learning_rate * a * error
+                        # self.bias = self.bias - self.learning_rate * error
 
                 if iterations > self.maxruns:
                     # break out if we hit the maximum runs
