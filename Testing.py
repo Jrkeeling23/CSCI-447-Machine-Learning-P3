@@ -6,6 +6,7 @@ from Data import Data, DataConverter
 import pandas as pd
 import numpy as np
 from Cluster import KNN
+from NeuralNetwork import NeuralNetwork
 import collections
 
 
@@ -83,7 +84,7 @@ class MyTestCase(unittest.TestCase):
         print(knn.get_euclidean_distance(df.iloc[1], df.iloc[2]))
 
     def test_edit(self):
-        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8, False)
         df = data.df.sample(n=50)
         data.split_data(data_frame=df)
         knn = KNN(5, data)
@@ -128,6 +129,13 @@ class MyTestCase(unittest.TestCase):
             if cluster not in dt.values:
                 mismatch = True
         self.assertFalse(mismatch)
+
+    def test_layers(self):
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8, False)
+        df = data.df.sample(n=50)
+        data.split_data(data_frame=df)
+        network = NeuralNetwork(data_instance=data)
+        network.make_layers(2, 13)
 
 if __name__ == '__main__':
     unittest.main()
