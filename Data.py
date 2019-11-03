@@ -32,7 +32,7 @@ class Data:
         """
         return df.shape[1]
 
-    def split_data(self, data_frame, train_percent=.8):
+    def split_data(self, data_frame, train_percent=0.8):
         """
         splits the data according to the train percent.
         :return:
