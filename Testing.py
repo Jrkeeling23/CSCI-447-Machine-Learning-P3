@@ -129,5 +129,12 @@ class MyTestCase(unittest.TestCase):
                 mismatch = True
         self.assertFalse(mismatch)
 
+    def test_discretize(self):
+        data = Data('segmentation', pd.read_csv(r'data/segmentation.data', header=None, skiprows=4), 8)
+        data.regression_data_bins(4, quartile=True)
+        data.regression_data_bins(4, quartile=False)
+
+
+
 if __name__ == '__main__':
     unittest.main()
