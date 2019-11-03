@@ -137,5 +137,12 @@ class MyTestCase(unittest.TestCase):
         network = NeuralNetwork(data_instance=data)
         network.make_layers(2, 13)
 
+    def test_discretize(self):
+        data = Data('segmentation', pd.read_csv(r'data/segmentation.data', header=None, skiprows=4), 8)
+        data.regression_data_bins(4, quartile=True)
+        data.regression_data_bins(4, quartile=False)
+
+
+
 if __name__ == '__main__':
     unittest.main()
