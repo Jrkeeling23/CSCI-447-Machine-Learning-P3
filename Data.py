@@ -6,7 +6,7 @@ ALLOWED_DICTIONARY = {}
 
 
 class Data:
-    def __init__(self, name, df, label_col):
+    def __init__(self, name, df, label_col,):
         self.name = name
         CATEGORICAL_DICTIONARY = {}
         ALLOWED_DICTIONARY = {}
