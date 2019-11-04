@@ -75,6 +75,40 @@ class MyTestCase(unittest.TestCase):
         knn = KNN(5, data)
         knn.edit_data(data.train_df, 5, data.test_df, data.label_col)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def test_rbfReg(self):
         data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 8)  # load data
 
