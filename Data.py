@@ -4,6 +4,7 @@ import numpy as np
 CATEGORICAL_DICTIONARY = {}
 ALLOWED_DICTIONARY = {}
 
+
 class Data:
     def __init__(self, name, df, label_col):
         self.name = name
@@ -31,7 +32,7 @@ class Data:
         """
         return df.shape[1]
 
-    def split_data(self, data_frame, train_percent=.8):
+    def split_data(self, data_frame, train_percent=0.8):
         """
         splits the data according to the train percent.
         :return:
@@ -43,7 +44,6 @@ class Data:
         self.train_df, self.test_df = np.split(data_frame.sample(frac=1), [int(.8 * len(data_frame))])
         # print("Train ", self.train_df.shape)
         # print("Test ", self.test_df.shape)
-
 
     def split_k_fold(self, k_val, dataset):
         """
@@ -81,15 +81,35 @@ class Data:
     def quick_setup(self):
         self.split_data(train_percent=0.8)
 
-    def set_allowed_dictionary(self, df): # Get the unique values of strings per column.  This is for conversion in DataConverter
+    def set_allowed_dictionary(self,
+                               df):  # Get the unique values of strings per column.  This is for conversion in DataConverter
         for allowed_keys in range(df.shape[1]):
-            unique_values = df[allowed_keys].unique() # Unique values in dataframe source: https://chrisalbon.com/python/data_wrangling/pandas_list_unique_values_in_column/, : Chris Albon, Bob Haffner
+            unique_values = df[
+                allowed_keys].unique()  # Unique values in dataframe source: https://chrisalbon.com/python/data_wrangling/pandas_list_unique_values_in_column/, : Chris Albon, Bob Haffner
             for item in unique_values:
-                if allowed_keys not in ALLOWED_DICTIONARY.keys(): # Append all items allowed in a column to a dictionary for later converting
+                if allowed_keys not in ALLOWED_DICTIONARY.keys():  # Append all items allowed in a column to a dictionary for later converting
 
                     ALLOWED_DICTIONARY[allowed_keys] = [item]
                 else:
                     ALLOWED_DICTIONARY[allowed_keys].append(item)
+
+    def regression_data_bins(self, bin_size, quartile):
+        """
+        Used for the regression data sets(ONLY the label columns)!
+        :param quartile: boolean value that determines if quartile based binning
+        :param bin_size: number of bins to cut data into
+        :return: data frame with regression 'label' column in bins.
+        """
+        bin_df = self.df.copy()  # do not overwrite
+        if quartile:  # use standard deviation approach
+            bin_df[self.label_col] = pd.qcut(self.df[self.label_col], retbins=False, q=bin_size)
+        else:  # cut into bin_size number of equal bins
+            bin_df[self.label_col] = pd.cut(self.df[self.label_col], bin_size)
+        # TODO remove print statement... it is here for understanding... run with test_discretize in testing file to see output
+        print("\nentire dataframe\n", bin_df)
+        print("\nLabel column specifically... \n", bin_df[self.label_col])
+
+        return bin_df
 
 
 class DataConverter:
@@ -105,11 +125,11 @@ class DataConverter:
                 if item not in CATEGORICAL_DICTIONARY.keys():  # Checks if item is in dictionary
                     if type(item) is str:
                         CATEGORICAL_DICTIONARY[item] = [type(item),
-                                                       counter]  # Add item in the dictionary and assign a value
+                                                        counter]  # Add item in the dictionary and assign a value
                         counter += 1
                     else:
                         CATEGORICAL_DICTIONARY[item] = [type(item),
-                                                       item]  # Add item in the dictionary and assign a value
+                                                        item]  # Add item in the dictionary and assign a value
                     allowed_keys += 1
                 temp_row_list.append(CATEGORICAL_DICTIONARY[item][1])  # Append to a tem list
             temp_data_frame_list.append(temp_row_list)  # Append the list to the temp_data_frame list
@@ -127,10 +147,11 @@ class DataConverter:
                 for key, val in CATEGORICAL_DICTIONARY.items():  # Loop through the keys in the list and find the closest distance to a point.
                     min_found = False
                     value = val[1]  # Gets the numerical value of the dictionary
-                    difference = float(item) - float(value) # Gets the difference between the values
-                    if difference < 0.0: # Converts to a positive number if needed
+                    difference = float(item) - float(value)  # Gets the difference between the values
+                    if difference < 0.0:  # Converts to a positive number if needed
                         difference *= -1
-                    if difference < closest_point[1]: # Checks if the point is closer than the previous closest data point
+                    if difference < closest_point[
+                        1]:  # Checks if the point is closer than the previous closest data point
                         if key in ALLOWED_DICTIONARY[allowed_key]:
                             closest_point = [key, difference]
                             if difference == 0.0:  # Breaks if the difference is zero, as no point will be closer.
@@ -140,8 +161,7 @@ class DataConverter:
 
                 allowed_key += 1
                 if not min_found:
-                    temp_row_list.append(closest_point[0]) # Append to the row list
+                    temp_row_list.append(closest_point[0])  # Append to the row list
 
-            temp_data_frame_list.append(temp_row_list) # Append the row to the new dataset list
-        return pd.DataFrame(temp_data_frame_list) # Returns a dataframe
-
+            temp_data_frame_list.append(temp_row_list)  # Append the row to the new dataset list
+        return pd.DataFrame(temp_data_frame_list)  # Returns a dataframe

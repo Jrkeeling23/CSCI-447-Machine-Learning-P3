@@ -139,5 +139,11 @@ class MyTestCase(unittest.TestCase):
         size_prior = data.train_df.shape[0]
         self.assertGreater(size_prior, size_after)
 
+    def test_discretize(self):
+        data = Data('segmentation', pd.read_csv(r'data/segmentation.data', header=None, skiprows=4), 8)
+        data.regression_data_bins(4, quartile=True)
+        data.regression_data_bins(4, quartile=False)
+
+
 if __name__ == '__main__':
     unittest.main()
