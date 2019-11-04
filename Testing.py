@@ -132,13 +132,13 @@ class MyTestCase(unittest.TestCase):
 
     def test_layers(self):
         data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8, False)
-        df = data.df.sample(n=50)
+        df = data.df.sample(n=4)
         data.split_data(data_frame=df)
         network = NeuralNetwork(data_instance=data)
-        network.make_layers(2, 13)
+        network.make_layers(2, 4)
 
     def test_discretize(self):
-        data = Data('segmentation', pd.read_csv(r'data/segmentation.data', header=None, skiprows=4), 8)
+        data = Data('segmentation', pd.read_csv(r'data/segmentation.data', header=None, skiprows=4), 8, True)
         data.regression_data_bins(4, quartile=True)
         data.regression_data_bins(4, quartile=False)
 

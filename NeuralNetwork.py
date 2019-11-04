@@ -17,21 +17,26 @@ class NeuralNetwork:
         """
         layers = []
         for index, row in self.data_instance.train_df.iterrows():
-            layers.append(row.drop(columns=self.data_instance.label_col))
+            layers.append(Layer(len(row.drop(columns=self.data_instance.label_col))))
+            layers[0].make_input_layer(row.drop(columns=self.data_instance.label_col))
+            # print(row)
             for i in range(no_of_layers):
                 layers.append(Layer(no_of_nodes))
                 layers[i+1].make_nodes()
                 if i+1 == no_of_layers:
-                    layers.append(Layer(len(self.set_output)))
+                    layers.append(Layer(len(self.set_output())))
                     layers[i+2].make_nodes()
+                #     print("sup")
+                # print(i)
+                # print(layers[1].no_of_nodes)
                 for j in range(layers[i].no_of_nodes):
                     for f in range(len(layers[i+1].nodes)):
                         layers[i].nodes[j].outgoing_weights.append(Weight(layers[i].nodes[j], layers[i+1].nodes[f]))
-                        layers[i + 1].nodes[f].incoming_weights.append(Weight(layers[i].nodes[j], layers[i+1].nodes[f]))
-            for j in range(len(layers[-1].nodes)):
-                for f in range(len(layers[-2].nodes)):
-                    layers[i].nodes[j].outgoing_weights.append(Weight(layers[i].nodes[j], layers[i + 1].nodes[f]))
-                    layers[i + 1].nodes[f].incoming_weights.append(Weight(layers[i].nodes[j], layers[i + 1].nodes[f]))
+                        layers[i + 1].nodes[f].incoming_weights = layers[i].nodes[j].outgoing_weights
+            for j in range(len(layers[-2].nodes)):
+                for f in range(len(layers[-1].nodes)):
+                    layers[-2].nodes[j].outgoing_weights.append(Weight(layers[-2].nodes[j], layers[-1].nodes[f]))
+                    layers[-1].nodes[f].incoming_weights = layers[-2].nodes[j].outgoing_weights
         return layers
 
     def set_output(self):
@@ -56,6 +61,10 @@ class Layer:
     def make_nodes(self):
         for nodes in range(self.no_of_nodes):
             self.nodes.append(Neuron(float(random.randint(-1, 1))/100))
+
+    def make_input_layer(self, inputs):
+        for input in inputs:
+            self.nodes.append(Neuron(input))
 
 
 class Neuron:
