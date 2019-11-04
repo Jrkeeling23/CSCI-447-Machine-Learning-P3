@@ -129,5 +129,15 @@ class MyTestCase(unittest.TestCase):
                 mismatch = True
         self.assertFalse(mismatch)
 
+    def test_knn_condensed(self):
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
+        df = data.df.sample(n=350)  # minimal data frame
+        data.split_data(data_frame=df)  # sets test and train data
+        cluster_obj = KNN(5, data)
+        condensed_data = cluster_obj.condense_data(data.train_df)
+        size_after = condensed_data.shape[0]
+        size_prior = data.train_df.shape[0]
+        self.assertGreater(size_prior, size_after)
+
 if __name__ == '__main__':
     unittest.main()
