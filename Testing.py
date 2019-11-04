@@ -1,10 +1,15 @@
 import unittest
+
+from KMeans import Kmeans
 from PAM import PAM
-from Data import Data
+from Data import Data, DataConverter
 import pandas as pd
 import numpy as np
 from Cluster import KNN
-from RBFNet import RBFReg
+
+import collections
+
+
 
 class MyTestCase(unittest.TestCase):
     def test_something(self):
@@ -44,6 +49,17 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(isinstance(single_distance, float))  # check the it returns a float
         self.assertTrue(isinstance(dict_dist, dict))  # check if it is a dictionary
 
+    def test_medoid_swapping(self):
+        """
+        Just run to see values being swapped
+        :return:
+        """
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
+        df = data.df.sample(n=300)  # minimal data frame
+        data.split_data(data_frame=df)  # sets test and train data
+        pam = PAM(k_val=3, data_instance=data)  # create PAM instance to check super
+        index, distort, medoids = pam.perform_pam()
+
     def test_KNN(self):
         """
         Test if KNN is returning a class
@@ -75,6 +91,60 @@ class MyTestCase(unittest.TestCase):
         knn = KNN(5, data)
         knn.edit_data(data.train_df, 5, data.test_df, data.label_col)
 
+    def test_data_conversion_to_numerical(self):
+        data = Data('machine', pd.read_csv(r'data/machine.data', header=None), 8)
+        df = data.df.sample(n=209)
+        data.split_data(data_frame=df)
+        print(data.test_df)
+        # converter = DataConverter()
+        # converter.convert_to_numerical(data.train_df)
+        # converter.convert_to_numerical(data.test_df)
+
+    def test_data_conversion_to_original(self):
+        data = Data('forestfires', pd.read_csv(r'data/forestfires.data', header=None), 8)
+        df = data.df.sample(n=209)
+        data.split_data(data_frame=df)
+        print(data.train_df)
+        converter = DataConverter()
+        converted = converter.convert_data_to_original(data.train_df)
+        print(converted)
+        mismatch = False
+        dt = converter.convert_data_to_original(data.train_df.copy())
+        for convert in converted.values:
+            if convert not in dt.values:
+                mismatch = True
+        self.assertFalse(mismatch)
+
+    def test_k_means(self):
+        data = Data('machine', pd.read_csv(r'data/machine.data', header=None), 8)  # load data
+        df = data.df.sample(n=209)  # minimal data frame
+        data.split_data(data_frame=df)  # sets test and train data
+        k_val = 2
+        knn = KNN(k_val, data)
+        kmeans = Kmeans(k_val, data)
+        clusters = kmeans.k_means(data.train_df, 10)
+        converter = DataConverter()
+        dt = converter.convert_data_to_original(data.train_df.copy())
+        mismatch = False
+        for cluster in clusters.values:
+            if cluster not in dt.values:
+                mismatch = True
+        self.assertFalse(mismatch)
+
+    def test_knn_condensed(self):
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
+        df = data.df.sample(n=350)  # minimal data frame
+        data.split_data(data_frame=df)  # sets test and train data
+        cluster_obj = KNN(5, data)
+        condensed_data = cluster_obj.condense_data(data.train_df)
+        size_after = condensed_data.shape[0]
+        size_prior = data.train_df.shape[0]
+        self.assertGreater(size_prior, size_after)
+
+    def test_discretize(self):
+        data = Data('segmentation', pd.read_csv(r'data/segmentation.data', header=None, skiprows=4), 8)
+        data.regression_data_bins(4, quartile=True)
+        data.regression_data_bins(4, quartile=False)
 
 
 
