@@ -107,31 +107,5 @@ class MyTestCase(unittest.TestCase):
 
 
 
-
-
-    def test_rbfReg(self):
-        data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 8)  # load data
-
-        df = data.df.sample(n=100)  # minimal data frame
-
-        cols = df.columns
-        for col in cols:
-            df[col] = df[col].astype(float)
-        expected = df[df.columns[-1]]
-        df = df.iloc[:, :-1]
-        data.split_data(data_frame=df)  # sets test and train data
-        # will have high error due to small dataset, but just a test to show how this works
-        rbf = RBFReg(6, maxruns=1000)
-
-        rbf.trainReg(df, expected, data)
-
-        predicts = rbf.predictReg(df)
-        expc_list = expected.values.tolist()
-
-        print("MSE")
-        mse = rbf.mean_squared_error(predicts, expc_list)
-        print(mse)
-
-
 if __name__ == '__main__':
     unittest.main()
