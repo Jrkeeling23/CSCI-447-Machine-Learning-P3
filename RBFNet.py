@@ -175,6 +175,7 @@ class RBFClass:
             self.bias = np.random.randn(clusters)
             self.maxruns = maxruns
             self.std = None
+            self.medoids = None
 
         '''
         :param x : an example
@@ -217,7 +218,6 @@ class RBFClass:
         # get class of some point
         def getClass(self, point, data):
             this_class = point[data.label_col]
-            print(this_class)
             return this_class
 
         """ Training function  to train our RBF
@@ -229,7 +229,8 @@ class RBFClass:
         def train(self, data_instace, data_set, class_values):
             # getting the clusters (medoids)
             pam = PAM(k_val=self.clusters, data_instance=data_instace)
-            medoids_list = pam.assign_random_medoids(data_set, self.clusters)
+            medoids_list, filler = pam.assign_random_medoids(data_set, self.clusters)
+            self.medoids = medoids_list
             pam.assign_data_to_medoids(data_set, medoids_list)
             # set the STD of the clusters  (doing once for now)
             self.std = self.getMaxDist(medoids_list) / np.sqrt(2*self.clusters)
@@ -252,24 +253,36 @@ class RBFClass:
                             medoidAct = self.calcHiddenOutputs(row, medoid.row, self.std)
                             a.append(medoidAct)
 
+
                         # convert a to a numpy array
                         a = np.array(a)
                         # add in the bias term to current row
-                        a = np.add(a, node.bias)
+                        # a = np.add(a, node.bias)
                         # change all values where class of
                         # get the value of F(x) using the weights
-                        temp = a.T.dot(node.weights)
+                        F = a.T.dot(node.weights) + node.bias
                         # temp = temp.add(temp, node.bias)
-
                         # calcuate sigmoid for each output, then use sigmoidal values to perform gradient descent
-                        F = 1 / (1 + math.exp((-temp)))
-                        node.score = F
+                        # temp = round(temp, 8)
+                        # print(temp)
+                        if F < 0:
+                            temp = 1- 1/(1 + math.exp(F))
+                        else:
+                            temp = 1 / 1 + math.exp(-F)
+
+
+                        error = temp
+                        #print(F)
+                        #print(":::")
+                        #print(error)
+                        #print("|||||")
+                        node.score = error
                         # TODO:  Calculate weights for this output
 
 
 
-                        node.weights = node.weights - self.learning_rate * a * (1-F)
-                        self.bias = self.bias - self.learning_rate * (1-F)
+                        node.weights = node.weights - self.learning_rate * a * error
+                        node.bias = node.bias - self.learning_rate * error
 
                 if iterations > self.maxruns:
                     # break out if we hit the maximum runs
@@ -287,13 +300,21 @@ class RBFClass:
                 for node in self.outputnodes:
                     a = []
                     for medoid in self.medoids:
-                        medoidAct = self.calcHiddenOutputs(row, medoid.row, self.std, data_instance)
+                        medoidAct = self.calcHiddenOutputs(row, medoid.row, self.std)
                         a.append(medoidAct)
-                    # calculate score for each node
+                    # calculate score for each nodes
                     a = np.array(a)
-                    temp = a.T.dot(self.weights) + self.bias
-                    F = 1 / (1 + math.exp((-temp)))
-                    node.score = F
+
+                    F = a.T.dot(node.weights) + node.bias
+                    # error = 1 / (1 + math.exp((-F)))
+                    if F < 0:
+                        temp = 1 - 1 / (1 + math.exp(F))
+                    else:
+                        temp = 1 / 1 + math.exp(-F)
+
+                    error = temp
+
+                    node.score = error
                     # add all output nodes to a list
                     output_nodes.append(node)
 
