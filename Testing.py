@@ -187,21 +187,21 @@ class MyTestCase(unittest.TestCase):
 
     def test_rbfClass(self):
             #data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 8)  # load data
-            data = Data('abalone', pd.read_csv('data/forestfires.data', header=None), 11)  # load data
+            data = Data('abalone', pd.read_csv('data/abalone.data', header=None), 11)  # load data
             df = data.df.sample(n=100)  # minimal data frame
 
             cols = df.columns
             for col in cols:
                 df[col] = df[col].astype(float)
             data.split_data(data_frame=df)
-            expected = data.test_df[data.test_df.columns[11]]
+            expected = data.test_df[data.test_df.columns[-1]]
             #data. = df.iloc[:, :-1]
               # sets test and train data
             # print(data.test_df)
             # print(expected)
             # will have high error due to small dataset, but just a test to show how this works
             class_vals = list(range(1, 29))
-            rbf = RBFClass(clusters=6, maxruns=1000, out_nodes=len(class_vals))
+            rbf = RBFClass(clusters=12, maxruns=400, out_nodes=len(class_vals))
 
             rbf.train(data, data.train_df, class_vals)
 
@@ -212,7 +212,7 @@ class MyTestCase(unittest.TestCase):
             print("expected")
             print(expc_list)
 
-
+            accuracy = rbf.zero_one_loss(predicts, expc_list)
 
 
 

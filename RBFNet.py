@@ -330,5 +330,21 @@ class RBFClass:
 
             return predictions
 
+        # function for zero one loss
+        # params: actual for actual values, predicted for predicted values
+        def zero_one_loss(self, predicted, actual):
 
+            #vars for our two counts
+            correct_count = 0
+            wrong_count = 0
+            # assume they are same length
+            for i in range(len(predicted)):
+                if predicted[i] is actual[i]:
+                    correct_count += 1
+                else:
+                    wrong_count += 1
+
+            print("\n-- Classified ", correct_count, "Examples Correctly and ", wrong_count, "Incorrectly---")
+            print("\n--- With total Zero One Loss of: ", (correct_count / wrong_count), "---")
+            return correct_count / wrong_count  # total accuracy
 

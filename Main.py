@@ -47,10 +47,10 @@ def RBFREG_exp():
     rbf3.trainReg(data.train_df, expected, data)
     rbf4.trainReg(data.train_df, expected, data)
 
-    predicts = rbf.predictReg(data.train_df_df, data)
-    predicts2 = rbf.predictReg(data.train_df_df, data)
-    predicts3 = rbf.predictReg(data.train_df_df, data)
-    predicts4 = rbf.predictReg(data.train_df_df, data)
+    predicts = rbf.predictReg(data.test_df_df, data)
+    predicts2 = rbf.predictReg(data.test_df_df, data)
+    predicts3 = rbf.predictReg(data.test_df_df, data)
+    predicts4 = rbf.predictReg(data.test_df_df, data)
 
     expc_list = actual.values.tolist()
     print("predicts RBF 1")
@@ -102,18 +102,18 @@ def RBFREG_vid():
     data.split_data(data_frame=df)
     # setup expected values for testings
     expected = data.train_df[data.train_df.columns[-1]]
-    # actual = data.test_df[data.test_df.columns[-1]]
+    actual = data.test_df[data.test_df.columns[-1]]
 
     # sets test and train data
     # will have high error due to small dataset, but just a test to show how this works
-    rbf = RBFReg(clusters=4, maxruns=800)
+    rbf = RBFReg(clusters=8, maxruns=600)
 
     rbf.trainReg(data.train_df, expected, data)
 
     print('Calcuate predictions for the RBF')
-    predicts = rbf.predictReg(data.test_df, data)
+    predicts = rbf.predictReg(data.train_df, data)
 
-    expc_list = expected.values.tolist()
+    expc_list = actual.values.tolist()
     print("predicts RBF")
     print(predicts)
     print("expected")
@@ -131,6 +131,6 @@ class Main:
 
 if __name__ == '__main__':
     # run experiment
-    # RBFREG_exp()
+    RBFREG_exp()
     # run video rbg freg
-    RBFREG_vid()
+    #RBFREG_vid()
