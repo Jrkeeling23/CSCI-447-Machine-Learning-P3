@@ -47,10 +47,10 @@ def RBFREG_exp():
     rbf3.trainReg(data.train_df, expected, data)
     rbf4.trainReg(data.train_df, expected, data)
 
-    predicts = rbf.predictReg(data.test_df, data)
-    predicts2 = rbf.predictReg(data.test_df, data)
-    predicts3 = rbf.predictReg(data.test_df, data)
-    predicts4 = rbf.predictReg(data.test_df, data)
+    predicts = rbf.predictReg(data.train_df_df, data)
+    predicts2 = rbf.predictReg(data.train_df_df, data)
+    predicts3 = rbf.predictReg(data.train_df_df, data)
+    predicts4 = rbf.predictReg(data.train_df_df, data)
 
     expc_list = actual.values.tolist()
     print("predicts RBF 1")
