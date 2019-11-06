@@ -41,18 +41,11 @@ def RBFREG_exp():
     rbf2 = RBFReg(clusters=6, maxruns=1000)
     rbf3 = RBFReg(clusters=8, maxruns=1000)
     rbf4 = RBFReg(clusters=12, maxruns=1000)
+    expc_list = actual.values.tolist()
 
     rbf.trainReg(data.train_df, expected, data)
-    rbf2.trainReg(data.train_df, expected, data)
-    rbf3.trainReg(data.train_df, expected, data)
-    rbf4.trainReg(data.train_df, expected, data)
+    predicts = rbf.predictReg(data.test_df, data)
 
-    predicts = rbf.predictReg(data.test_df_df, data)
-    predicts2 = rbf.predictReg(data.test_df_df, data)
-    predicts3 = rbf.predictReg(data.test_df_df, data)
-    predicts4 = rbf.predictReg(data.test_df_df, data)
-
-    expc_list = actual.values.tolist()
     print("predicts RBF 1")
     print(predicts)
     print("expected")
@@ -60,6 +53,10 @@ def RBFREG_exp():
     print("MSE RBF 1")
     mse = rbf.mean_squared_error(predicts, expc_list)
     print(mse)
+
+
+    rbf2.trainReg(data.train_df, expected, data)
+    predicts2 = rbf.predictReg(data.test_df, data)
 
     print("predicts RBF 2")
     print(predicts2)
@@ -69,6 +66,10 @@ def RBFREG_exp():
     mse2 = rbf2.mean_squared_error(predicts2, expc_list)
     print(mse2)
 
+    rbf3.trainReg(data.train_df, expected, data)
+    predicts3 = rbf.predictReg(data.test_df, data)
+
+
     print("predicts RBF 3")
     print(predicts3)
     print("expected")
@@ -76,6 +77,9 @@ def RBFREG_exp():
     print("MSE RBF 3")
     mse3 = rbf.mean_squared_error(predicts3, expc_list)
     print(mse3)
+
+    rbf4.trainReg(data.train_df, expected, data)
+    predicts4 = rbf.predictReg(data.test_df, data)
 
     print("predicts RBF 4")
     print(predicts4)
