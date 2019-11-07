@@ -132,9 +132,16 @@ class MyTestCase(unittest.TestCase):
 
     def test_mse(self):
         lf = LF()
-        data = [1, 3, 2, 3, 4, 4, 3, 2, 3, 4]
-        label = [1, 5, 2, 1, 6, 5, 3, 2, 3, 2]
-        self.assertTrue(lf.mean_squared_error(data, label), 1.7)
+        data = [1, 3, 2, 3, 4, 4, 3, 2, 3, 4, 3, 3]
+        label = [1, 5, 2, 1, 6, 5, 3, 2, 3, 2, 3, 3]
+        self.assertEquals(round(lf.mean_squared_error(data, label), 9), 1.416666667)
+
+    def test_zero_one(self):
+        lf = LF()
+        data = [1, 3, 2, 3, 4, 4, 3, 2, 3, 4, 3, 3]
+        label = [1, 5, 2, 1, 6, 5, 3, 2, 3, 2, 3, 3]
+        self.assertEquals(round(lf.zero_one_loss(data, label), 10), 0.4166666667)
+
 
 
 if __name__ == '__main__':
