@@ -1,6 +1,6 @@
-import process_data as data
+import data as data
 import pandas as pd
-from KNN import KNN
+from PAM import KNN
 import math
 
 
@@ -51,7 +51,8 @@ class LF:
         n = len(actual_data)  # get out n for MSE
         sum = 0  # sum of the MSE squared values
 
-        for (predict, true) in (predicted_data, actual_data): # go through all the points at the same time
+        # Following code for using zip to loop along two lists source: https://stackoverflow.com/questions/1919044/is-there-a-better-way-to-iterate-over-two-lists-getting-one-element-from-each-l, user: sateesh, Agostino
+        for (predict, true) in zip(predicted_data, actual_data): # go through all the points at the same time
             currentSum = (true - predict) ** 2  # square it
             sum += currentSum # add current to total sum
 
