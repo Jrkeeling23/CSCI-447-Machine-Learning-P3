@@ -108,7 +108,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_k_means(self):
         data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
-        df = data.df.sample(n=4177)  # minimal data frame
+        df = data.df.sample(n=200)  # minimal data frame
         data.split_data(data_frame=df)  # sets test and train data
         k_val = 2
         knn = KNN(k_val, data)
