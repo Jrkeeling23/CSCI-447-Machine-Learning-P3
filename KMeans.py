@@ -14,13 +14,14 @@ class Kmeans(KNN):
         self.converter = DataConverter()
 
     def k_means(self, data_set, k_val):  # Method for K-Means
+        print("\n----------------- Running K-Means -----------------")
+
         data_space = self.get_data_space(data_set)
         clusters = self.set_clusters_to_dict(data_set, k_val, data_space)
         return self.cluster_data(clusters, data_set)
 
     def k_random_point(self, data_set, k_val, data_space):  # Method to grab k_random rows for centroid method
         data_set = data_set
-        print("\n-----------------Getting K Random Cluster Points-----------------")
         centroid_points = []  # List of centroid points type Series
         # Following row iteration with iteritems() sourced from https://stackoverflow.com/questions/28218698/how-to-iterate-over-columns-of-pandas-dataframe-to-run-regression/32558621 User: mdh and mmBs
         for k in range(k_val):  # Grabs k Centroids
@@ -35,7 +36,6 @@ class Kmeans(KNN):
         return centroid_points  # Returns a list of centroid points
 
     def predict_centroids(self, centroids, data_set):  # Method to return closest cluster to test data
-        print("\n----------------- Predicting Closes Cluster on Test Data -----------------\n")
 
         for _, data in data_set[data_set].iterrows():  # Loops through the rows of the data set
             distance = None  # Initializes distance
@@ -53,8 +53,8 @@ class Kmeans(KNN):
                     closest_centroid_euclidian_distance = distance
                 cluster_val += 1
             # Print closest cluster to the test data point.
-            print("\nEuclidian Distance to Closest K-Means Cluster: ", closest_centroid_euclidian_distance)
-            print("Closest Cluster: Cluster ", closest_centroid)
+            # print("\nEuclidian Distance to Closest K-Means Cluster: ", closest_centroid_euclidian_distance)
+            # print("Closest Cluster: Cluster ", closest_centroid)
 
     def set_clusters_to_dict(self, data_set, k_val, data_space):  # Create an initial dictionary of cluster points
         while (True):
@@ -91,7 +91,7 @@ class Kmeans(KNN):
 
             clusters = self.mean_clusters(current_clusters, data_set) # Gets the updated k-mean clusters
             if previous_clusters == current_clusters:
-                print('--------------------------K-Means has converged------------------')
+                print('-------------------------- K-Means has converged ------------------')
                 cluster_list = []
                 for cluster in clusters.values():# Convert the k-means points to a list
                     cluster_list.append(cluster)

@@ -107,8 +107,8 @@ class MyTestCase(unittest.TestCase):
         data.split_data(data_frame=df)
 
     def test_k_means(self):
-        data = Data('machine', pd.read_csv(r'data/machine.data', header=None), 8)  # load data
-        df = data.df.sample(n=50)  # minimal data frame
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
+        df = data.df.sample(n=4177)  # minimal data frame
         data.split_data(data_frame=df)  # sets test and train data
         k_val = 2
         knn = KNN(k_val, data)
