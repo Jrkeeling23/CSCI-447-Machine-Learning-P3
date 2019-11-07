@@ -9,10 +9,23 @@ from Cluster import KNN
 import collections
 from RBFNet import RBFReg
 from RBFNet import RBFClass
+from loss_functions import LF
+
 
 class MyTestCase(unittest.TestCase):
-    def test_something(self):
-        self.assertEqual(True, False)
+
+    def test_data_conversion_to_original(self):
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)
+        df = data.df.sample(n=50)
+        data.split_data(data_frame=df)
+        converter = DataConverter()
+        converted = converter.convert_data_to_original(data.train_df)
+        mismatch = False
+        dt = converter.convert_data_to_original(data.train_df.copy())
+        for convert in converted.values:
+            if convert not in dt.values:
+                mismatch = True
+        self.assertFalse(mismatch)
 
     def test_determine_closest_in_dictionary(self):
         """
@@ -81,8 +94,6 @@ class MyTestCase(unittest.TestCase):
         df = data.df.sample(n=10)  # minimal data frame
         data.split_data(data_frame=df)  # sets test and train data
         knn = KNN(5, data)
-
-        print(type(df.iloc[1][1]))
         print(knn.get_euclidean_distance(df.iloc[1], df.iloc[2]))
 
     def test_edit(self):
@@ -96,34 +107,15 @@ class MyTestCase(unittest.TestCase):
         data = Data('machine', pd.read_csv(r'data/machine.data', header=None), 8)
         df = data.df.sample(n=209)
         data.split_data(data_frame=df)
-        print(data.test_df)
-        # converter = DataConverter()
-        # converter.convert_to_numerical(data.train_df)
-        # converter.convert_to_numerical(data.test_df)
-
-    def test_data_conversion_to_original(self):
-        data = Data('forestfires', pd.read_csv(r'data/forestfires.data', header=None), 8)
-        df = data.df.sample(n=209)
-        data.split_data(data_frame=df)
-        print(data.train_df)
-        converter = DataConverter()
-        converted = converter.convert_data_to_original(data.train_df)
-        print(converted)
-        mismatch = False
-        dt = converter.convert_data_to_original(data.train_df.copy())
-        for convert in converted.values:
-            if convert not in dt.values:
-                mismatch = True
-        self.assertFalse(mismatch)
 
     def test_k_means(self):
-        data = Data('machine', pd.read_csv(r'data/machine.data', header=None), 8)  # load data
-        df = data.df.sample(n=209)  # minimal data frame
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
+        df = data.df.sample(n=200)  # minimal data frame
         data.split_data(data_frame=df)  # sets test and train data
         k_val = 2
         knn = KNN(k_val, data)
         kmeans = Kmeans(k_val, data)
-        clusters = kmeans.k_means(data.train_df, 10)
+        clusters = kmeans.k_means(data.train_df, 5)
         converter = DataConverter()
         dt = converter.convert_data_to_original(data.train_df.copy())
         mismatch = False
@@ -131,6 +123,18 @@ class MyTestCase(unittest.TestCase):
             if cluster not in dt.values:
                 mismatch = True
         self.assertFalse(mismatch)
+
+    def test_mse(self):
+        lf = LF()
+        data = [1, 3, 2, 3, 4, 4, 3, 2, 3, 4, 3, 3]
+        label = [1, 5, 2, 1, 6, 5, 3, 2, 3, 2, 3, 3]
+        self.assertEquals(round(lf.mean_squared_error(data, label), 9), 1.416666667)
+
+    def test_zero_one(self):
+        lf = LF()
+        data = [1, 3, 2, 3, 4, 4, 3, 2, 3, 4, 3, 3]
+        label = [1, 5, 2, 1, 6, 5, 3, 2, 3, 2, 3, 3]
+        self.assertEquals(round(lf.zero_one_loss(data, label), 10), 0.4166666667)
 
     def test_knn_condensed(self):
         data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
