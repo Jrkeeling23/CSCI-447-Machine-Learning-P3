@@ -24,8 +24,8 @@ class LF:
                     zero_count += 1
                 else:
                     one_count += 1
-            print("\n--- KNN Classified", zero_count, "Examples Correctly and", one_count, "Incorrectly---")
-            print("\n--- With total Zero One Loss of:", (one_count/length_of_labels), "---")
+            # print("\n--- KNN Classified", zero_count, "Examples Correctly and", one_count, "Incorrectly---")
+            print("\n--- Zero One Loss:", (one_count/length_of_labels), "---")
             return one_count/length_of_labels  # Return zero one loss
 
 
@@ -47,4 +47,6 @@ class LF:
 
         # divide by n
         sum = sum/n
+        print("\n--- Mean Squared Error:", sum,  "---")
+
         return sum # done, return sum
