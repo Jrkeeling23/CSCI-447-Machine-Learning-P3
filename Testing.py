@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 from Cluster import KNN
 import collections
+from loss_functions import LF
 
 
 class MyTestCase(unittest.TestCase):
@@ -128,6 +129,20 @@ class MyTestCase(unittest.TestCase):
             if cluster not in dt.values:
                 mismatch = True
         self.assertFalse(mismatch)
+
+    def test_mse(self):
+        lf = LF()
+        data = [1, 3, 2, 3, 4, 4, 3, 2, 3, 4, 3, 3]
+        label = [1, 5, 2, 1, 6, 5, 3, 2, 3, 2, 3, 3]
+        self.assertEquals(round(lf.mean_squared_error(data, label), 9), 1.416666667)
+
+    def test_zero_one(self):
+        lf = LF()
+        data = [1, 3, 2, 3, 4, 4, 3, 2, 3, 4, 3, 3]
+        label = [1, 5, 2, 1, 6, 5, 3, 2, 3, 2, 3, 3]
+        self.assertEquals(round(lf.zero_one_loss(data, label), 10), 0.4166666667)
+
+
 
     def test_knn_condensed(self):
         data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
