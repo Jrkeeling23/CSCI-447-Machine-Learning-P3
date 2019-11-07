@@ -142,6 +142,23 @@ class MyTestCase(unittest.TestCase):
         data.regression_data_bins(4, quartile=True)
         data.regression_data_bins(4, quartile=False)
 
+    def test_network_prediction(self):
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8, False)
+        df = data.df.sample(n=10)
+        data.split_data(data_frame=df)
+        network = NeuralNetwork(data_instance=data)
+        layers, output_set = network.make_layers(2, 6)
+        output_prediction = network.sigmoid(layers, df.iloc[0].drop(data.label_col))
+        print(network.prediction(output_set, output_prediction))
+
+    def test_cost(self):
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8, False)
+        df = data.df.sample(n=10)
+        data.split_data(data_frame=df)
+        network = NeuralNetwork(data_instance=data)
+        layers, output_set = network.make_layers(2, 6)
+        output_prediction = network.sigmoid(layers, df.iloc[0].drop(data.label_col))
+        print(network.cost(output_prediction, output_set, df.iloc[0][data.label_col]))
 
 
 if __name__ == '__main__':
