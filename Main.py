@@ -229,4 +229,3 @@ if __name__ == '__main__':
             # run experiment
             # RBFREG_exp(rbf_version)
 
-    print('Best performing ', best_performing)
