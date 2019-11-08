@@ -276,6 +276,50 @@ class MyTestCase(unittest.TestCase):
             mse = rbf.mean_squared_error(predicts, expc_list)
             print(mse)
 
+    def test_runBothRBF(self):
+        # data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 8)  # load data
+        data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 11)  # load data
+        df = data.df.sample(n=100)  # minimal data frame
+
+        # print(test2_df[11])
+        print("Checking DF set")
+        print(df[df.columns[-1]])
+
+        cols = df.columns
+        for col in cols:
+            df[col] = df[col].astype(float)
+        expected = df[df.columns[-1]]
+
+        # print(expected[1])
+
+        df = df.iloc[:, :-1]
+
+        data.split_data(data_frame=df)  # sets test and train data
+        # will have high error due to small dataset, but just a test to show how this works
+        rbf = RBFRegK(clusters=4, maxruns=200)
+        rbf2 = RBFReg(clusters=4, maxruns=200)
+        rbf.trainReg(data.train_df, expected, data)
+        rbf2.trainReg(data.train_df, expected, data)
+
+        predicts = rbf.predictReg(data.test_df, data)
+        predictsmeds = rbf2.predictReg(data.test_df, data)
+        expc_list = expected.values.tolist()
+        print("predicts means")
+        print(predicts)
+        print("predicts medoids")
+        print(predictsmeds)
+        print("expected")
+        print(expc_list)
+
+        print("MSE Means")
+        mse = rbf.mean_squared_error(predicts, expc_list)
+        print(mse)
+
+        print("MSE Medoids")
+        mse2 = rbf2.mean_squared_error(predictsmeds, expc_list)
+        print(mse2)
+
+
 
 
 if __name__ == '__main__':
