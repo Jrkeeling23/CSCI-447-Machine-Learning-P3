@@ -110,7 +110,7 @@ class Data:
         # TODO remove print statement... it is here for understanding... run with test_discretize in testing file to see output
         print("\nentire dataframe\n", bin_df)
         print("\nLabel column specifically... \n", bin_df[self.label_col])
-
+        print(type(bin_df.iloc[0][8]))
         return bin_df
 
 

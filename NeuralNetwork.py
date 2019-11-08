@@ -1,5 +1,6 @@
 import random
 import math
+import numpy as np
 
 
 class NeuralNetwork:
@@ -73,14 +74,19 @@ class NeuralNetwork:
         for layer in layers[1:]:
             for node in layer.nodes:
                 sigmoid_total = 0
+                # print(node.bias_change)
                 for weight in node.incoming_weights:
+                    # print(weight.weight_change)
                     # print(len(layers))
                     # print(len(layers[1:]))
                     # print(weight.get_weight())
-                    sigmoid_total += weight.get_weight() \
-                                     * weight.L_neuron.value
+                    sigmoid_total += weight.get_weight() * weight.L_neuron.value
                 sigmoid_total += node.bias
-                node.value = 1/(1 + math.exp(-sigmoid_total))
+                # print(sigmoid_total)
+                # try:
+                node.value = 1/(1 + np.exp(-sigmoid_total))
+                # except:
+
         output = []
         for node in layers[-1].nodes:
             output.append(node.value)
@@ -107,7 +113,7 @@ class NeuralNetwork:
         cost = 0
         for f in range(len(output_values)):
             cost += (output_values[f]-compare[f]) ** 2
-        return cost
+        return cost, compare
 
 
 
@@ -118,12 +124,159 @@ class NeuralNetwork:
             for index, row in self.data_instance.train_df.iterrows():
                 if row[label] not in output:
                     output.append(row[label])
+        else:
+            for index, row in self.data_instance.train_df.iterrows():
+                if row[label] not in output:
+                    output.append(row[label])
         return sorted(output)
 
-    def back_prop(self):  # oh boy here we go wish me luck
+    def back_prop(self, layers, compare):  # oh boy here we go wish me luck
+        # for i in range(len(layers)-1, 0, -1):
+        #     for node in layers[i].nodes:
+        #         node.bias_change += (-(1-node.value)*node.value*(1-node.value))
+        #         for weight in node.incoming_weights:
+        #             weight.weight_change += (-(1-cost)*node.value*(1-node.value)*weight.L_neuron.value)
+        for i in range(len(layers)-1, 0, -1):
+            j = 0
+            for node in layers[i].nodes:
+                if i==len(layers)-1:
+                    # print(compare)
+                    node.delta = (node.value-compare[j])*node.value*(1-node.value)
+                    # print(type(-(compare[j]-node.value)*node.value*(1-node.value)))
+                    j+=1
+                else:
+                    start = 0
+                    for weight in node.outgoing_weights:
+                        start += weight.R_neuron.delta * weight.weight
+                    node.delta = node.value*(1-node.value)*start
+                node.bias_change += node.delta
+                # print(node.bias_change)
+                for weight in node.incoming_weights:
+                    weight.weight_change += weight.L_neuron.value*node.delta
+                    # print(weight.weight_change)
+        return
 
-        pass
+    def gradient_descent(self, layers, eta, alpha, compare, row):
+        for i in range(len(layers)-1, 0, -1):
+            for node in layers[i].nodes:
+                node.prev_bias_change = node.bias_change
+                node.bias_change = 0
+                for weight in node.incoming_weights:
+                    weight.prev_change = weight.weight_change
+                    weight.weight_change = 0
+        for i in range(len(row)):
+            # print(i)
+            # print(row[i])
+            self.sigmoid(layers, row[i])
+            self.back_prop(layers, compare[i])
+        changes = []
+        for j in range(len(layers) - 1, 0, -1):
+            # print(j)
+            for node in layers[j].nodes:
+                # node.prev_bias_change = node.bias_change
+                node.bias_change = -eta * node.bias_change/len(row)
+                node.bias += node.bias_change# +alpha*node.prev_bias_change
+                changes.append(node.bias_change)
+                # print(node.bias_change)
+                for weight in node.incoming_weights:
+                    # weight.prev_change = weight.weight_change
+                    weight.weight_change = -eta*weight.weight_change/len(row)
+                    weight.weight += weight.weight_change# +alpha*weight.prev_change
+                    changes.append(weight.weight_change)
+                    # print(weight.weight_change)
+        return changes, len(changes)
 
+    # def run_it(self, train, hidden_layers, hidden_nodes, eta, alpha):
+    #     network =
+
+
+class NetworkClient:
+    def __init__(self, data_instance):
+        self.data_instance = data_instance
+
+    def prepare(self):
+        self.data_instance.split_data()
+        if self.data_instance.regression:
+            self.data_instance.regression_data_bins(9, True)
+
+    def train_it(self, hidden_layers, hidden_nodes, eta, alpha, stoch):
+        network = NeuralNetwork(self.data_instance)
+        layers, output_layer = network.make_layers(hidden_layers, hidden_nodes)
+        output_predictions = []
+        costs = []
+        compare = []
+        for index, row in self.data_instance.train_df.iterrows():
+            output_predictions.append(network.sigmoid(layers, row.drop(self.data_instance.label_col)))
+            cos, comp = network.cost(output_predictions[-1], output_layer, row[self.data_instance.label_col])
+            costs.append(cos)
+            compare.append(comp)
+        tries = 0
+        while True:
+            tries += 1
+            print(tries)
+            # f=0
+            group = []
+            comp_group = []
+            check_group = []
+            j=0
+            for index, row in self.data_instance.train_df.iterrows():
+                j+=1
+                if j % stoch == 0:
+                    changes, length = network.gradient_descent(layers, eta, alpha, comp_group, group)
+                    # print(check_group)
+                    # print(output_layer)
+                    # print(comp_group)
+                    group = []
+                    comp_group = []
+                group.append(row.drop(self.data_instance.label_col))
+                check_group.append(row[self.data_instance.label_col])
+                cos, comp = network.cost(output_predictions[-1], output_layer, row[self.data_instance.label_col])
+                comp_group.append(comp)
+                # for j in range(stoch):
+                #     group.append(costs[f+j])
+                #     comp_group.append(compare[f+j])
+                # f+=1
+            # for i in range(0, len(costs), stoch):
+            #     group = []
+            #     comp_group = []
+            #     for j in range(stoch):
+            #         if i+j < len(costs):
+            #             # print(len(costs))
+            #             # print(i+j)
+            #             group.append(costs[i+j])
+            #             comp_group.append(compare[i+j])
+            #
+            #     changes, length = network.gradient_descent(layers, group, eta, alpha, comp_group)
+            #     # print(changes)
+            output_predictions = []
+            costs = []
+            for index, row in self.data_instance.train_df.iterrows():
+                output_predictions.append(network.sigmoid(layers, row.drop(self.data_instance.label_col)))
+                costs.append(network.cost(output_predictions[-1], output_layer, row[self.data_instance.label_col])[0])
+            print(changes)
+            print(costs)
+            checker = .00000005
+            test = 0
+            # for i in range(len(changes)):
+            #     my_break = False
+            #     test += abs(changes[i])
+            if all(x <= checker for x in changes):  # changes.all() <= checker:  # abs(changes[i])
+                # my_break = True
+                break
+        # print(my_break)
+        # if my_break:
+        #     break
+        return layers, output_layer, network
+
+    def testing(self, layers, output_set, network):
+        correct = 0
+        total = 0
+        for index, row in self.data_instance.test_df.iterrows():
+            output_prediction = network.sigmoid(layers, row.drop(self.data_instance.label_col))
+            if network.prediction(output_set, output_prediction) == row[self.data_instance.label_col]:
+                correct += 1
+            total += 1
+        return (correct/total)
 
 class Layer:
     def __init__(self, no_of_nodes):
@@ -136,21 +289,22 @@ class Layer:
 
     def make_input_layer(self, inputs):
         i = 0
-        # print(len(self.nodes))
         for input in inputs:
-            # print(input)
-            self.nodes[i].value=input
-            i+=1
+            self.nodes[i].value = input
+            i += 1
 
 
 class Neuron:
     def __init__(self, bias, value=None):
         self.bias = bias
+        self.prev_bias_change = 0
+        self.bias_change = 0
         self.is_sigmoidal = None
         self.is_linear = None
         self.incoming_weights = []
         self.outgoing_weights = []
         self.value = value
+        self.delta = 0
 
 
 class Weight:
@@ -158,6 +312,10 @@ class Weight:
         self.L_neuron = L_neuron
         self.R_neuron = R_neuron
         self.weight = float(random.randint(-1, 1))/100
+        self.weight_change = 0
+        self.prev_change = 0
+        self.momentum_cof = .5
+        self.eta = .1
 
     def get_weight(self):
         return self.weight

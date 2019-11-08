@@ -6,7 +6,7 @@ from Data import Data, DataConverter
 import pandas as pd
 import numpy as np
 from Cluster import KNN
-from NeuralNetwork import NeuralNetwork
+from NeuralNetwork import NeuralNetwork, NetworkClient
 import collections
 
 
@@ -159,6 +159,26 @@ class MyTestCase(unittest.TestCase):
         layers, output_set = network.make_layers(2, 6)
         output_prediction = network.sigmoid(layers, df.iloc[0].drop(data.label_col))
         print(network.cost(output_prediction, output_set, df.iloc[0][data.label_col]))
+
+    def test_backprop(self):
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8, False)
+        df = data.df.sample(n=50)
+        data.split_data(data_frame=df)
+        network = NeuralNetwork(data_instance=data)
+        layers, output_set = network.make_layers(1, 4)
+        output_predictions = []
+        costs = []
+        for index, row in data.train_df.iterrows():
+            output_predictions.append(network.sigmoid(layers, row.drop(data.label_col)))
+            costs.append(network.cost(output_predictions[-1], output_set, row[data.label_col]))
+
+    def test_it_all(self):
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8, False)
+        df = data.df.sample(n=100)
+        data.split_data(data_frame=df)
+        client = NetworkClient(data)
+        layers, outputset, network = client.train_it(1, 10, .1, .5, 10)
+        print(client.testing(layers, outputset, network))
 
 
 if __name__ == '__main__':
