@@ -10,6 +10,7 @@ import collections
 from RBFNet import RBFReg
 from RBFNet import RBFClass
 from loss_functions import LF
+from RBFNetKMean import  RBFRegK
 
 
 class MyTestCase(unittest.TestCase):
@@ -260,7 +261,7 @@ class MyTestCase(unittest.TestCase):
             test2_df = test2_df.iloc[:, :-1]
             data.split_data(data_frame=df)  # sets test and train data
             # will have high error due to small dataset, but just a test to show how this works
-            rbf = RBFReg(clusters=4, maxruns=200)
+            rbf = RBFRegK(clusters=4, maxruns=200)
 
             rbf.trainReg(data.train_df, expected, data)
 

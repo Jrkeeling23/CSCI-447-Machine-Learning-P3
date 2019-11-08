@@ -4,7 +4,7 @@ from Cluster import KNN
 import math
 from KMeans import Kmeans
 
-class RBFReg:
+class RBFRegK:
     """
           Class to function as an RBF regression network (one output node)
           :param clusters, # of clusters (hidden nodes)
@@ -52,7 +52,7 @@ class RBFReg:
         for medoid in medoids_list:
             for medoid2 in medoids_list:
                 # compare against all other medoids
-                curDist = knn.get_euclidean_distance(medoid.row, medoid2.row)
+                curDist = knn.get_euclidean_distance(medoid, medoid2)
                 if curDist > maxDist:
                     maxDist = curDist
        # print(maxDist)
@@ -79,7 +79,8 @@ class RBFReg:
 
 
         kmean = Kmeans(self.clusters, data_instance)
-        medoids_list, data_set = Kmeans.k_means(data_set, 2)
+        medoids_list = kmean.k_means(data_set, self.clusters)
+        print(medoids_list)
         #pam = PAM(k_val=self.clusters, data_instance=data_instance)
         #medoids_list, filler = pam.assign_random_medoids(data_set, self.clusters)
         #pam.assign_data_to_medoids(data_set, medoids_list)
