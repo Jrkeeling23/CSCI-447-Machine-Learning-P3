@@ -172,12 +172,12 @@ class NeuralNetwork:
             # print(j)
             for node in layers[j].nodes:
                 # node.prev_bias_change = node.bias_change
-                print(node.bias_change)
-                print(len(row))
+                # print(node.bias_change)
+                # print(len(row))
                 node.bias_change = -eta * node.bias_change/len(row)
                 node.bias += node.bias_change# +alpha*node.prev_bias_change
                 changes.append(node.bias_change)
-                print(node.bias_change)
+                # print(node.bias_change)
                 # print(node.bias_change)
                 for weight in node.incoming_weights:
                     # weight.prev_change = weight.weight_change
@@ -201,6 +201,7 @@ class NetworkClient:
             self.data_instance.regression_data_bins(9, True)
 
     def train_it(self, hidden_layers, hidden_nodes, eta, alpha, stoch):
+        saved = None
         network = NeuralNetwork(self.data_instance)
         layers, output_layer = network.make_layers(hidden_layers, hidden_nodes)
         output_predictions = []
@@ -214,7 +215,7 @@ class NetworkClient:
         tries = 0
         while True:
             tries += 1
-            print(tries)
+            # print(tries)
             # f=0
             group = []
             comp_group = []
@@ -254,8 +255,18 @@ class NetworkClient:
             for index, row in self.data_instance.train_df.iterrows():
                 output_predictions.append(network.sigmoid(layers, row.drop(self.data_instance.label_col)))
                 costs.append(network.cost(output_predictions[-1], output_layer, row[self.data_instance.label_col])[0])
-            print(changes)
-            print(costs)
+            # print(changes)
+            if saved is None:
+                saved = costs
+            else:
+                if tries % 100 == 0:
+                    print("Summed Saved: ", sum(saved), " Summed Costs: ", sum(costs))
+                if sum(saved) > sum(costs):
+                    saved = costs
+
+                else:
+                    break
+
             checker = .0005
             test = 0
             # for i in range(len(changes)):
@@ -279,6 +290,7 @@ class NetworkClient:
                 correct += 1
             total += 1
         return (correct/total)
+
 
 class Layer:
     def __init__(self, no_of_nodes):

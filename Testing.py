@@ -174,7 +174,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_it_all(self):
         data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8, False)
-        df = data.df.sample(n=100)
+        df = data.df.sample(n=30)
         data.split_data(data_frame=df)
         client = NetworkClient(data)
         layers, outputset, network = client.train_it(1, 10, .1, .5, 10)
