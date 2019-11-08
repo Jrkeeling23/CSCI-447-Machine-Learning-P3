@@ -137,7 +137,7 @@ def RBFREG_exp(data_config, data):
 
 # run RBF regression on small dataset for video
 
-def RBFREG_vid(data_config, data, best_performing):
+def RBFREG_vid(data_config, data):
     # data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
     df = data.df.sample(100)  # get the dataframe from df, take small subsection
     data_name = data.name
@@ -193,10 +193,6 @@ def RBFREG_vid(data_config, data, best_performing):
     print(expc_list)
     lf = LF()
     mse = lf.mean_squared_error(predicts, expc_list)
-    if best_performing is None:
-        best_performing = [data_config, mse, data.name]
-    elif mse < best_performing[1]:
-        best_performing = [data_config, mse, data.name]
     zeroone = lf.zero_one_loss(predicts, expc_list)
     plt.plot(predicts, label=data_name + ' ' + data_config + ' prediction')
     plt.plot(expc_list, label=data_name + ' ' + data_config + ' expected')
@@ -224,12 +220,11 @@ class Main:
 if __name__ == '__main__':
     data = load_data()
     rbf_list = ['k-means', 'medoids', 'edited']
-    best_performing = None
     for dataset in data:
         print(dataset.name)
         for rbf_version in rbf_list:  # Run RBF
             # run video rbg freg
-            RBFREG_vid(rbf_version, dataset, best_performing)
+            RBFREG_vid(rbf_version, dataset)
 
             # run experiment
             # RBFREG_exp(rbf_version)
