@@ -1,4 +1,6 @@
 import operator
+import pandas as pd
+
 
 class KNN:
     def __init__(self, k_val, data_instance):
@@ -81,10 +83,10 @@ class KNN:
         for index, row in train_data.iterrows():
             # print(row)
             distances[index] = self.get_euclidean_distance(query_point, row)
-        nearest_neighbors_distances, nearest_neighbors = self.get_k_closest(distances, k_val, train_data, self.data_instance.label_col)
+        nearest_neighbors_distances, nearest_neighbors = self.get_k_closest(distances, k_val, train_data,
+                                                                            self.data_instance.label_col)
         seen = []
         for index in nearest_neighbors:
-            # print (index)
             if index not in seen:
                 seen.append(index)
         see_count = {}
@@ -94,7 +96,6 @@ class KNN:
             temp = see_count[j]
             temp += 1
             see_count[j] = temp
-
         return max(see_count, key=lambda k: see_count[k])
 
     def edit_data(self, data_set, k_value, validation, label_col):
@@ -110,10 +111,10 @@ class KNN:
         # TODO: edit data according to pseudo code from class on 9/23
         # prev_set = data_set
         data_set_perform = 0  # for getting an initial measure on performance
-        print(data_set.shape)
-        print(validation.shape)
-        print(data_set)
-        print(validation)
+        # print(data_set.shape)
+        # print(validation.shape)
+        # print(data_set)
+        # print(validation)
         for index, row in validation.iterrows():  # loops through the validation set and if it matches, then it adds one to the score
             knn = self.perform_KNN(k_value, row, data_set)
             # print(knn)
@@ -145,9 +146,75 @@ class KNN:
                     data_set_perform += 1
             if len(list_to_remove) is 0:
                 break
-        print(prev_set_perform)
-        print(str(data_set_perform) + "\n\n")
-        print(data_set.shape)
-        print(prev_set.shape)
+        # print(prev_set_perform)
+        # print(str(data_set_perform) + "\n\n")
+        # print(data_set.shape)
+        # print(prev_set.shape)
         return prev_set  # returns the set with the best performance
 
+    def condense_data(self, data_set):
+        """
+        Condense the data set by instantiating a Z = None. Add x_initial to Z if initial class(x_initial) != class(x)
+        where x is an example in Z.
+        So: Eliminates redundant data.
+         :param data_set:
+        :return: condensed data
+        """
+        data_set = data_set.copy()
+        print(data_set.shape)
+        print("\n-----------------Performing Condensed Dataset Reduction-----------------")
+        # new dataset to hold condensed values
+        # condensed_data = pd.DataFrame()
+        first_elem = []  # use later to store values to remake dataset
+        list_for_adding = [first_elem]
+        for val in data_set.iloc[0]:
+            first_elem.append(val)
+        col_list = list(data_set.columns)
+        # finally got adding 1 row down
+        condensed_data = pd.DataFrame([first_elem], columns=col_list)
+        # condensed_data = condensed_data.append(firstElem)
+        has_changed = True  # bool to break if condensedData no longer changes
+        condensed_size = len(condensed_data.index)  # var to keep track of size of condensed data
+        # add first found example to the data set (assuming [0][:] is valid here
+        while has_changed is True:  # outside loop for CNN
+            lowest_distance = 99999999  # holding distance here, setting to 999 just to make sure we get a smaller num
+            minimum_index = -1  # index for that minimum element
+            # go through every point in the data set, get point with lowest distance with class != to our example
+            for index, row in data_set.iterrows():
+                # go through the condensed data set and find point with the lowest distance to point from actual data (euclidian)
+                for c_index, c_row in condensed_data.iterrows():  # should start with at least one
+                    #  print(c_row)
+                    e_dist = self.get_euclidean_distance(row, c_row)  # take distance
+                    if e_dist < lowest_distance:  # compare current dist to last seen lowest
+                        lowest_distance = e_dist  # store lowest distance
+                        minimum_index = c_index  # store minimum index to check classification
+                        # classify our 2 vals with KNN and compare class values
+                # selecting value found an minimum index for condensed, and using the row we are iterating on
+                condensed_value = self.perform_KNN(self.k, condensed_data.iloc[minimum_index][:], data_set)
+                data_set_value = self.perform_KNN(self.k, row, data_set)
+                # compare the classes of the two predicted values
+                # this assumes we get examples back that we need to select class from KNN
+                if condensed_value != data_set_value:
+                    # create new data set with new values
+                    # print("\n-----------------Adding datapoint to condensed dataset-----------------")
+                    # add new values to list and append that 2 list for condensed data
+                    vals = []
+                    for val in row:
+                        vals.append(val)
+                    list_for_adding.append(vals)
+                    condensed_data = pd.DataFrame(list_for_adding)
+                    # print(len(condensed_data.index))
+                    # print(condensed_size)
+            # checking if the size of the condense dataset has changed, if so keep going, if not end loop
+            if condensed_size is len(condensed_data.index) or len(condensed_data.index) > 100:
+                has_changed = False  # if the length Has not changed, end loop
+                break
+            elif condensed_size > 10000:  # just in case break condition TODO: possibly remove
+                print("in elif")
+                has_changed = False
+                break
+            else:
+                has_changed = True  # size has changed, keep going
+                condensed_size = len(condensed_data.index)  # update our length
+        print("\n-----------------Finished performing Condensed Dataset Reduction-----------------")
+        return condensed_data

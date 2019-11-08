@@ -52,4 +52,8 @@ class LF:
         sum = sum/n
         print("\n--- Mean Squared Error:", sum,  "---\n")
 
+<<<<<<< HEAD
         return sum # done, return sum
+=======
+        return sum # done, return sum
+>>>>>>> master

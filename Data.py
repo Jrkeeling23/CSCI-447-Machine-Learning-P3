@@ -6,6 +6,7 @@ ALLOWED_DICTIONARY = {}
 
 
 class Data:
+
     def __init__(self, name, df, label_col, regression):
         self.name = name
         CATEGORICAL_DICTIONARY = {}
@@ -34,7 +35,7 @@ class Data:
         """
         return df.shape[1]
 
-    def split_data(self, data_frame, train_percent=.8):
+    def split_data(self, data_frame, train_percent=0.8):
         """
         splits the data according to the train percent.
         :return:
