@@ -61,7 +61,7 @@ def RBFREG_exp(data_config, data):
     elif data_config == 'medoids':  # Run RBF on Medoids
         print("\n---------------- Running Medoids RBF -----------------\n")
         rbf = RBFReg(clusters=8, maxruns=200)
-
+        # TODO Fix clusters from below
     # setup expected values for testings
     expected = data.train_df[data.train_df.columns[-1]]
     actual = data.test_df[data.test_df.columns[-1]]
@@ -72,6 +72,7 @@ def RBFREG_exp(data_config, data):
     rbf2 = RBFReg(clusters=6, maxruns=1000)
     rbf3 = RBFReg(clusters=8, maxruns=1000)
     rbf4 = RBFReg(clusters=12, maxruns=1000)
+    #TODO Fix clusters above
     expc_list = actual.values.tolist()
 
     rbf.trainReg(data.train_df, expected, data)
@@ -81,8 +82,7 @@ def RBFREG_exp(data_config, data):
     print(predicts)
     print("expected")
     print(expc_list)
-    plt.plot(predicts, label='RBF1' + data_config + ' prediction')
-    plt.plot(expc_list, label='RBF1' + data_config + ' expected')
+
 
     lf = LF()
     lf.mean_squared_error(predicts, expc_list)
@@ -98,8 +98,7 @@ def RBFREG_exp(data_config, data):
     print(predicts2)
     print("expected")
     print(expc_list)
-    plt.plot(predicts, label='RBF2' + data_config + ' prediction')
-    plt.plot(expc_list, label='RBF2' + data_config + ' expected')
+
     # print("MSE RBF 2")
     # mse2 = rbf2.mean_squared_error(predicts2, expc_list)
     # print(mse2)
@@ -113,8 +112,7 @@ def RBFREG_exp(data_config, data):
     print(predicts3)
     print("expected")
     print(expc_list)
-    plt.plot(predicts, label='RBF3' + data_config + ' prediction')
-    plt.plot(expc_list, label='RBF3' + data_config + ' expected')
+
     # print("MSE RBF 3")
     # mse3 = rbf.mean_squared_error(predicts3, expc_list)
     # print(mse3)
@@ -128,8 +126,7 @@ def RBFREG_exp(data_config, data):
     print(predicts4)
     print("expected")
     print(expc_list)
-    plt.plot(predicts, label='RBF4' + data_config + ' prediction')
-    plt.plot(expc_list, label='RBF4' + data_config + ' expected')
+
     # print("MSE RBF 4")
     # mse4 = rbf.mean_squared_error(predicts4, expc_list)
     # print(mse4)
@@ -142,7 +139,7 @@ def RBFREG_exp(data_config, data):
 def RBFREG_vid(data_config, data, best_performing):
     # data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
     df = data.df.sample(100)  # get the dataframe from df, take small subsection
-
+    data_name = data.name
     print("\nChecking DF set")
     print(df[df.columns[-1]])
     # double check data is numerical
@@ -189,21 +186,22 @@ def RBFREG_vid(data_config, data, best_performing):
 
     expc_list = actual.values.tolist()
     print("predicts RBF")
-    plt.plot(predicts, label=data.name + data_config + ' prediction')
-    plt.plot(expc_list, label= data.name + data_config + ' expected')
+    plt.plot(predicts, label=data_name + ' ' + data_config + ' prediction')
+    plt.plot(expc_list, label=data_name + ' ' + data_config + ' expected')
     plt.legend()
-    plt.title('Data: ', data.name)
+    plt.title('Data: ' + data_name)
     plt.ylabel('Expected value/ Predicted Value')
     plt.xlabel('# Predictions')
-    plt.savefig(
-        data.name+'_'+data_config)  # Code for saving a plot to image sourced from: https://pythonspot.com/matplotlib-save-figure-to-image-file/
-
+    plt.savefig(data_name + '_' + data_config)  # Code for saving a plot to image sourced from: https://pythonspot.com/matplotlib-save-figure-to-image-file/
+    plt.clf()
     print(predicts)
     print("expected")
     print(expc_list)
     lf = LF()
     mse = lf.mean_squared_error(predicts, expc_list)
     if best_performing is None:
+        best_performing = [data_config, mse, data.name]
+    elif mse < best_performing[1]:
         best_performing = [data_config, mse, data.name]
     lf.zero_one_loss(predicts, expc_list)
 
@@ -215,7 +213,6 @@ def RBFREG_vid(data_config, data, best_performing):
 class Main:
     def __init__(self):
         self.data_list = load_data()
-        self.plot = None
     # def perform_KNN(self, k_val, query_point, train_data):
 
 
@@ -232,4 +229,4 @@ if __name__ == '__main__':
             # run experiment
             # RBFREG_exp(rbf_version)
 
-    print('Best performing ',  best_performing)
+    print('Best performing ', best_performing)
