@@ -217,9 +217,25 @@ class MyTestCase(unittest.TestCase):
             print(expc_list)
 
             accuracy = rbf.zero_one_loss(predicts, expc_list)
-
-
-
+    def test_edit_vs_condese(self):
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)
+        df = data.df.sample(n=350)
+        data.split_data(data_frame=df)
+        knn = KNN(5, data)
+        edit = knn.edit_data(data.train_df, 5, data.test_df, data.label_col)
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
+        df = data.df.sample(n=350)  # minimal data frame
+        data.split_data(data_frame=df)  # sets test and train data
+        cluster_obj = KNN(5, data)
+        condensed_data = cluster_obj.condense_data(data.train_df)
+        size_after = condensed_data.shape[0]
+        print("----------")
+        print(edit.shape[0])
+        print(size_after)
+        if size_after < edit.shape[0]:
+            print("Run condensed")
+        else:
+            print("Run edited")
 
 if __name__ == '__main__':
     unittest.main()
