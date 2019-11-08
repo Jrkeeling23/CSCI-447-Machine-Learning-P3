@@ -1,7 +1,7 @@
 import random
 import math
 import numpy as np
-
+from loss_functions import LF
 
 class NeuralNetwork:
     def __init__(self, data_instance): #, edited_data, compressed_data, centroids_cluster, medoids_cluster):
@@ -166,11 +166,11 @@ class NeuralNetwork:
                     weight.weight_change = 0
         for i in range(len(row)):
             self.sigmoid(layers, row[i])
-            print("adjusting values for different input")  # TODO: remove while recording video
+            # print("adjusting values for different input")  # TODO: remove while recording video
             self.back_prop(layers, compare[i])
-            print("backpropping")  # TODO: remove while recording video
+            # print("backpropping")  # TODO: remove while recording video
         changes = []
-        print("adjusting biases and weights for the last %d inputs" % (len(row)))  # TODO: remove while recording video
+        # print("adjusting biases and weights for the last %d inputs" % (len(row)))  # TODO: remove while recording video
         for j in range(len(layers) - 1, 0, -1):
             # print(j)
             for node in layers[j].nodes:
@@ -263,7 +263,7 @@ class NetworkClient:
                 saved = costs
             else:
                 if tries % 100 == 0:
-                    print("Summed Saved: ", sum(saved), " Summed Costs: ", sum(costs))
+                    print("Summed Previous Costs: ", sum(saved), " Summed Current Costs: ", sum(costs))
                 if sum(saved) > sum(costs):
                     saved = costs
 
@@ -287,12 +287,21 @@ class NetworkClient:
     def testing(self, layers, output_set, network):
         correct = 0
         total = 0
+        pred = []
+        actual = []
+        output_prediction = None
+
         for index, row in self.data_instance.test_df.iterrows():
             output_prediction = network.sigmoid(layers, row.drop(self.data_instance.label_col))
+            actual.append(row[self.data_instance.label_col])
             if network.prediction(output_set, output_prediction) == row[self.data_instance.label_col]:
                 correct += 1
-            total += 1
-        return (correct/total)
+            maxN = max(output_prediction)
+            for i in range(len(output_prediction)):
+                if output_prediction[i] is maxN:
+                    pred.append(output_set[i])
+                    break
+        return pred, actual
 
 
 class Layer:

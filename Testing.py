@@ -1,5 +1,5 @@
 import unittest
-
+from loss_functions import LF
 from KMeans import Kmeans
 from PAM import PAM
 from Data import Data, DataConverter
@@ -174,11 +174,16 @@ class MyTestCase(unittest.TestCase):
 
     def test_it_all(self):
         data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8, False)
-        df = data.df.sample(n=30)
+        df = data.df.sample(n=200)
         data.split_data(data_frame=df)
         client = NetworkClient(data)
-        layers, outputset, network = client.train_it(1, 10, .1, .5, 10)
-        print(client.testing(layers, outputset, network))  # prints total
+        layers, outputset, network = client.train_it(1, 10, .3, .5, 15)
+        # print(client.testing(layers, outputset, network))  # prints total
+        lf = LF()
+        pred, actual = client.testing(layers, outputset, network)
+        print("Predicted Set, ", pred, " Actual Set: ", actual)
+        lf.zero_one_loss(pred, actual)
+
 
 
 if __name__ == '__main__':
