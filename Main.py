@@ -105,7 +105,7 @@ def RBFREG_exp():
 
 
 # run RBF regression on small dataset for video
-def RBFREG_vid():
+def RBFREG_vid(data_config):
     data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 11)  # load data
     df = data.df.sample(100)  # get the dataframe from df, take small subsection
 
@@ -117,8 +117,14 @@ def RBFREG_vid():
         df[col] = df[col].astype(float)
     # split into test/train
     data.split_data(data_frame=df)
-    cluster_obj = KNN(5, data)
-    data.train_df = cluster_obj.condense_data(data.train_df)
+    if data_config == 'condensed':
+        cluster_obj = KNN(5, data)
+        data.train_df = cluster_obj.condense_data(data.train_df)
+        print("\n---------------- Running Condensed Nearest Neighbor RBF -----------------")
+    elif data_config == 'edited':
+        knn = KNN(5, data)
+        data.train_df = knn.edit_data(data.train_df, 5, data.test_df, data.label_col)
+        print("\n---------------- Running Edited Nearest Neighbor RBF -----------------")
 
     # setup expected values for testings
     expected = data.train_df[data.train_df.columns[-1]]
@@ -157,4 +163,5 @@ if __name__ == '__main__':
     # run experiment
     # RBFREG_exp()
     # run video rbg freg
-    RBFREG_vid()
+    RBFREG_vid('condensed')
+    RBFREG_vid('edited')
