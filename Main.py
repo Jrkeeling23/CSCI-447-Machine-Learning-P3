@@ -17,9 +17,7 @@ def load_data():
                  Data('segmentation', pd.read_csv(r'data/segmentation.data', header=None, skiprows=4), 0),
                  Data('machine', pd.read_csv(r'data/machine.data', header=None), 0),
                  Data('forest_fires', pd.read_csv(r'data/forestfires.data', header=None), 12),
-                 Data('wine', pd.read_csv(r'data/wine.data', header=None), 0),
-                 Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 11)]
-
+                 Data('wine', pd.read_csv(r'data/wine.data', header=None), 0)]
     return data_list
 
 
@@ -44,35 +42,39 @@ def RBFREG_exp(data_config, data):
 
         print("\n---------------- Running Condensed Nearest Neighbor RBF -----------------")
         print('Size of data: ', data.train_df.shape)
-        rbf = RBFReg(clusters=8, maxruns=600)
-
+        rbf = RBFReg(clusters=4, maxruns=1000)
+        rbf2 = RBFReg(clusters=6, maxruns=1000)
+        rbf3 = RBFReg(clusters=8, maxruns=1000)
+        rbf4 = RBFReg(clusters=12, maxruns=1000)
     elif data_config == 'edited':  # Run RBF on edited dataset
         knn = KNN(5, data)
         data.train_df = knn.edit_data(data.train_df, 5, data.test_df, data.label_col)
         print("\n---------------- Running Edited Nearest Neighbor RBF -----------------\n")
         print('Size of data: ', data.train_df.shape)
 
-        rbf = RBFReg(clusters=8, maxruns=600)
-
+        rbf = RBFReg(clusters=4, maxruns=1000)
+        rbf2 = RBFReg(clusters=6, maxruns=1000)
+        rbf3 = RBFReg(clusters=8, maxruns=1000)
+        rbf4 = RBFReg(clusters=12, maxruns=1000)
     elif data_config == 'k-means':  # Run RBF on K-means
         print("\n---------------- Running K-Means RBF -----------------\n")
-        rbf = RBFRegK(clusters=8, maxruns=200)
-
+        rbf = RBFRegK(clusters=4, maxruns=1000)
+        rbf2 = RBFRegK(clusters=6, maxruns=1000)
+        rbf3 = RBFRegK(clusters=8, maxruns=1000)
+        rbf4 = RBFRegK(clusters=12, maxruns=1000)
     elif data_config == 'medoids':  # Run RBF on Medoids
         print("\n---------------- Running Medoids RBF -----------------\n")
-        rbf = RBFReg(clusters=8, maxruns=200)
-        # TODO Fix clusters from below
+        rbf = RBFReg(clusters=4, maxruns=1000)
+        rbf2 = RBFReg(clusters=6, maxruns=1000)
+        rbf3 = RBFReg(clusters=8, maxruns=1000)
+        rbf4 = RBFReg(clusters=12, maxruns=1000)
     # setup expected values for testings
     expected = data.train_df[data.train_df.columns[-1]]
     actual = data.test_df[data.test_df.columns[-1]]
 
     # sets test and train data
     # will have high error due to small dataset, but just a test to show how this works
-    rbf = RBFReg(clusters=4, maxruns=1000)
-    rbf2 = RBFReg(clusters=6, maxruns=1000)
-    rbf3 = RBFReg(clusters=8, maxruns=1000)
-    rbf4 = RBFReg(clusters=12, maxruns=1000)
-    # TODO Fix clusters above
+
     expc_list = actual.values.tolist()
 
     rbf.trainReg(data.train_df, expected, data)
