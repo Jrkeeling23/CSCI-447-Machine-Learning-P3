@@ -111,10 +111,10 @@ class KNN:
         # TODO: edit data according to pseudo code from class on 9/23
         # prev_set = data_set
         data_set_perform = 0  # for getting an initial measure on performance
-        print(data_set.shape)
-        print(validation.shape)
-        print(data_set)
-        print(validation)
+        # print(data_set.shape)
+        # print(validation.shape)
+        # print(data_set)
+        # print(validation)
         for index, row in validation.iterrows():  # loops through the validation set and if it matches, then it adds one to the score
             knn = self.perform_KNN(k_value, row, data_set)
             # print(knn)
@@ -146,10 +146,10 @@ class KNN:
                     data_set_perform += 1
             if len(list_to_remove) is 0:
                 break
-        print(prev_set_perform)
-        print(str(data_set_perform) + "\n\n")
-        print(data_set.shape)
-        print(prev_set.shape)
+        # print(prev_set_perform)
+        # print(str(data_set_perform) + "\n\n")
+        # print(data_set.shape)
+        # print(prev_set.shape)
         return prev_set  # returns the set with the best performance
 
     def condense_data(self, data_set):

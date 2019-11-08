@@ -116,7 +116,7 @@ def RBFREG_vid(data_config):
     data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 11)  # load data
     df = data.df.sample(100)  # get the dataframe from df, take small subsection
 
-    print("Checking DF set")
+    print("\nChecking DF set")
     print(df[df.columns[-1]])
     # double check data is numerical
     cols = df.columns
