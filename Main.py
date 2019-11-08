@@ -4,7 +4,7 @@ from RBFNet import RBFReg
 from Cluster import KNN
 from loss_functions import LF
 from RBFNetKMean import RBFRegK
-
+import matplotlib as plt
 
 def load_data():
     """
@@ -131,25 +131,33 @@ def RBFREG_vid(data_config):
 
     # sets test and train data
     # will have high error due to small dataset, but just a test to show how this works
-    if data_config == 'condensed': # Run RBF on condensed data set
+    if data_config == 'condensed':  # Run RBF on condensed data set
         cluster_obj = KNN(5, data)
         data.train_df = cluster_obj.condense_data(data.train_df)
+
         print("\n---------------- Running Condensed Nearest Neighbor RBF -----------------")
+        print('Size of data: ', data.train_df.shape)
         rbf = RBFReg(clusters=8, maxruns=600)
 
-    elif data_config == 'edited': # Run RBF on edited dataset
+    elif data_config == 'edited':  # Run RBF on edited dataset
         knn = KNN(5, data)
         data.train_df = knn.edit_data(data.train_df, 5, data.test_df, data.label_col)
         print("\n---------------- Running Edited Nearest Neighbor RBF -----------------\n")
+        print('Size of data: ', data.train_df.shape)
+
         rbf = RBFReg(clusters=8, maxruns=600)
 
-    elif data_config == 'k-means': # Run RBF on K-means
+    elif data_config == 'k-means':  # Run RBF on K-means
         print("\n---------------- Running K-Means RBF -----------------\n")
         rbf = RBFRegK(clusters=8, maxruns=200)
 
+    elif data_config == 'medoids':  # Run RBF on Medoids
+        print("\n---------------- Running Medoids RBF -----------------\n")
+        rbf = RBFReg(clusters=8, maxruns=200)
+
     rbf.trainReg(data.train_df, expected, data)
 
-    print('Calcuate predictions for the RBF')
+    print('Calculate predictions for the RBF')
     predicts = rbf.predictReg(data.train_df, data)
 
     expc_list = actual.values.tolist()
@@ -169,13 +177,13 @@ def RBFREG_vid(data_config):
 class Main:
     def __init__(self):
         self.data_list = load_data()
-
+        self.plot = None
     # def perform_KNN(self, k_val, query_point, train_data):
 
 
 if __name__ == '__main__':
 
-    rbf_list = ['k-means', 'edited']
+    rbf_list = ['k-means', 'medoids', 'edited']
     for rbf_version in rbf_list:  # Run RBF
         # run video rbg freg
         RBFREG_vid(rbf_version)
