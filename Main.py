@@ -160,24 +160,24 @@ def RBFREG_vid(data_config, data):
         cluster_obj = KNN(5, data)
         data.train_df = cluster_obj.condense_data(data.train_df)
 
-        print("\n---------------- Running Condensed Nearest Neighbor RBF -----------------")
+        print("\n---------------- Running Condensed Nearest Neighbor RBF Data: " + data_name + "-----------------")
         print('Size of data: ', data.train_df.shape)
         rbf = RBFReg(clusters=8, maxruns=600)
 
     elif data_config == 'edited':  # Run RBF on edited dataset
         knn = KNN(5, data)
         data.train_df = knn.edit_data(data.train_df, 5, data.test_df, data.label_col)
-        print("\n---------------- Running Edited Nearest Neighbor RBF -----------------\n")
+        print("\n---------------- Running Edited Nearest Neighbor RBF Data: " + data_name + "-----------------")
         print('Size of data: ', data.train_df.shape)
 
         rbf = RBFReg(clusters=8, maxruns=600)
 
     elif data_config == 'k-means':  # Run RBF on K-means
-        print("\n---------------- Running K-Means RBF -----------------\n")
+        print("\n---------------- Running K-Means RBF Data: " + data_name + "-----------------")
         rbf = RBFRegK(clusters=8, maxruns=600)
 
     elif data_config == 'medoids':  # Run RBF on Medoids
-        print("\n---------------- Running Medoids RBF -----------------\n")
+        print("\n---------------- Running Mediods RBF Data: " + data_name + "-----------------")
         rbf = RBFReg(clusters=8, maxruns=600)
 
     rbf.trainReg(data.train_df, expected, data)
