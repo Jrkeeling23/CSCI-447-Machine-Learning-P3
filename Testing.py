@@ -10,7 +10,7 @@ import collections
 from RBFNet import RBFReg
 from RBFNet import RBFClass
 from loss_functions import LF
-from RBFNetKMean import  RBFRegK
+from RBFNetKMean import RBFRegK
 
 
 class MyTestCase(unittest.TestCase):
@@ -153,71 +153,71 @@ class MyTestCase(unittest.TestCase):
         data.regression_data_bins(4, quartile=False)
 
     def test_rbfReg(self):
-            #data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 8)  # load data
-            data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 11)  # load data
-            df = data.df.sample(n=100)  # minimal data frame
+        # data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 8)  # load data
+        data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 11)  # load data
+        df = data.df.sample(n=100)  # minimal data frame
 
-            test_df = pd.read_csv('data/winequality-white.csv', header=None)
-            test2_df = test_df.iloc[:101, :]
-            #print(test2_df[11])
-            print("Checking DF set")
-            print(df[df.columns[-1]])
+        test_df = pd.read_csv('data/winequality-white.csv', header=None)
+        test2_df = test_df.iloc[:101, :]
+        # print(test2_df[11])
+        print("Checking DF set")
+        print(df[df.columns[-1]])
 
-            cols = df.columns
-            for col in cols:
-                df[col] = df[col].astype(float)
-            expected = df[df.columns[-1]]
+        cols = df.columns
+        for col in cols:
+            df[col] = df[col].astype(float)
+        expected = df[df.columns[-1]]
 
-            #print(expected[1])
+        # print(expected[1])
 
-            df = df.iloc[:, :-1]
-            test2_df = test2_df.iloc[:, :-1]
-            data.split_data(data_frame=df)  # sets test and train data
-            # will have high error due to small dataset, but just a test to show how this works
-            rbf = RBFReg(clusters=12, maxruns=1000)
+        df = df.iloc[:, :-1]
+        test2_df = test2_df.iloc[:, :-1]
+        data.split_data(data_frame=df)  # sets test and train data
+        # will have high error due to small dataset, but just a test to show how this works
+        rbf = RBFReg(clusters=12, maxruns=1000)
 
-            rbf.trainReg(data.train_df, expected, data)
+        rbf.trainReg(data.train_df, expected, data)
 
-            predicts = rbf.predictReg(data.test_df, data)
-            expc_list = expected.values.tolist()
-            print("predicts")
-            print(predicts)
-            print("expected")
-            print(expc_list)
+        predicts = rbf.predictReg(data.test_df, data)
+        expc_list = expected.values.tolist()
+        print("predicts")
+        print(predicts)
+        print("expected")
+        print(expc_list)
 
-            print("MSE")
-            mse = rbf.mean_squared_error(predicts, expc_list)
-            print(mse)
-
+        print("MSE")
+        mse = rbf.mean_squared_error(predicts, expc_list)
+        print(mse)
 
     def test_rbfClass(self):
-            #data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 8)  # load data
-            data = Data('abalone', pd.read_csv('data/abalone.data', header=None), 11)  # load data
-            df = data.df.sample(n=100)  # minimal data frame
+        # data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 8)  # load data
+        data = Data('abalone', pd.read_csv('data/abalone.data', header=None), 11)  # load data
+        df = data.df.sample(n=100)  # minimal data frame
 
-            cols = df.columns
-            for col in cols:
-                df[col] = df[col].astype(float)
-            data.split_data(data_frame=df)
-            expected = data.test_df[data.test_df.columns[-1]]
-            #data. = df.iloc[:, :-1]
-              # sets test and train data
-            # print(data.test_df)
-            # print(expected)
-            # will have high error due to small dataset, but just a test to show how this works
-            class_vals = list(range(1, 29))
-            rbf = RBFClass(clusters=12, maxruns=400, out_nodes=len(class_vals))
+        cols = df.columns
+        for col in cols:
+            df[col] = df[col].astype(float)
+        data.split_data(data_frame=df)
+        expected = data.test_df[data.test_df.columns[-1]]
+        # data. = df.iloc[:, :-1]
+        # sets test and train data
+        # print(data.test_df)
+        # print(expected)
+        # will have high error due to small dataset, but just a test to show how this works
+        class_vals = list(range(1, 29))
+        rbf = RBFClass(clusters=12, maxruns=400, out_nodes=len(class_vals))
 
-            rbf.train(data, data.train_df, class_vals)
+        rbf.train(data, data.train_df, class_vals)
 
-            predicts = rbf.predictClass(data.test_df, data)
-            expc_list = expected.values.tolist()
-            print("predicts")
-            print(predicts)
-            print("expected")
-            print(expc_list)
+        predicts = rbf.predictClass(data.test_df, data)
+        expc_list = expected.values.tolist()
+        print("predicts")
+        print(predicts)
+        print("expected")
+        print(expc_list)
 
-            accuracy = rbf.zero_one_loss(predicts, expc_list)
+        accuracy = rbf.zero_one_loss(predicts, expc_list)
+
     def test_edit_vs_condese(self):
         data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)
         df = data.df.sample(n=350)
@@ -238,44 +238,41 @@ class MyTestCase(unittest.TestCase):
         else:
             print("Run edited")
 
-
     def test_rbfRegKMeans(self):
-            #data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 8)  # load data
-            data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 11)  # load data
-            df = data.df.sample(n=100)  # minimal data frame
+        # data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 8)  # load data
+        data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 11)  # load data
+        df = data.df.sample(n=100)  # minimal data frame
 
-            test_df = pd.read_csv('data/winequality-white.csv', header=None)
-            test2_df = test_df.iloc[:101, :]
-            #print(test2_df[11])
-            print("Checking DF set")
-            print(df[df.columns[-1]])
+        test_df = pd.read_csv('data/winequality-white.csv', header=None)
+        test2_df = test_df.iloc[:101, :]
+        # print(test2_df[11])
+        print("Checking DF set")
+        print(df[df.columns[-1]])
 
-            cols = df.columns
-            for col in cols:
-                df[col] = df[col].astype(float)
-            expected = df[df.columns[-1]]
+        cols = df.columns
+        for col in cols:
+            df[col] = df[col].astype(float)
+        expected = df[df.columns[-1]]
 
-            #print(expected[1])
+        # print(expected[1])
 
-            df = df.iloc[:, :-1]
-            test2_df = test2_df.iloc[:, :-1]
-            data.split_data(data_frame=df)  # sets test and train data
-            # will have high error due to small dataset, but just a test to show how this works
-            rbf = RBFRegK(clusters=4, maxruns=200)
+        df = df.iloc[:, :-1]
+        test2_df = test2_df.iloc[:, :-1]
+        data.split_data(data_frame=df)  # sets test and train data
+        # will have high error due to small dataset, but just a test to show how this works
+        rbf = RBFRegK(clusters=4, maxruns=200)
 
-            rbf.trainReg(data.train_df, expected, data)
+        rbf.trainReg(data.train_df, expected, data)
 
-            predicts = rbf.predictReg(data.test_df, data)
-            expc_list = expected.values.tolist()
-            print("predicts")
-            print(predicts)
-            print("expected")
-            print(expc_list)
-
-            print("MSE")
-            mse = rbf.mean_squared_error(predicts, expc_list)
-            print(mse)
-
+        predicts = rbf.predictReg(data.test_df, data)
+        expc_list = expected.values.tolist()
+        print("predicts")
+        print(predicts)
+        print("expected")
+        print(expc_list)
+        lf = LF()
+        lf.mean_squared_error(predicts, expc_list)
+        lf.zero_one_loss(predicts, expc_list)
 
 
 if __name__ == '__main__':

@@ -50,6 +50,6 @@ class LF:
 
         # divide by n
         sum = sum/n
-        print("\n--- Mean Squared Error:", sum,  "---")
+        print("\n--- Mean Squared Error:", sum,  "---\n")
 
         return sum # done, return sum

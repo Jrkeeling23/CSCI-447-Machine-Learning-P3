@@ -3,7 +3,9 @@ import pandas as pd
 from RBFNet import RBFReg
 from Cluster import KNN
 from loss_functions import LF
-from KMeans import Kmeans
+from RBFNetKMean import RBFRegK
+
+
 def load_data():
     """
     loads the data (csv) files
@@ -19,11 +21,12 @@ def load_data():
 
     return data_list
 
+
 # run RBF regression on 4 experiments (diff clusters)
 def RBFREG_exp(data_config):
     # setup data var
-    data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 11)  # load data
-    df = data.df # get the dataframe from df
+    data = Data('machine', pd.read_csv(r'data/machine.data', header=None), 0)  # load data
+    df = data.df  # get the dataframe from df
 
     print("Checking DF set")
     print(df[df.columns[-1]])
@@ -42,12 +45,11 @@ def RBFREG_exp(data_config):
         data.train_df = knn.edit_data(data.train_df, 5, data.test_df, data.label_col)
         print("\n---------------- Running Edited Nearest Neighbor RBF -----------------")
 
-
     # setup expected values for testings
     expected = data.train_df[data.train_df.columns[-1]]
     actual = data.test_df[data.test_df.columns[-1]]
 
-     # sets test and train data
+    # sets test and train data
     # will have high error due to small dataset, but just a test to show how this works
     rbf = RBFReg(clusters=4, maxruns=1000)
     rbf2 = RBFReg(clusters=6, maxruns=1000)
@@ -64,11 +66,10 @@ def RBFREG_exp(data_config):
     print(expc_list)
     lf = LF()
     lf.mean_squared_error(predicts, expc_list)
-    lf.zero_one_loss(predicts,expc_list)
+    lf.zero_one_loss(predicts, expc_list)
     # print("MSE RBF 1")
     # mse = rbf.mean_squared_error(predicts, expc_list)
     # print(mse)
-
 
     rbf2.trainReg(data.train_df, expected, data)
     predicts2 = rbf.predictReg(data.test_df, data)
@@ -81,11 +82,10 @@ def RBFREG_exp(data_config):
     # mse2 = rbf2.mean_squared_error(predicts2, expc_list)
     # print(mse2)
     lf.mean_squared_error(predicts, expc_list)
-    lf.zero_one_loss(predicts,expc_list)
+    lf.zero_one_loss(predicts, expc_list)
 
     rbf3.trainReg(data.train_df, expected, data)
     predicts3 = rbf.predictReg(data.test_df, data)
-
 
     print("predicts RBF 3")
     print(predicts3)
@@ -95,7 +95,7 @@ def RBFREG_exp(data_config):
     # mse3 = rbf.mean_squared_error(predicts3, expc_list)
     # print(mse3)
     lf.mean_squared_error(predicts, expc_list)
-    lf.zero_one_loss(predicts,expc_list)
+    lf.zero_one_loss(predicts, expc_list)
 
     rbf4.trainReg(data.train_df, expected, data)
     predicts4 = rbf.predictReg(data.test_df, data)
@@ -108,13 +108,12 @@ def RBFREG_exp(data_config):
     # mse4 = rbf.mean_squared_error(predicts4, expc_list)
     # print(mse4)
     lf.mean_squared_error(predicts, expc_list)
-    lf.zero_one_loss(predicts,expc_list)
-
+    lf.zero_one_loss(predicts, expc_list)
 
 
 # run RBF regression on small dataset for video
 def RBFREG_vid(data_config):
-    data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 11)  # load data
+    data = Data('machine', pd.read_csv(r'data/machine.data', header=None), 0)  # load data
     df = data.df.sample(100)  # get the dataframe from df, take small subsection
 
     print("\nChecking DF set")
@@ -125,25 +124,28 @@ def RBFREG_vid(data_config):
         df[col] = df[col].astype(float)
     # split into test/train
     data.split_data(data_frame=df)
-    if data_config == 'condensed':
-        cluster_obj = KNN(5, data)
-        data.train_df = cluster_obj.condense_data(data.train_df)
-        print("\n---------------- Running Condensed Nearest Neighbor RBF -----------------")
-    elif data_config == 'edited':
-        knn = KNN(5, data)
-        data.train_df = knn.edit_data(data.train_df, 5, data.test_df, data.label_col)
-        print("\n---------------- Running Edited Nearest Neighbor RBF -----------------")
-    elif data_config == 'k-means':
-        k_val = 5
-        kmeans = Kmeans(k_val, data)
-        clusters = kmeans.k_means(data.train_df, k_val)
+
     # setup expected values for testings
     expected = data.train_df[data.train_df.columns[-1]]
     actual = data.test_df[data.test_df.columns[-1]]
 
     # sets test and train data
     # will have high error due to small dataset, but just a test to show how this works
-    rbf = RBFReg(clusters=8, maxruns=600)
+    if data_config == 'condensed': # Run RBF on condensed data set
+        cluster_obj = KNN(5, data)
+        data.train_df = cluster_obj.condense_data(data.train_df)
+        print("\n---------------- Running Condensed Nearest Neighbor RBF -----------------")
+        rbf = RBFReg(clusters=8, maxruns=600)
+
+    elif data_config == 'edited': # Run RBF on edited dataset
+        knn = KNN(5, data)
+        data.train_df = knn.edit_data(data.train_df, 5, data.test_df, data.label_col)
+        print("\n---------------- Running Edited Nearest Neighbor RBF -----------------\n")
+        rbf = RBFReg(clusters=8, maxruns=600)
+
+    elif data_config == 'k-means': # Run RBF on K-means
+        print("\n---------------- Running K-Means RBF -----------------\n")
+        rbf = RBFRegK(clusters=8, maxruns=200)
 
     rbf.trainReg(data.train_df, expected, data)
 
@@ -157,7 +159,7 @@ def RBFREG_vid(data_config):
     print(expc_list)
     lf = LF()
     lf.mean_squared_error(predicts, expc_list)
-    lf.zero_one_loss(predicts,expc_list)
+    lf.zero_one_loss(predicts, expc_list)
 
     # print("MSE RBF")
     # mse = rbf.mean_squared_error(predicts, expc_list)
@@ -170,10 +172,11 @@ class Main:
 
     # def perform_KNN(self, k_val, query_point, train_data):
 
+
 if __name__ == '__main__':
 
-    rbf_list = ['k-means','edited']
-    for rbf_version in rbf_list: # Run RBF
+    rbf_list = ['k-means', 'edited']
+    for rbf_version in rbf_list:  # Run RBF
         # run video rbg freg
         RBFREG_vid(rbf_version)
         # run experiment
