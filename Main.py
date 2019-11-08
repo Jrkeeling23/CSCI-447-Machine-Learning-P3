@@ -54,8 +54,9 @@ def RBFREG_exp():
     print(predicts)
     print("expected")
     print(expc_list)
-    LF.mean_squared_error(predicts, expc_list)
-    LF.zero_one_loss(predicts,expc_list)
+    lf = LF()
+    lf.mean_squared_error(predicts, expc_list)
+    lf.zero_one_loss(predicts,expc_list)
     # print("MSE RBF 1")
     # mse = rbf.mean_squared_error(predicts, expc_list)
     # print(mse)
@@ -71,8 +72,8 @@ def RBFREG_exp():
     # print("MSE RBF 2")
     # mse2 = rbf2.mean_squared_error(predicts2, expc_list)
     # print(mse2)
-    LF.mean_squared_error(predicts, expc_list)
-    LF.zero_one_loss(predicts,expc_list)
+    lf.mean_squared_error(predicts, expc_list)
+    lf.zero_one_loss(predicts,expc_list)
 
     rbf3.trainReg(data.train_df, expected, data)
     predicts3 = rbf.predictReg(data.test_df, data)
@@ -85,8 +86,8 @@ def RBFREG_exp():
     # print("MSE RBF 3")
     # mse3 = rbf.mean_squared_error(predicts3, expc_list)
     # print(mse3)
-    LF.mean_squared_error(predicts, expc_list)
-    LF.zero_one_loss(predicts,expc_list)
+    lf.mean_squared_error(predicts, expc_list)
+    lf.zero_one_loss(predicts,expc_list)
 
     rbf4.trainReg(data.train_df, expected, data)
     predicts4 = rbf.predictReg(data.test_df, data)
@@ -98,8 +99,8 @@ def RBFREG_exp():
     # print("MSE RBF 4")
     # mse4 = rbf.mean_squared_error(predicts4, expc_list)
     # print(mse4)
-    LF.mean_squared_error(predicts, expc_list)
-    LF.zero_one_loss(predicts,expc_list)
+    lf.mean_squared_error(predicts, expc_list)
+    lf.zero_one_loss(predicts,expc_list)
 
 
 
@@ -137,8 +138,9 @@ def RBFREG_vid():
     print(predicts)
     print("expected")
     print(expc_list)
-    LF.mean_squared_error(predicts, expc_list)
-    LF.zero_one_loss(predicts,expc_list)
+    lf = LF()
+    lf.mean_squared_error(predicts, expc_list)
+    lf.zero_one_loss(predicts,expc_list)
 
     # print("MSE RBF")
     # mse = rbf.mean_squared_error(predicts, expc_list)
