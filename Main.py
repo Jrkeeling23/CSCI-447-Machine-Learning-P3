@@ -72,7 +72,7 @@ def RBFREG_exp(data_config, data):
     rbf2 = RBFReg(clusters=6, maxruns=1000)
     rbf3 = RBFReg(clusters=8, maxruns=1000)
     rbf4 = RBFReg(clusters=12, maxruns=1000)
-    #TODO Fix clusters above
+    # TODO Fix clusters above
     expc_list = actual.values.tolist()
 
     rbf.trainReg(data.train_df, expected, data)
@@ -82,7 +82,6 @@ def RBFREG_exp(data_config, data):
     print(predicts)
     print("expected")
     print(expc_list)
-
 
     lf = LF()
     lf.mean_squared_error(predicts, expc_list)
@@ -186,14 +185,7 @@ def RBFREG_vid(data_config, data, best_performing):
 
     expc_list = actual.values.tolist()
     print("predicts RBF")
-    plt.plot(predicts, label=data_name + ' ' + data_config + ' prediction')
-    plt.plot(expc_list, label=data_name + ' ' + data_config + ' expected')
-    plt.legend()
-    plt.title('Data: ' + data_name)
-    plt.ylabel('Expected value/ Predicted Value')
-    plt.xlabel('# Predictions')
-    plt.savefig(data_name + '_' + data_config)  # Code for saving a plot to image sourced from: https://pythonspot.com/matplotlib-save-figure-to-image-file/
-    plt.clf()
+
     print(predicts)
     print("expected")
     print(expc_list)
@@ -203,8 +195,19 @@ def RBFREG_vid(data_config, data, best_performing):
         best_performing = [data_config, mse, data.name]
     elif mse < best_performing[1]:
         best_performing = [data_config, mse, data.name]
-    lf.zero_one_loss(predicts, expc_list)
+    zeroone = lf.zero_one_loss(predicts, expc_list)
+    plt.plot(predicts, label=data_name + ' ' + data_config + ' prediction')
+    plt.plot(expc_list, label=data_name + ' ' + data_config + ' expected')
+    plt.plot(mse, label='MSE: ' + str(mse))
+    plt.plot(zeroone, label='0-1 Loss: ' + str(zeroone))
 
+    plt.legend()
+    plt.title('Data: ' + data_name)
+    plt.ylabel('Expected value/ Predicted Value')
+    plt.xlabel('# Predictions')
+    plt.savefig(
+        data_name + '_' + data_config)  # Code for saving a plot to image sourced from: https://pythonspot.com/matplotlib-save-figure-to-image-file/
+    plt.clf()
     # print("MSE RBF")
     # mse = rbf.mean_squared_error(predicts, expc_list)
     # print(mse)
