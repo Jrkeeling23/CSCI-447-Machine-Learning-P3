@@ -112,10 +112,10 @@ class MyTestCase(unittest.TestCase):
         data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
         df = data.df.sample(n=200)  # minimal data frame
         data.split_data(data_frame=df)  # sets test and train data
-        k_val = 2
+        k_val = 5
         knn = KNN(k_val, data)
         kmeans = Kmeans(k_val, data)
-        clusters = kmeans.k_means(data.train_df, 5)
+        clusters = kmeans.k_means(data.train_df, k_val)
         converter = DataConverter()
         dt = converter.convert_data_to_original(data.train_df.copy())
         mismatch = False

@@ -3,6 +3,7 @@ import pandas as pd
 from RBFNet import RBFReg
 from Cluster import KNN
 from loss_functions import LF
+from KMeans import Kmeans
 def load_data():
     """
     loads the data (csv) files
@@ -132,7 +133,10 @@ def RBFREG_vid(data_config):
         knn = KNN(5, data)
         data.train_df = knn.edit_data(data.train_df, 5, data.test_df, data.label_col)
         print("\n---------------- Running Edited Nearest Neighbor RBF -----------------")
-
+    elif data_config == 'k-means':
+        k_val = 5
+        kmeans = Kmeans(k_val, data)
+        clusters = kmeans.k_means(data.train_df, k_val)
     # setup expected values for testings
     expected = data.train_df[data.train_df.columns[-1]]
     actual = data.test_df[data.test_df.columns[-1]]
@@ -168,7 +172,7 @@ class Main:
 
 if __name__ == '__main__':
 
-    rbf_list = ['condensed', 'edited']
+    rbf_list = ['k-means','edited']
     for rbf_version in rbf_list: # Run RBF
         # run video rbg freg
         RBFREG_vid(rbf_version)

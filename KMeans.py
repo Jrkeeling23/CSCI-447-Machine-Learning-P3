@@ -95,7 +95,7 @@ class Kmeans(KNN):
                 cluster_list = []
                 for cluster in clusters.values():# Convert the k-means points to a list
                     cluster_list.append(cluster)
-                return self.converter.convert_data_to_original(pd.DataFrame(cluster_list))
+                return cluster_list
             previous_clusters = current_clusters
     def mean_clusters(self, updated_clusters, data_set): # Get the new mean clusters
         updated_centroids = {}
