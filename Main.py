@@ -4,7 +4,8 @@ from RBFNet import RBFReg
 from Cluster import KNN
 from loss_functions import LF
 from RBFNetKMean import RBFRegK
-import matplotlib as plt
+import matplotlib.pyplot as plt
+
 
 def load_data():
     """
@@ -79,6 +80,9 @@ def RBFREG_exp(data_config):
     print(predicts)
     print("expected")
     print(expc_list)
+    plt.plot(predicts, label='RBF1' + data_config + ' prediction')
+    plt.plot(expc_list, label='RBF1' + data_config + ' expected')
+
     lf = LF()
     lf.mean_squared_error(predicts, expc_list)
     lf.zero_one_loss(predicts, expc_list)
@@ -93,6 +97,8 @@ def RBFREG_exp(data_config):
     print(predicts2)
     print("expected")
     print(expc_list)
+    plt.plot(predicts, label='RBF2' + data_config + ' prediction')
+    plt.plot(expc_list, label='RBF2' +data_config + ' expected')
     # print("MSE RBF 2")
     # mse2 = rbf2.mean_squared_error(predicts2, expc_list)
     # print(mse2)
@@ -106,6 +112,8 @@ def RBFREG_exp(data_config):
     print(predicts3)
     print("expected")
     print(expc_list)
+    plt.plot(predicts, label='RBF3' + data_config + ' prediction')
+    plt.plot(expc_list, label='RBF3' +data_config + ' expected')
     # print("MSE RBF 3")
     # mse3 = rbf.mean_squared_error(predicts3, expc_list)
     # print(mse3)
@@ -119,6 +127,8 @@ def RBFREG_exp(data_config):
     print(predicts4)
     print("expected")
     print(expc_list)
+    plt.plot(predicts, label='RBF4' + data_config + ' prediction')
+    plt.plot(expc_list, label='RBF4' +data_config + ' expected')
     # print("MSE RBF 4")
     # mse4 = rbf.mean_squared_error(predicts4, expc_list)
     # print(mse4)
@@ -164,19 +174,22 @@ def RBFREG_vid(data_config):
 
     elif data_config == 'k-means':  # Run RBF on K-means
         print("\n---------------- Running K-Means RBF -----------------\n")
-        rbf = RBFRegK(clusters=8, maxruns=200)
+        rbf = RBFRegK(clusters=8, maxruns=600)
 
     elif data_config == 'medoids':  # Run RBF on Medoids
         print("\n---------------- Running Medoids RBF -----------------\n")
-        rbf = RBFReg(clusters=8, maxruns=200)
+        rbf = RBFReg(clusters=8, maxruns=600)
 
     rbf.trainReg(data.train_df, expected, data)
 
     print('Calculate predictions for the RBF')
-    predicts = rbf.predictReg(data.train_df, data)
+    predicts = rbf.predictReg(data.test_df, data)
 
     expc_list = actual.values.tolist()
     print("predicts RBF")
+    plt.plot(predicts, label=data_config + ' prediction')
+    plt.plot(expc_list, label=data_config + ' expected')
+
     print(predicts)
     print("expected")
     print(expc_list)
@@ -201,6 +214,11 @@ if __name__ == '__main__':
     rbf_list = ['k-means', 'medoids', 'edited']
     for rbf_version in rbf_list:  # Run RBF
         # run video rbg freg
-        # RBFREG_vid(rbf_version)
+        RBFREG_vid(rbf_version)
+
         # run experiment
-        RBFREG_exp(rbf_version)
+        # RBFREG_exp(rbf_version)
+    plt.legend()
+    plt.title('Data: Abalone')
+    plt.savefig('results_plot') # Code for saving a plot to image sourced from: https://pythonspot.com/matplotlib-save-figure-to-image-file/
+    plt.show()
