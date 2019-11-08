@@ -139,11 +139,11 @@ class NeuralNetwork:
         for i in range(len(layers)-1, 0, -1):
             j = 0
             for node in layers[i].nodes:
-                if i==len(layers)-1:
+                if i == len(layers)-1:
                     # print(compare)
                     node.delta = (node.value-compare[j])*node.value*(1-node.value)
                     # print(type(-(compare[j]-node.value)*node.value*(1-node.value)))
-                    j+=1
+                    j += 1
                 else:
                     start = 0
                     for weight in node.outgoing_weights:
@@ -165,8 +165,6 @@ class NeuralNetwork:
                     weight.prev_change = weight.weight_change
                     weight.weight_change = 0
         for i in range(len(row)):
-            # print(i)
-            # print(row[i])
             self.sigmoid(layers, row[i])
             self.back_prop(layers, compare[i])
         changes = []
@@ -174,9 +172,12 @@ class NeuralNetwork:
             # print(j)
             for node in layers[j].nodes:
                 # node.prev_bias_change = node.bias_change
+                print(node.bias_change)
+                print(len(row))
                 node.bias_change = -eta * node.bias_change/len(row)
                 node.bias += node.bias_change# +alpha*node.prev_bias_change
                 changes.append(node.bias_change)
+                print(node.bias_change)
                 # print(node.bias_change)
                 for weight in node.incoming_weights:
                     # weight.prev_change = weight.weight_change
@@ -218,9 +219,9 @@ class NetworkClient:
             group = []
             comp_group = []
             check_group = []
-            j=0
+            j = 0
             for index, row in self.data_instance.train_df.iterrows():
-                j+=1
+                j += 1
                 if j % stoch == 0:
                     changes, length = network.gradient_descent(layers, eta, alpha, comp_group, group)
                     # print(check_group)
@@ -255,12 +256,13 @@ class NetworkClient:
                 costs.append(network.cost(output_predictions[-1], output_layer, row[self.data_instance.label_col])[0])
             print(changes)
             print(costs)
-            checker = .00000005
+            checker = .0005
             test = 0
             # for i in range(len(changes)):
             #     my_break = False
             #     test += abs(changes[i])
-            if all(x <= checker for x in changes):  # changes.all() <= checker:  # abs(changes[i])
+            #  TODO: put in if statement checking cost
+            if all(abs(x) <= checker for x in changes):  # changes.all() <= checker:  # abs(changes[i])
                 # my_break = True
                 break
         # print(my_break)
