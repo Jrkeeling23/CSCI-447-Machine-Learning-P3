@@ -227,6 +227,7 @@ if __name__ == '__main__':
             # RBFREG_exp(rbf_version)
     plt.legend()
     plt.title('Data: Abalone')
+    print('Best performing ',  best_performing)
     plt.savefig(
         'results_plot')  # Code for saving a plot to image sourced from: https://pythonspot.com/matplotlib-save-figure-to-image-file/
     plt.show()
