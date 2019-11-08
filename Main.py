@@ -167,8 +167,10 @@ class Main:
     # def perform_KNN(self, k_val, query_point, train_data):
 
 if __name__ == '__main__':
-    # run experiment
-    # RBFREG_exp('condensed)
-    # run video rbg freg
-    RBFREG_vid('condensed')
-    RBFREG_vid('edited')
+
+    rbf_list = ['condensed', 'edited']
+    for rbf_version in rbf_list: # Run RBF
+        # run video rbg freg
+        RBFREG_vid(rbf_version)
+        # run experiment
+        # RBFREG_exp(rbf_version)
