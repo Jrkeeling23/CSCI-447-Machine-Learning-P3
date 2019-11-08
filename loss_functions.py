@@ -7,6 +7,7 @@ import math
 class LF:
 
     def zero_one_loss(self, predicted, labels):
+
             """
                  Condense the data set by instantiating a Z = None. Add x_initial to Z if initial class(x_initial) != class(x)
                  where x is an example in Z.
@@ -15,6 +16,8 @@ class LF:
                  :param labels: actual labels
                  :return: the zero one less type float
              """
+            for iterator in range(len(predicted)):
+                predicted[iterator] = round(predicted[iterator])
             length_of_labels = len(labels) # Length of entire predicted dataset
             zero_count = 0  # count of correctly classified examples
             one_count = 0  # count of incorrectly classified examples

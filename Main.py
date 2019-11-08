@@ -1,7 +1,8 @@
 from Data import Data
 import pandas as pd
 from RBFNet import RBFReg
-
+from Cluster import KNN
+from loss_functions import LF
 def load_data():
     """
     loads the data (csv) files
@@ -31,6 +32,9 @@ def RBFREG_exp():
         df[col] = df[col].astype(float)
     # split into test/train
     data.split_data(data_frame=df)
+    cluster_obj = KNN(5, data)
+    data.train_df = cluster_obj.condense_data(data.train_df)
+
     # setup expected values for testings
     expected = data.train_df[data.train_df.columns[-1]]
     actual = data.test_df[data.test_df.columns[-1]]
@@ -50,9 +54,11 @@ def RBFREG_exp():
     print(predicts)
     print("expected")
     print(expc_list)
-    print("MSE RBF 1")
-    mse = rbf.mean_squared_error(predicts, expc_list)
-    print(mse)
+    LF.mean_squared_error(predicts, expc_list)
+    LF.zero_one_loss(predicts,expc_list)
+    # print("MSE RBF 1")
+    # mse = rbf.mean_squared_error(predicts, expc_list)
+    # print(mse)
 
 
     rbf2.trainReg(data.train_df, expected, data)
@@ -62,9 +68,11 @@ def RBFREG_exp():
     print(predicts2)
     print("expected")
     print(expc_list)
-    print("MSE RBF 2")
-    mse2 = rbf2.mean_squared_error(predicts2, expc_list)
-    print(mse2)
+    # print("MSE RBF 2")
+    # mse2 = rbf2.mean_squared_error(predicts2, expc_list)
+    # print(mse2)
+    LF.mean_squared_error(predicts, expc_list)
+    LF.zero_one_loss(predicts,expc_list)
 
     rbf3.trainReg(data.train_df, expected, data)
     predicts3 = rbf.predictReg(data.test_df, data)
@@ -74,9 +82,11 @@ def RBFREG_exp():
     print(predicts3)
     print("expected")
     print(expc_list)
-    print("MSE RBF 3")
-    mse3 = rbf.mean_squared_error(predicts3, expc_list)
-    print(mse3)
+    # print("MSE RBF 3")
+    # mse3 = rbf.mean_squared_error(predicts3, expc_list)
+    # print(mse3)
+    LF.mean_squared_error(predicts, expc_list)
+    LF.zero_one_loss(predicts,expc_list)
 
     rbf4.trainReg(data.train_df, expected, data)
     predicts4 = rbf.predictReg(data.test_df, data)
@@ -85,9 +95,11 @@ def RBFREG_exp():
     print(predicts4)
     print("expected")
     print(expc_list)
-    print("MSE RBF 4")
-    mse4 = rbf.mean_squared_error(predicts4, expc_list)
-    print(mse4)
+    # print("MSE RBF 4")
+    # mse4 = rbf.mean_squared_error(predicts4, expc_list)
+    # print(mse4)
+    LF.mean_squared_error(predicts, expc_list)
+    LF.zero_one_loss(predicts,expc_list)
 
 
 
@@ -104,6 +116,9 @@ def RBFREG_vid():
         df[col] = df[col].astype(float)
     # split into test/train
     data.split_data(data_frame=df)
+    cluster_obj = KNN(5, data)
+    data.train_df = cluster_obj.condense_data(data.train_df)
+
     # setup expected values for testings
     expected = data.train_df[data.train_df.columns[-1]]
     actual = data.test_df[data.test_df.columns[-1]]
@@ -122,9 +137,12 @@ def RBFREG_vid():
     print(predicts)
     print("expected")
     print(expc_list)
-    print("MSE RBF")
-    mse = rbf.mean_squared_error(predicts, expc_list)
-    print(mse)
+    LF.mean_squared_error(predicts, expc_list)
+    LF.zero_one_loss(predicts,expc_list)
+
+    # print("MSE RBF")
+    # mse = rbf.mean_squared_error(predicts, expc_list)
+    # print(mse)
 
 
 class Main:
@@ -135,6 +153,6 @@ class Main:
 
 if __name__ == '__main__':
     # run experiment
-    RBFREG_exp()
+    # RBFREG_exp()
     # run video rbg freg
-    #RBFREG_vid()
+    RBFREG_vid()
