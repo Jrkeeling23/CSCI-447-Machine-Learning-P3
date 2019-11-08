@@ -14,7 +14,7 @@ def load_data():
     """
     data_list = [Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8),
                  Data('car', pd.read_csv(r'data/car.data', header=None), 5),
-                 Data('segmentation', pd.read_csv(r'data/segmentation.data', header=None), 0),
+                 Data('segmentation', pd.read_csv(r'data/segmentation.data', header=None, skiprows=4), 0),
                  Data('machine', pd.read_csv(r'data/machine.data', header=None), 0),
                  Data('forest_fires', pd.read_csv(r'data/forestfires.data', header=None), 12),
                  Data('wine', pd.read_csv(r'data/wine.data', header=None), 0),
@@ -24,9 +24,10 @@ def load_data():
 
 
 # run RBF regression on 4 experiments (diff clusters)
-def RBFREG_exp(data_config):
+def RBFREG_exp(data_config, data):
     # setup data var
-    data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
+    # data = Data('segmentation', pd.read_csv(r'data/segmentation.data', header=None), 0)
+    # load data
     df = data.df  # get the dataframe from df
 
     print("Checking DF set")
@@ -98,7 +99,7 @@ def RBFREG_exp(data_config):
     print("expected")
     print(expc_list)
     plt.plot(predicts, label='RBF2' + data_config + ' prediction')
-    plt.plot(expc_list, label='RBF2' +data_config + ' expected')
+    plt.plot(expc_list, label='RBF2' + data_config + ' expected')
     # print("MSE RBF 2")
     # mse2 = rbf2.mean_squared_error(predicts2, expc_list)
     # print(mse2)
@@ -113,7 +114,7 @@ def RBFREG_exp(data_config):
     print("expected")
     print(expc_list)
     plt.plot(predicts, label='RBF3' + data_config + ' prediction')
-    plt.plot(expc_list, label='RBF3' +data_config + ' expected')
+    plt.plot(expc_list, label='RBF3' + data_config + ' expected')
     # print("MSE RBF 3")
     # mse3 = rbf.mean_squared_error(predicts3, expc_list)
     # print(mse3)
@@ -128,7 +129,7 @@ def RBFREG_exp(data_config):
     print("expected")
     print(expc_list)
     plt.plot(predicts, label='RBF4' + data_config + ' prediction')
-    plt.plot(expc_list, label='RBF4' +data_config + ' expected')
+    plt.plot(expc_list, label='RBF4' + data_config + ' expected')
     # print("MSE RBF 4")
     # mse4 = rbf.mean_squared_error(predicts4, expc_list)
     # print(mse4)
@@ -137,8 +138,9 @@ def RBFREG_exp(data_config):
 
 
 # run RBF regression on small dataset for video
-def RBFREG_vid(data_config):
-    data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
+
+def RBFREG_vid(data_config, data, best_performing):
+    # data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
     df = data.df.sample(100)  # get the dataframe from df, take small subsection
 
     print("\nChecking DF set")
@@ -187,14 +189,16 @@ def RBFREG_vid(data_config):
 
     expc_list = actual.values.tolist()
     print("predicts RBF")
-    plt.plot(predicts, label=data_config + ' prediction')
-    plt.plot(expc_list, label=data_config + ' expected')
+    plt.plot(predicts, label=data.name + data_config + ' prediction')
+    plt.plot(expc_list, label= data.name + data_config + ' expected')
 
     print(predicts)
     print("expected")
     print(expc_list)
     lf = LF()
-    lf.mean_squared_error(predicts, expc_list)
+    mse = lf.mean_squared_error(predicts, expc_list)
+    if best_performing is None:
+        best_performing = [data_config, mse, data.name]
     lf.zero_one_loss(predicts, expc_list)
 
     # print("MSE RBF")
@@ -210,15 +214,19 @@ class Main:
 
 
 if __name__ == '__main__':
-
+    data = load_data()
     rbf_list = ['k-means', 'medoids', 'edited']
-    for rbf_version in rbf_list:  # Run RBF
-        # run video rbg freg
-        RBFREG_vid(rbf_version)
+    best_performing = None
+    for dataset in data:
+        print(dataset.name)
+        for rbf_version in rbf_list:  # Run RBF
+            # run video rbg freg
+            RBFREG_vid(rbf_version, dataset, best_performing)
 
-        # run experiment
-        # RBFREG_exp(rbf_version)
+            # run experiment
+            # RBFREG_exp(rbf_version)
     plt.legend()
     plt.title('Data: Abalone')
-    plt.savefig('results_plot') # Code for saving a plot to image sourced from: https://pythonspot.com/matplotlib-save-figure-to-image-file/
+    plt.savefig(
+        'results_plot')  # Code for saving a plot to image sourced from: https://pythonspot.com/matplotlib-save-figure-to-image-file/
     plt.show()
