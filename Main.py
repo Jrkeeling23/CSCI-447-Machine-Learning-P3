@@ -19,7 +19,7 @@ def load_data():
     return data_list
 
 # run RBF regression on 4 experiments (diff clusters)
-def RBFREG_exp():
+def RBFREG_exp(data_config):
     # setup data var
     data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 11)  # load data
     df = data.df # get the dataframe from df
@@ -32,8 +32,15 @@ def RBFREG_exp():
         df[col] = df[col].astype(float)
     # split into test/train
     data.split_data(data_frame=df)
-    cluster_obj = KNN(5, data)
-    data.train_df = cluster_obj.condense_data(data.train_df)
+    if data_config == 'condensed':
+        cluster_obj = KNN(5, data)
+        data.train_df = cluster_obj.condense_data(data.train_df)
+        print("\n---------------- Running Condensed Nearest Neighbor RBF -----------------")
+    elif data_config == 'edited':
+        knn = KNN(5, data)
+        data.train_df = knn.edit_data(data.train_df, 5, data.test_df, data.label_col)
+        print("\n---------------- Running Edited Nearest Neighbor RBF -----------------")
+
 
     # setup expected values for testings
     expected = data.train_df[data.train_df.columns[-1]]
@@ -161,7 +168,7 @@ class Main:
 
 if __name__ == '__main__':
     # run experiment
-    # RBFREG_exp()
+    # RBFREG_exp('condensed)
     # run video rbg freg
     RBFREG_vid('condensed')
     RBFREG_vid('edited')
