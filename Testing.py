@@ -237,5 +237,45 @@ class MyTestCase(unittest.TestCase):
         else:
             print("Run edited")
 
+
+    def test_rbfRegKMeans(self):
+            #data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 8)  # load data
+            data = Data('winequality-white', pd.read_csv('data/winequality-white.csv', header=None), 11)  # load data
+            df = data.df.sample(n=100)  # minimal data frame
+
+            test_df = pd.read_csv('data/winequality-white.csv', header=None)
+            test2_df = test_df.iloc[:101, :]
+            #print(test2_df[11])
+            print("Checking DF set")
+            print(df[df.columns[-1]])
+
+            cols = df.columns
+            for col in cols:
+                df[col] = df[col].astype(float)
+            expected = df[df.columns[-1]]
+
+            #print(expected[1])
+
+            df = df.iloc[:, :-1]
+            test2_df = test2_df.iloc[:, :-1]
+            data.split_data(data_frame=df)  # sets test and train data
+            # will have high error due to small dataset, but just a test to show how this works
+            rbf = RBFReg(clusters=4, maxruns=200)
+
+            rbf.trainReg(data.train_df, expected, data)
+
+            predicts = rbf.predictReg(data.test_df, data)
+            expc_list = expected.values.tolist()
+            print("predicts")
+            print(predicts)
+            print("expected")
+            print(expc_list)
+
+            print("MSE")
+            mse = rbf.mean_squared_error(predicts, expc_list)
+            print(mse)
+
+
+
 if __name__ == '__main__':
     unittest.main()
