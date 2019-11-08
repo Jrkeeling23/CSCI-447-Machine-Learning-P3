@@ -210,6 +210,17 @@ def RBFREG_vid(data_config, data):
     # mse = rbf.mean_squared_error(predicts, expc_list)
     # print(mse)
 
+    def run_mlp_vid():
+        data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8, False)
+        df = data.df.sample(n=200)
+        data.split_data(data_frame=df)
+        client = NetworkClient(data)
+        layers, outputset, network = client.train_it(1, 10, .3, .5, 15)
+        # print(client.testing(layers, outputset, network))  # prints total
+        lf = LF()
+        pred, actual = client.testing(layers, outputset, network)
+        print("Predicted Set, ", pred, " Actual Set: ", actual)
+        lf.zero_one_loss(pred, actual)
 
 class Main:
     def __init__(self):
