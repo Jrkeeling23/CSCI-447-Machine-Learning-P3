@@ -25,7 +25,7 @@ def load_data():
 # run RBF regression on 4 experiments (diff clusters)
 def RBFREG_exp(data_config):
     # setup data var
-    data = Data('machine', pd.read_csv(r'data/machine.data', header=None), 0)  # load data
+    data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
     df = data.df  # get the dataframe from df
 
     print("Checking DF set")
@@ -36,14 +36,29 @@ def RBFREG_exp(data_config):
         df[col] = df[col].astype(float)
     # split into test/train
     data.split_data(data_frame=df)
-    if data_config == 'condensed':
+    if data_config == 'condensed':  # Run RBF on condensed data set
         cluster_obj = KNN(5, data)
         data.train_df = cluster_obj.condense_data(data.train_df)
+
         print("\n---------------- Running Condensed Nearest Neighbor RBF -----------------")
-    elif data_config == 'edited':
+        print('Size of data: ', data.train_df.shape)
+        rbf = RBFReg(clusters=8, maxruns=600)
+
+    elif data_config == 'edited':  # Run RBF on edited dataset
         knn = KNN(5, data)
         data.train_df = knn.edit_data(data.train_df, 5, data.test_df, data.label_col)
-        print("\n---------------- Running Edited Nearest Neighbor RBF -----------------")
+        print("\n---------------- Running Edited Nearest Neighbor RBF -----------------\n")
+        print('Size of data: ', data.train_df.shape)
+
+        rbf = RBFReg(clusters=8, maxruns=600)
+
+    elif data_config == 'k-means':  # Run RBF on K-means
+        print("\n---------------- Running K-Means RBF -----------------\n")
+        rbf = RBFRegK(clusters=8, maxruns=200)
+
+    elif data_config == 'medoids':  # Run RBF on Medoids
+        print("\n---------------- Running Medoids RBF -----------------\n")
+        rbf = RBFReg(clusters=8, maxruns=200)
 
     # setup expected values for testings
     expected = data.train_df[data.train_df.columns[-1]]
@@ -113,7 +128,7 @@ def RBFREG_exp(data_config):
 
 # run RBF regression on small dataset for video
 def RBFREG_vid(data_config):
-    data = Data('machine', pd.read_csv(r'data/machine.data', header=None), 0)  # load data
+    data = Data('abalone', pd.read_csv(r'data/abalone.data', header=None), 8)  # load data
     df = data.df.sample(100)  # get the dataframe from df, take small subsection
 
     print("\nChecking DF set")
@@ -186,6 +201,6 @@ if __name__ == '__main__':
     rbf_list = ['k-means', 'medoids', 'edited']
     for rbf_version in rbf_list:  # Run RBF
         # run video rbg freg
-        RBFREG_vid(rbf_version)
+        # RBFREG_vid(rbf_version)
         # run experiment
-        # RBFREG_exp(rbf_version)
+        RBFREG_exp(rbf_version)
