@@ -178,7 +178,7 @@ class MyTestCase(unittest.TestCase):
         data.split_data(data_frame=df)
         client = NetworkClient(data)
         layers, outputset, network = client.train_it(1, 10, .1, .5, 10)
-        print(client.testing(layers, outputset, network))
+        print(client.testing(layers, outputset, network))  # prints total
 
 
 if __name__ == '__main__':

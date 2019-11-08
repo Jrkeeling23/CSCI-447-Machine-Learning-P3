@@ -166,8 +166,11 @@ class NeuralNetwork:
                     weight.weight_change = 0
         for i in range(len(row)):
             self.sigmoid(layers, row[i])
+            print("adjusting values for different input")  # TODO: remove while recording video
             self.back_prop(layers, compare[i])
+            print("backpropping")  # TODO: remove while recording video
         changes = []
+        print("adjusting biases and weights for the last %d inputs" % (len(row)))  # TODO: remove while recording video
         for j in range(len(layers) - 1, 0, -1):
             # print(j)
             for node in layers[j].nodes:
