@@ -191,6 +191,12 @@ def RBFREG_vid(data_config, data, best_performing):
     print("predicts RBF")
     plt.plot(predicts, label=data.name + data_config + ' prediction')
     plt.plot(expc_list, label= data.name + data_config + ' expected')
+    plt.legend()
+    plt.title('Data: ', data.name)
+    plt.ylabel('Expected value/ Predicted Value')
+    plt.xlabel('# Predictions')
+    plt.savefig(
+        data.name+'_'+data_config)  # Code for saving a plot to image sourced from: https://pythonspot.com/matplotlib-save-figure-to-image-file/
 
     print(predicts)
     print("expected")
@@ -225,9 +231,5 @@ if __name__ == '__main__':
 
             # run experiment
             # RBFREG_exp(rbf_version)
-    plt.legend()
-    plt.title('Data: Abalone')
+
     print('Best performing ',  best_performing)
-    plt.savefig(
-        'results_plot')  # Code for saving a plot to image sourced from: https://pythonspot.com/matplotlib-save-figure-to-image-file/
-    plt.show()
